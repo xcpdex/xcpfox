@@ -13,7 +13,9 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        Commands\BlockHeightCommand::class,
+        Commands\UpdateBlocksCommand::class,
+        Commands\UpdatePriceHistoriesCommand::class,
     ];
 
     /**
@@ -24,8 +26,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->command('update:price')->daily();
+        $schedule->command('block:height')->everyMinute();
+        $schedule->command('horizon:snapshot')->everyFiveMinutes();
     }
 
     /**
