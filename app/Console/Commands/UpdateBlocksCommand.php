@@ -47,16 +47,7 @@ class UpdateBlocksCommand extends Command
         }
         else
         {
-            $next_block = $first_block + 100;
-
-            while($next_block < $first_block + 500)
-            {
-                $chain[] = new \App\Jobs\UpdateBlocks($next_block, $next_block + 100);
-
-                $next_block = $next_block + 100;
-            }
-
-            \App\Jobs\UpdateBlocks::withChain($chain)->dispatch($first_block, $first_block + 100);
+            \App\Jobs\UpdateBlocks::dispatch($first_block, $first_block + 10)->onQueue('high');
         }
     }
 }

@@ -15,7 +15,7 @@ class Transaction extends Model
      * @var array
      */
     protected $fillable = [
-         'tx_index', 'block_index', 'tx_hash', 'type', 'source', 'destination', 'quantity', 'quantity_usd', 'fee', 'fee_usd', 'size', 'vsize', 'inputs', 'outputs', 'raw', 'timestamp', 'confirmed_at', 'processed_at',
+         'tx_index', 'block_index', 'tx_hash', 'type', 'source', 'destination', 'quantity', 'quantity_usd', 'fee', 'fee_usd', 'size', 'vsize', 'inputs', 'outputs', 'raw', 'valid', 'timestamp', 'confirmed_at', 'processed_at',
     ];
 
     /**
@@ -44,5 +44,35 @@ class Transaction extends Model
     public function block()
     {
         return $this->belongsTo(Block::class, 'block_index', 'block_index');
+    }
+
+    /**
+     * Update or Create Transaction
+     *
+     * @param  arr  $message
+     * @param  arr  $bindings
+     * @return \App\Transaction
+     */
+    public static function updateOrCreateTransaction($message, $bindings)
+    {
+        try
+        {
+            return static::updateOrCreate([
+                'tx_index' => $bindings['tx_index'],
+            ],[
+                'type' => $message['category'],
+                'source' => $bindings['source'],
+                'tx_hash' => $bindings['tx_hash'],
+                'block_index' => $bindings['block_index'],
+                'destination' => isset($bindings['destination']) ? $bindings['destination'] : null,
+                'valid' => strpos($bindings['status'], 'invalid') === false ? 1 : 0,
+                'timestamp' => $message['timestamp'],
+                'confirmed_at' => $bindings['confirmed_at'],
+            ]);
+        }
+        catch(\Exception $e)
+        {
+            \Storage::append('failed.log', 'Transaction: ' . $message['message_index'] . ' ' . serialize($e->getMessage()));
+        }
     }
 }

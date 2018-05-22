@@ -24,6 +24,81 @@ Route::get('/charts', [
     'uses' => 'ChartsController@index',
 ]);
 
+Route::get('/charts/total-sends', [
+    'as' => 'charts.total-sends',
+    'uses' => 'ChartsController@showTotalSends',
+]);
+
+Route::get('/charts/cumulative-sends', [
+    'as' => 'charts.cumulative-sends',
+    'uses' => 'ChartsController@showCumulativeSends',
+]);
+
+Route::get('/charts/average-order-expiration', [
+    'as' => 'charts.average-order-expiration',
+    'uses' => 'ChartsController@showAverageOrderExpiration',
+]);
+
+Route::get('/charts/total-orders', [
+    'as' => 'charts.total-orders',
+    'uses' => 'ChartsController@showTotalOrders',
+]);
+
+Route::get('/charts/cumulative-orders', [
+    'as' => 'charts.cumulative-orders',
+    'uses' => 'ChartsController@showCumulativeOrders',
+]);
+
+Route::get('/charts/total-addresses', [
+    'as' => 'charts.total-addresses',
+    'uses' => 'ChartsController@showTotalAddresses',
+]);
+
+Route::get('/charts/cumulative-addresses', [
+    'as' => 'charts.cumulative-addresses',
+    'uses' => 'ChartsController@showCumulativeAddresses',
+]);
+
+Route::get('/charts/total-assets', [
+    'as' => 'charts.total-assets',
+    'uses' => 'ChartsController@showTotalAssets',
+]);
+
+Route::get('/charts/cumulative-assets', [
+    'as' => 'charts.cumulative-assets',
+    'uses' => 'ChartsController@showCumulativeAssets',
+]);
+
+Route::get('/charts/total-messages', [
+    'as' => 'charts.total-messages',
+    'uses' => 'ChartsController@showTotalMessages',
+]);
+
+Route::get('/charts/message-categories', [
+    'as' => 'charts.message-categories',
+    'uses' => 'ChartsController@showMessageCategories',
+]);
+
+Route::get('/charts/cumulative-messages', [
+    'as' => 'charts.cumulative-messages',
+    'uses' => 'ChartsController@showCumulativeMessages',
+]);
+
+Route::get('/charts/total-transactions', [
+    'as' => 'charts.total-transactions',
+    'uses' => 'ChartsController@showTotalTransactions',
+]);
+
+Route::get('/charts/transaction-types', [
+    'as' => 'charts.transaction-types',
+    'uses' => 'ChartsController@showTransactionTypes',
+]);
+
+Route::get('/charts/cumulative-transactions', [
+    'as' => 'charts.cumulative-transactions',
+    'uses' => 'ChartsController@showCumulativeTransactions',
+]);
+
 Route::get('/charts/xcp-price', [
     'as' => 'charts.xcp-price',
     'uses' => 'ChartsController@showXcpPrice',
@@ -132,13 +207,12 @@ Route::get('/json', function () {
     $counterparty = new \JsonRPC\Client(env('CP_API'));
     $counterparty->authentication(env('CP_USER'), env('CP_PASS'));
 
-    return $counterparty->execute('get_issuances', [
-        'filters' => [
-            [
-                'field' => 'asset',
-                'op'    => '==',
-                'value' => 'PRAGMATIC',
-            ]
-        ],
-    ]);
+    $data = $counterparty->execute('get_blocks', ['block_indexes' => [500006]]);
+
+    $messages = $data[0]['_messages'];
+    usort($messages, function ($message1, $message2) {
+        return $message1['command'] <=> $message2['command'];
+    });
+
+    return $messages;
 });

@@ -21,13 +21,16 @@ class CreateTransactionsTable extends Migration
             $table->string('type');
             $table->string('source');
             $table->string('destination')->nullable();
-            $table->integer('quantity')->unsigned()->default(0);
+            $table->integer('quantity')->nullable()->unsigned()->default(0);
+            $table->unsignedBigInteger('quantity_usd')->default(0);
             $table->integer('fee')->unsigned()->default(0);
+            $table->unsignedBigInteger('fee_usd')->default(0);
             $table->integer('size')->unsigned()->default(0);
             $table->integer('vsize')->unsigned()->default(0);
             $table->integer('inputs')->unsigned()->default(0);
             $table->integer('outputs')->unsigned()->default(0);
             $table->json('raw')->nullable();
+            $table->boolean('valid');
             $table->unsignedBigInteger('timestamp');
             $table->timestamp('confirmed_at')->nullable();
             $table->timestamp('processed_at')->nullable();

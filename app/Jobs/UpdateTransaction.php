@@ -22,9 +22,15 @@ class UpdateTransaction implements ShouldQueue
      */
     public function __construct(\App\Transaction $transaction)
     {
-        $this->counterparty = new \JsonRPC\Client(env('CP_API'));
-        $this->counterparty->authentication(env('CP_USER'), env('CP_PASS'));
-        $this->transaction = $transaction;
+        try
+        {
+            $this->counterparty = new \JsonRPC\Client(env('CP_API'));
+            $this->counterparty->authentication(env('CP_USER'), env('CP_PASS'));
+            $this->transaction = $transaction;
+        }
+        catch(\Exception $e)
+        {
+        }
     }
 
     /**

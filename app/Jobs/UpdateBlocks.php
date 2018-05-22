@@ -36,15 +36,26 @@ class UpdateBlocks implements ShouldQueue
      */
     public function handle()
     {
+        // Get Blocks
         $blocks = $this->getBlocks($this->first_block, $this->last_block);
 
-        foreach($blocks as $data)
+        foreach($blocks as $block_data)
         {
-            $this->updateOrCreateBlock($data);
-            $this->processMessages($data['_messages'], $data['block_time']);
+            // Create Block
+            \App\Block::updateOrCreateBlock($block_data);
+
+            // Add Messages
+            $this->processMessages($block_data['_messages'], $block_data['block_time']);
         }
+
+        // Useful When Syncing
+        exec('php /var/www/xcpfox.com/artisan update:blocks');
     }
 
+    /**
+     * Counterparty API
+     * https://counterparty.io/docs/api/#get_blocks
+     */
     private function getBlocks($first_block, $last_block)
     {
         $block_indexes = range($first_block, $last_block);
@@ -54,84 +65,212 @@ class UpdateBlocks implements ShouldQueue
         ]);
     }
 
-    private function updateOrCreateBlock($data)
+    /**
+     * Execute Messages
+     * Use the messages to build the local database.
+     */
+    private function processMessages($messages, $block_time)
     {
+        // Inserts Before Updates
+        usort($messages, function ($message1, $message2) {
+            return $message1['command'] <=> $message2['command'];
+        });
+
+        foreach($messages as $message)
+        {
+            // Save Message
+            \App\Message::updateOrCreateMessage($message, $block_time);
+
+            // Get Bindings
+            $bindings = $this->getBindings($message, $block_time);
+
+            if($message['command'] === 'insert')
+            {
+                $this->createModel($message, $bindings);
+            }
+            elseif($message['command'] === 'update')
+            {
+                $this->updateModel($message, $bindings);
+            }
+            elseif($message['command'] === 'reorg')
+            {
+                // Undecided
+            }
+        }
+    }
+
+    /**
+     * Get Bindings
+     * Nice array for avoiding database calls.
+     */
+    private function getBindings($message, $block_time)
+    {
+        $bindings = get_object_vars(json_decode($message['bindings']));
+
+        return array_merge($bindings, ['confirmed_at' => \Carbon\Carbon::createFromTimestamp($block_time, 'America/New_York')]);
+    }
+
+    /**
+     * Convert Category
+     * Returns corresponding model class.
+     */
+    private function getModelName($message)
+    {
+        // These two are str_singular edge cases
+        if($message['category'] === 'rps') return '\\App\\Rps';
+        if($message['category'] === 'rpsresolves') return '\\App\\Rpsresolve';
+
+        return '\\App\\' . ucfirst(camel_case(str_singular($message['category'])));
+    }
+
+    /**
+     * Create Model
+     * Logic applies to any message type.
+     */
+    private function createModel($message, $bindings)
+    {
+        // Record Transaction Data
+        $this->updateOrCreateTransaction($message, $bindings);
+
+        // Only Save Valid Messages
+        if($this->guardAgainstInvalidMessages($message, $bindings))
+        {
+            // Store Any New Addresses
+            \App\Address::firstOrCreateAddress($message, $bindings);
+
+            // Assets/Balances/Replace
+            $this->handleAssetsBalancesReplace($message, $bindings);
+
+            // Get Model Name From Category Type
+            $model_name = $this->getModelName($message);
+
+            try
+            {
+                // Oo la la
+                $model_name::firstOrCreate($bindings);
+            }
+            catch(\Exception $e)
+            {
+                \Storage::append('failed.log', 'Insert: ' . $message['message_index'] . ' ' . serialize($e->getMessage()));
+            }
+        }
+    }
+
+    /**
+     * Update Existing Model
+     * Logic applies to any message type.
+     */
+    private function updateModel($message, $bindings)
+    {
+        // Lookup Keys for Model and Bindings
+        $lookup = $this->getLookupKeys($message, $bindings);
+
+        // Save As Variables Before Unsetting
+        $key = $lookup['model_key'];
+        $value = $bindings[$lookup['bindings_key']];
+
+        // Unset the Lookup Binding Value Used
+        unset($bindings[$lookup['bindings_key']]);
+
+        // Get Model Name From Category Type
+        $model_name = $this->getModelName($message);
+
         try
         {
-            return \App\Block::updateOrCreate([
-                'block_index' => $data['block_index'],
-            ],[
-                'block_hash' => $data['block_hash'],
-                'ledger_hash' => $data['ledger_hash'],
-                'txlist_hash' => $data['txlist_hash'],
-                'messages_hash' => $data['messages_hash'],
-                'previous_block_hash' => $data['previous_block_hash'],
-                'difficulty' => $data['difficulty'],
-                'timestamp' => $data['block_time'],
-                'confirmed_at' => \Carbon\Carbon::createFromTimestamp($data['block_time'], 'America/New_York'),
-            ]);
+            // Oo la la
+            return $model_name::updateOrCreate([$key => $value], $bindings);
         }
         catch(\Exception $e)
         {
+            \Storage::append('failed.log', 'Update: ' . $message['message_index'] . ' ' . serialize($e->getMessage()));
         }
     }
 
-    private function processMessages($messages, $block_time)
+    /**
+     * Update or Create Transaction
+     * Transaction is a subset of messages.
+     */
+    private function updateOrCreateTransaction($message, $bindings)
     {
-        foreach($messages as $message)
+        // Not every message is a tx
+        if(isset($bindings['tx_index']))
         {
-            try
-            {
-                \App\Message::updateOrCreate([
-                    'message_index' => $message['message_index'],
-                ],[
-                    'block_index' => $message['block_index'],
-                    'command' => $message['command'],
-                    'category' => isset($message['category']) ? $message['category'] : '',
-                    'bindings' => $message['bindings'],
-                    'timestamp' => $message['timestamp'],
-                    'confirmed_at' => \Carbon\Carbon::createFromTimestamp($block_time, 'America/New_York'),
-                ]);
+            $transaction = \App\Transaction::updateOrCreateTransaction($message, $bindings);
 
-                if($message['command'] === 'insert')
-                {
-                    $this->updateOrCreateTransaction($message, $block_time);
-                }
-            }
-            catch(\Exception $e)
+            if($transaction->processed_at === null)
             {
+                // Turn Off While Syncing
+                // \App\Jobs\UpdateTransaction::dispatch($transaction);
             }
         }
     }
 
-    private function updateOrCreateTransaction($message, $block_time)
+    /**
+     * Handle Assets, Balances, Replace
+     * This is data that is not always present.
+     */
+    private function handleAssetsBalancesReplace($message, $bindings)
     {
-        $data = json_decode($message['bindings']);
-
-        if(isset($data->tx_index))
+        if($message['category'] === 'issuances')
         {
-            try
-            {
-                $transaction = \App\Transaction::updateOrCreate([
-                    'tx_index' => $data->tx_index,
-                ],[
-                    'type' => $message['category'],
-                    'source' => $data->source,
-                    'tx_hash' => $data->tx_hash,
-                    'block_index' => $data->block_index,
-                    'destination' => isset($data->destination) ? $data->destination : null,
-                    'timestamp' => $block_time,
-                    'confirmed_at' => \Carbon\Carbon::createFromTimestamp($block_time, 'America/New_York'),
-                ]);
-
-                if($transaction->processed_at === null)
-                {
-                    \App\Jobs\UpdateTransaction::dispatch($transaction);
-                }
-            }
-            catch(\Exception $e)
-            {
-            }
+            \App\Asset::updateOrCreateAsset($message, $bindings);
         }
+        elseif($message['category'] === 'credits' || $message['category'] === 'debits')
+        {
+            \App\Balance::updateOrCreateBalance($message, $bindings, str_singular($message['category']));
+        }
+        elseif($message['category'] === 'replace')
+        {
+            \App\Address::updateAddressOptions($bindings);
+        }
+    }
+
+    /**
+     * Determine Keys
+     * So we can use re-use update logic.
+     */
+    private function getLookupKeys($message, $bindings)
+    {
+        // Symmetric Keys
+        if($message['category'] === 'bets' || $message['category'] === 'orders')
+        {
+            $model_key = $bindings_key = 'tx_hash';
+        }
+        elseif($message['category'] === 'rps')
+        {
+            $model_key = $bindings_key = 'tx_index';
+        }
+        else
+        {
+            $model_key = $bindings_key = str_replace('_matches', '_match_id', $message['category']);
+        }
+
+        // Divergent Keys
+        if($message['category'] === 'order_matches' || $message['category'] === 'bet_matches' || $message['category'] === 'rps_matches')
+        {
+            $model_key = 'id';
+        }
+
+        // Edge Case Keys
+        if($message['category'] === 'rps' && ! isset($bindings[$bindings_key]))
+        {
+            // RPS seems to use tx_index OR tx_hash
+            $model_key = $bindings_key = 'tx_hash';
+        }
+
+        return [
+            'model_key' => $model_key,
+            'bindings_key' => $bindings_key,
+        ];
+    }
+
+    private function guardAgainstInvalidMessages($message, $bindings)
+    {
+        if(isset($bindings['status']) && strpos($bindings['status'], 'invalid') === true)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

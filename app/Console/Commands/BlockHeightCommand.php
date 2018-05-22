@@ -48,6 +48,11 @@ class BlockHeightCommand extends Command
         }
     }
 
+    /**
+     * Check For and Handle New Block
+     *
+     * @return null
+     */
     private function isNewBlockHeight()
     {
         $block_height = $this->getBlockHeight();
@@ -64,6 +69,11 @@ class BlockHeightCommand extends Command
         return false;
     }
 
+    /**
+     * Get Height
+     *
+     * @return null
+     */
     private function getBlockHeight()
     {
         $info = $this->counterparty->execute('get_running_info');
@@ -71,11 +81,21 @@ class BlockHeightCommand extends Command
         return $info['bitcoin_block_count'];
     }
 
+    /**
+     * Set Cache
+     *
+     * @return null
+     */
     private function setBlockHeight($block_height)
     {
         \Cache::forever('block_height', $block_height);
     }
 
+    /**
+     * Clear cache
+     *
+     * @return null
+     */
     private function forgetBlockHeight()
     {
         \Cache::forget('block_height');

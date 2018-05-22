@@ -51,14 +51,20 @@
 <div class="container">
     <div id="chart" style="height: 600px"></div>
     <div class="row">
-        <div class="col-md-6 mt-3">
+        <div class="col-md-4 mt-3">
+            <div class="btn-group d-flex" role="group" aria-label="Stack">
+                <a href="{{ url(route('charts.total-size', ['chart' => $chart, 'group_by' => $group_by])) }}" role="button" class="btn btn-sm btn-outline-primary w-100 active">Total</a>
+                <a href="{{ url(route('charts.cumulative-size', ['chart' => $chart, 'group_by' => $group_by])) }}" role="button" class="btn btn-sm btn-outline-primary w-100">Cumulative</a>
+            </div>
+        </div>
+        <div class="col-md-4 mt-3">
             <div class="btn-group d-flex" role="group" aria-label="Group">
                 @foreach(['date', 'month', 'year'] as $group_by_option)
                 <a href="{{ url(route('charts.total-size', ['chart' => $chart, 'group_by' => $group_by_option])) }}" role="button" class="btn btn-sm btn-outline-primary w-100{{ $group_by === $group_by_option ? ' active' : '' }}">{{ ucfirst($group_by_option) }}</a>
                 @endforeach
             </div>
         </div>
-        <div class="col-md-6 mt-3">
+        <div class="col-md-4 mt-3">
             <div class="btn-group d-flex" role="group" aria-label="Chart">
                 @foreach(['area', 'line', 'column'] as $chart_option)
                 <a href="{{ url(route('charts.total-size', ['chart' => $chart_option, 'group_by' => $group_by])) }}" role="button" class="btn btn-sm btn-outline-primary w-100{{ $chart === $chart_option ? ' active' : '' }}">{{ ucfirst($chart_option) }}</a>

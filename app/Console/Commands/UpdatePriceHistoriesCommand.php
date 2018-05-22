@@ -37,7 +37,7 @@ class UpdatePriceHistoriesCommand extends Command
      */
     public function handle()
     {
-        $tickers = ['BTC', 'XCP'];
+        $tickers = ['BTC', 'XCP', 'PEPECASH', 'FLDC', 'BCY', 'DTB'];
 
         foreach($tickers as $ticker)
         {

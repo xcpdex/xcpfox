@@ -3,7 +3,7 @@
 @section('title', 'Cumulative Bitcoin Burn (USD)')
 
 @section('header')
-<link rel="canonical" href="{{ url(route('charts.cumulative-burned-usd')) }}" />
+<link rel="canonical" href="{{ url(route('charts.cumulative-burn-usd')) }}" />
 
 <!-- Charts -->
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>        

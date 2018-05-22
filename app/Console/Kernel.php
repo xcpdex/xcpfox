@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         Commands\BlockHeightCommand::class,
         Commands\UpdateBlocksCommand::class,
         Commands\UpdatePriceHistoriesCommand::class,
+        Commands\UpdateUsdValuesCommand::class,
     ];
 
     /**
@@ -26,8 +27,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('update:price')->daily();
-        $schedule->command('block:height')->everyMinute();
+        // $schedule->command('update:price')->daily();
+        // $schedule->command('usd:values')->daily();
+        // $schedule->command('block:height')->everyMinute();
+        // $schedule->command('update:blocks')->everyMinute();
         $schedule->command('horizon:snapshot')->everyFiveMinutes();
     }
 

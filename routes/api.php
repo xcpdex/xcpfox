@@ -17,6 +17,51 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/charts/total-sends', [
+    'as' => 'api.charts.total-sends',
+    'uses' => 'Api\ChartsController@showTotalSends',
+]);
+
+Route::get('/charts/average-order-expiration', [
+    'as' => 'api.charts.average-order-expiration',
+    'uses' => 'Api\ChartsController@showAverageOrderExpiration',
+]);
+
+Route::get('/charts/total-orders', [
+    'as' => 'api.charts.total-orders',
+    'uses' => 'Api\ChartsController@showTotalOrders',
+]);
+
+Route::get('/charts/total-addresses', [
+    'as' => 'api.charts.total-addresses',
+    'uses' => 'Api\ChartsController@showTotalAddresses',
+]);
+
+Route::get('/charts/total-assets', [
+    'as' => 'api.charts.total-assets',
+    'uses' => 'Api\ChartsController@showTotalAssets',
+]);
+
+Route::get('/charts/total-transactions', [
+    'as' => 'api.charts.total-transactions',
+    'uses' => 'Api\ChartsController@showTotalTransactions',
+]);
+
+Route::get('/charts/transaction-types', [
+    'as' => 'api.charts.transaction-types',
+    'uses' => 'Api\ChartsController@showTransactionTypes',
+]);
+
+Route::get('/charts/total-messages', [
+    'as' => 'api.charts.total-messages',
+    'uses' => 'Api\ChartsController@showTotalMessages',
+]);
+
+Route::get('/charts/message-categories', [
+    'as' => 'api.charts.message-categories',
+    'uses' => 'Api\ChartsController@showMessageCategories',
+]);
+
 Route::get('/charts/average-burn', [
     'as' => 'api.charts.average-burn',
     'uses' => 'Api\ChartsController@showAverageBurn',
