@@ -15,7 +15,7 @@ class Block extends Model
      * @var array
      */
     protected $fillable = [
-         'block_index', 'block_hash', 'ledger_hash', 'txlist_hash', 'messages_hash', 'previous_block_hash', 'difficulty', 'timestamp', 'confirmed_at',
+         'block_index', 'block_hash', 'ledger_hash', 'txlist_hash', 'messages_hash', 'previous_block_hash', 'next_block_hash', 'merkle_root', 'chainwork', 'difficulty', 'timestamp', 'nonce', 'size', 'stripped_size', 'weight', 'tx_count', 'processed_at', 'confirmed_at',
     ];
 
     /**
@@ -24,8 +24,27 @@ class Block extends Model
      * @var array
      */
     protected $dates = [
-        'confirmed_at',
+        'processed_at', 'confirmed_at',
     ];
+
+    /**
+     * The attributes that are appended.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'url',
+    ];
+
+    /**
+     * URL
+     *
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+        return url(route('blocks.show', ['block_hash' => $this->block_hash]));
+    }
 
     /**
      * Messages
@@ -48,16 +67,26 @@ class Block extends Model
     }
 
     /**
-     * Update or Create Block
+     * Sends
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sends()
+    {
+        return $this->hasMany(Send::class, 'block_index', 'block_index');
+    }
+
+    /**
+     * First or Create Block
      *
      * @param  arr  $data
      * @return \App\Block
      */
-    public static function updateOrCreateBlock($data)
+    public static function firstOrCreateBlock($data)
     {
         try
         {
-            return static::updateOrCreate([
+            return static::firstOrCreate([
                 'block_index' => $data['block_index'],
             ],[
                 'block_hash' => $data['block_hash'],
@@ -67,7 +96,7 @@ class Block extends Model
                 'previous_block_hash' => $data['previous_block_hash'],
                 'difficulty' => $data['difficulty'],
                 'timestamp' => $data['block_time'],
-                'confirmed_at' => \Carbon\Carbon::createFromTimestamp($data['block_time'], 'America/New_York'),
+                'confirmed_at' => \Carbon\Carbon::createFromTimestamp($data['block_time']),
             ]);
         }
         catch(\Exception $e)

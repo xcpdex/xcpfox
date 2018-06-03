@@ -15,16 +15,21 @@ class CreateBetMatchResolutionsTable extends Migration
     {
         Schema::create('bet_match_resolutions', function (Blueprint $table) {
             // Columns
-            $table->string('bet_match_id')->index();
-            $table->integer('bet_match_type_id')->unsigned()->index();
+            $table->string('bet_match_id');
+            $table->unsignedInteger('bet_match_type_id')->index();
             $table->unsignedBigInteger('block_index')->index();
             $table->string('winner')->nullable();
             $table->boolean('settled')->nullable();
             $table->unsignedBigInteger('bull_credit')->nullable();
+            $table->unsignedBigInteger('bull_credit_usd')->default(0);
             $table->unsignedBigInteger('bear_credit')->nullable();
+            $table->unsignedBigInteger('bear_credit_usd')->default(0);
             $table->unsignedBigInteger('escrow_less_fee')->nullable();
+            $table->unsignedBigInteger('escrow_less_fee_usd')->default(0);
             $table->unsignedBigInteger('fee');
-            $table->timestamp('confirmed_at')->nullable();
+            $table->unsignedBigInteger('fee_usd')->default(0);
+            $table->unsignedInteger('quality_score')->default(0)->index();
+            $table->timestamp('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('bet_match_id');

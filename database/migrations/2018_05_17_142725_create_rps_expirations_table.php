@@ -15,11 +15,11 @@ class CreateRpsExpirationsTable extends Migration
     {
         Schema::create('rps_expirations', function (Blueprint $table) {
             // Columns
-            $table->unsignedBigInteger('rps_index')->unique();
+            $table->unsignedBigInteger('rps_index');
             $table->string('rps_hash')->unique();
-            $table->string('source')->index();
             $table->unsignedBigInteger('block_index')->index();
-            $table->timestamp('confirmed_at')->nullable();
+            $table->string('source')->index();
+            $table->timestamp('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('rps_index');

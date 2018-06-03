@@ -12,6 +12,66 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function showTotalIssuance(Request $request)
+    {
+        $request->validate([
+            'group_by' => 'sometimes|in:date,month,year'
+        ]);
+
+        $group_by = $request->input('group_by', 'date');
+
+        return \Cache::remember('total_issuance_' . $group_by, 1440, function() use($group_by) {
+            switch($group_by)
+            {
+                case 'date':
+                    $results = \App\Issuance::selectRaw('DATE(confirmed_at) as date, SUM(quantity_normalized) as quantity')->groupBy('date')->orderBy('date')->get();
+                    break;
+                case 'month':
+                    $results = \App\Issuance::selectRaw('YEAR(confirmed_at) as year, MONTH(confirmed_at) as month, SUM(quantity_normalized) as quantity')->groupBy('month')->groupBy('year')->orderBy('year')->orderBy('month')->get();
+                    break;
+                case 'year':
+                    $results = \App\Issuance::selectRaw('YEAR(confirmed_at) as year, SUM(quantity_normalized) as quantity')->groupBy('year')->orderBy('year')->get();
+                    break;
+            }
+            return \App\Http\Resources\QuantityResource::collection($results);
+        });
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showTotalSent(Request $request)
+    {
+        $request->validate([
+            'group_by' => 'sometimes|in:date,month,year'
+        ]);
+
+        $group_by = $request->input('group_by', 'date');
+
+        return \Cache::remember('total_sent_' . $group_by, 1440, function() use($group_by) {
+            switch($group_by)
+            {
+                case 'date':
+                    $results = \App\Send::whereQualityScore(1)->where('asset', '!=', 'TROPTIONS')->selectRaw('DATE(confirmed_at) as date, SUM(quantity_usd) as fees')->groupBy('date')->orderBy('date')->get();
+                    break;
+                case 'month':
+                    $results = \App\Send::whereQualityScore(1)->where('asset', '!=', 'TROPTIONS')->selectRaw('YEAR(confirmed_at) as year, MONTH(confirmed_at) as month, SUM(quantity_usd) as fees')->groupBy('month')->groupBy('year')->orderBy('year')->orderBy('month')->get();
+                    break;
+                case 'year':
+                    $results = \App\Send::whereQualityScore(1)->where('asset', '!=', 'TROPTIONS')->selectRaw('YEAR(confirmed_at) as year, SUM(quantity_usd) as fees')->groupBy('year')->orderBy('year')->get();
+                    break;
+            }
+            return \App\Http\Resources\FeeResource::collection($results);
+        });
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function showTotalSends(Request $request)
     {
         $request->validate([
@@ -174,13 +234,13 @@ class ChartsController extends Controller
             switch($group_by)
             {
                 case 'date':
-                    $results = \App\Transaction::whereNotNull('processed_at')->selectRaw('DATE(confirmed_at) as date, COUNT(*) as count')->groupBy('date')->orderBy('date')->get();
+                    $results = \App\Transaction::selectRaw('DATE(confirmed_at) as date, COUNT(*) as count')->groupBy('date')->orderBy('date')->get();
                     break;
                 case 'month':
-                    $results = \App\Transaction::whereNotNull('processed_at')->selectRaw('YEAR(confirmed_at) as year, MONTH(confirmed_at) as month, COUNT(*) as count')->groupBy('month')->groupBy('year')->orderBy('year')->orderBy('month')->get();
+                    $results = \App\Transaction::selectRaw('YEAR(confirmed_at) as year, MONTH(confirmed_at) as month, COUNT(*) as count')->groupBy('month')->groupBy('year')->orderBy('year')->orderBy('month')->get();
                     break;
                 case 'year':
-                    $results = \App\Transaction::whereNotNull('processed_at')->selectRaw('YEAR(confirmed_at) as year, COUNT(*) as count')->groupBy('year')->orderBy('year')->get();
+                    $results = \App\Transaction::selectRaw('YEAR(confirmed_at) as year, COUNT(*) as count')->groupBy('year')->orderBy('year')->get();
                     break;
             }
             return \App\Http\Resources\CountResource::collection($results);
@@ -298,6 +358,20 @@ class ChartsController extends Controller
             $results = \App\Transaction::whereNotNull('processed_at')->whereType('burns')->selectRaw('DATE(confirmed_at) as date, AVG(quantity) as quantity')->groupBy('date')->orderBy('date')->get();
    
             return \App\Http\Resources\BurnResource::collection($results);
+        });
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showAverageBurnRate(Request $request)
+    {
+        return \Cache::remember('average_burn_rate', 1440, function() {
+            $results = \App\Burn::selectRaw('DATE(confirmed_at) as date, COUNT(*) as count, SUM(burned) as burned, SUM(earned) as earned')->groupBy('date')->orderBy('date')->get();
+   
+            return \App\Http\Resources\BurnRateResource::collection($results);
         });
     }
 

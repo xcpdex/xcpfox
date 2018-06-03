@@ -15,11 +15,12 @@ class CreateIssuancesTable extends Migration
     {
         Schema::create('issuances', function (Blueprint $table) {
             // Columns
-            $table->unsignedBigInteger('tx_index')->unique();
+            $table->unsignedBigInteger('tx_index');
             $table->string('tx_hash')->unique();
             $table->unsignedBigInteger('block_index')->index();
             $table->string('asset');
             $table->unsignedBigInteger('quantity');
+            $table->decimal('quantity_normalized', 27, 8)->default(0);
             $table->boolean('divisible');
             $table->string('source')->index();
             $table->string('issuer');
@@ -29,10 +30,12 @@ class CreateIssuancesTable extends Migration
             $table->decimal('call_price');
             $table->text('description');
             $table->unsignedBigInteger('fee_paid');
+            $table->unsignedBigInteger('fee_paid_usd')->default(0);
             $table->boolean('locked');
             $table->string('status')->index();
             $table->string('asset_longname')->nullable();
-            $table->timestamp('confirmed_at')->nullable();
+            $table->unsignedInteger('quality_score')->default(0)->index();
+            $table->timestamp('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('tx_index');

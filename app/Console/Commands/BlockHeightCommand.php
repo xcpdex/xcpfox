@@ -45,6 +45,8 @@ class BlockHeightCommand extends Command
         if($this->isNewBlockHeight())
         {
             $this->call('update:blocks');
+            // $this->call('update:blocks:next');
+            \Cache::tags(['block_flush'])->flush();
         }
     }
 

@@ -15,11 +15,11 @@ class CreateBetMatchesTable extends Migration
     {
         Schema::create('bet_matches', function (Blueprint $table) {
             // Columns
-            $table->string('id')->index();
-            $table->unsignedBigInteger('tx0_index');
+            $table->string('id');
+            $table->unsignedBigInteger('tx0_index')->index();
             $table->string('tx0_hash');
             $table->string('tx0_address')->index();
-            $table->unsignedBigInteger('tx1_index');
+            $table->unsignedBigInteger('tx1_index')->index();
             $table->string('tx1_hash');
             $table->string('tx1_address')->index();
             $table->unsignedBigInteger('tx0_bet_type');
@@ -30,16 +30,19 @@ class CreateBetMatchesTable extends Migration
             $table->decimal('target_value');
             $table->unsignedBigInteger('leverage');
             $table->unsignedBigInteger('forward_quantity');
+            $table->unsignedBigInteger('forward_quantity_usd')->default(0);
             $table->unsignedBigInteger('backward_quantity');
-            $table->unsignedBigInteger('tx0_block_index');
-            $table->unsignedBigInteger('tx1_block_index');
+            $table->unsignedBigInteger('backward_quantity_usd')->default(0);
+            $table->unsignedBigInteger('tx0_block_index')->index();
+            $table->unsignedBigInteger('tx1_block_index')->index();
             $table->unsignedBigInteger('block_index')->index();
             $table->unsignedBigInteger('tx0_expiration');
             $table->unsignedBigInteger('tx1_expiration');
             $table->unsignedBigInteger('match_expire_index');
             $table->unsignedBigInteger('fee_fraction_int');
             $table->string('status')->index();
-            $table->timestamp('confirmed_at')->nullable();
+            $table->unsignedInteger('quality_score')->default(0)->index();
+            $table->timestamp('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('id');

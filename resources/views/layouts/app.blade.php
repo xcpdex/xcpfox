@@ -11,35 +11,58 @@
     <title>@yield('title') &ndash; {{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css?123') }}" rel="stylesheet">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
-    @yield('header')
+@yield('header')
 </head>
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand" href="{{ url(route('home')) }}">
                     <img src="{{ asset('/images/logo-v1-large.png') }}" width="140" height="auto" alt="{{ config('app.name', 'Laravel') }}" />
                 </a>
-                <ul class="nav nav-pills float-right">
-                    <li class="nav-item d-none d-sm-inline">
-                        <a href="{{ url('/') }}" class="nav-link">
-                            <i class="fa fa-home"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url(route('charts.index')) }}" class="nav-link">
-                            <i class="fa fa-bar-chart"></i>
-                        </a>
-                    </li>
-                </ul>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item d-none d-md-inline">
+                            <a href="{{ url(route('home')) }}" class="nav-link">
+                                <i class="fa fa-home"></i>
+                                Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url(route('assets.index')) }}" class="nav-link">
+                                <i class="fa fa-list"></i>
+                                Assets
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url(route('blocks.index')) }}" class="nav-link">
+                                <i class="fa fa-cubes"></i>
+                                Blocks
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url(route('charts.index')) }}" class="nav-link">
+                                <i class="fa fa-bar-chart"></i>
+                                Charts
+                            </a>
+                        </li>
+                    </ul>
+                    <form class="form-inline d-none d-lg-inline">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </div>
             </div>
         </nav>
         <main class="py-4">
             @yield('content')
         </main>
-        <footer class="container mt-2 py-5 border-top">
+        <footer class="container mt-1 py-5 border-top">
             <div class="row">
                 <div class="col-12 col-md">
                     <a href="{{ url('/') }}">
@@ -86,5 +109,9 @@
             </div>
         </footer>
     </div>
+
+<!-- Scripts -->
+<script src="{{ asset('js/app.js') }}"></script>
+
 </body>
 </html>

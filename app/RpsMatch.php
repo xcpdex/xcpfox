@@ -15,7 +15,7 @@ class RpsMatch extends Model
      * @var array
      */
     protected $fillable = [
-        'block_index', 'id', 'match_expire_index', 'possible_moves', 'status', 'tx0_address', 'tx0_block_index', 'tx0_expiration', 'tx0_hash', 'tx0_index', 'tx0_move_random_hash', 'tx1_address', 'tx1_block_index', 'tx1_expiration', 'tx1_hash', 'tx1_index', 'tx1_move_random_hash', 'wager', 'confirmed_at',
+        'block_index', 'id', 'match_expire_index', 'possible_moves', 'status', 'tx0_address', 'tx0_block_index', 'tx0_expiration', 'tx0_hash', 'tx0_index', 'tx0_move_random_hash', 'tx1_address', 'tx1_block_index', 'tx1_expiration', 'tx1_hash', 'tx1_index', 'tx1_move_random_hash', 'wager', 'wager_usd', 'quality_score', 'confirmed_at',
     ];
 
     /**

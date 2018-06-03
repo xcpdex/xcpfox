@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PriceHistory extends Model
+class AssetHistory extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -12,7 +12,7 @@ class PriceHistory extends Model
      * @var array
      */
     protected $fillable = [
-        'ticker', 'price', 'timestamp', 'confirmed_at'
+        'asset', 'type', 'value', 'quality_score', 'timestamp', 'confirmed_at'
     ];
 
     /**

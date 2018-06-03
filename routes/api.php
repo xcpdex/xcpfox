@@ -13,9 +13,50 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/statistics', [
+    'as' => 'api.statistics.index',
+    'uses' => 'Api\StatisticsController@index',
+]);
+
+Route::get('/blocks', [
+    'as' => 'api.blocks.index',
+    'uses' => 'Api\BlocksController@index',
+]);
+
+Route::get('/messages', [
+    'as' => 'api.messages.index',
+    'uses' => 'Api\MessagesController@index',
+]);
+
+Route::get('/transactions', [
+    'as' => 'api.transactions.index',
+    'uses' => 'Api\TransactionsController@index',
+]);
+
+Route::get('/transactions/{tx_type}', [
+    'as' => 'api.transactions.show',
+    'uses' => 'Api\TransactionsController@show',
+]);
+
+Route::get('/addresses', [
+    'as' => 'api.addresses.index',
+    'uses' => 'Api\AddressesController@index',
+]);
+
+Route::get('/assets', [
+    'as' => 'api.assets.index',
+    'uses' => 'Api\AssetsController@index',
+]);
+
+Route::get('/charts/total-issuance', [
+    'as' => 'api.charts.total-issuance',
+    'uses' => 'Api\ChartsController@showTotalIssuance',
+]);
+
+Route::get('/charts/total-sent', [
+    'as' => 'api.charts.total-sent',
+    'uses' => 'Api\ChartsController@showTotalSent',
+]);
 
 Route::get('/charts/total-sends', [
     'as' => 'api.charts.total-sends',
@@ -65,6 +106,11 @@ Route::get('/charts/message-categories', [
 Route::get('/charts/average-burn', [
     'as' => 'api.charts.average-burn',
     'uses' => 'Api\ChartsController@showAverageBurn',
+]);
+
+Route::get('/charts/average-burn-rate', [
+    'as' => 'api.charts.average-burn-rate',
+    'uses' => 'Api\ChartsController@showAverageBurnRate',
 ]);
 
 Route::get('/charts/average-burn-usd', [
@@ -121,23 +167,3 @@ Route::get('/charts/txs-by-type', [
     'as' => 'api.charts.txs-by-type',
     'uses' => 'Api\ChartsController@showTxsByType',
 ]);
-
-Route::get('/blocks', function () {
-    return \App\Block::selectRaw('COUNT(*) as count, DATE(confirmed_at) as date, AVG(difficulty) as difficulty')->groupBy('date')->orderBy('date', 'asc')->get();
-});
-
-Route::get('/fees', function () {
-    return \App\Transaction::selectRaw('YEAR(confirmed_at) as year, MONTH(confirmed_at) as month, SUM(fee) as fees, SUM(fee_usd) as fees_usd')->groupBy('year')->groupBy('month')->orderBy('year')->orderBy('month')->get();
-});
-
-Route::get('/messages', function () {
-    return \App\Message::selectRaw('COUNT(*) as count, YEAR(confirmed_at) as year, MONTH(confirmed_at) as month')->groupBy('year')->groupBy('month')->orderBy('year')->orderBy('month')->get();
-});
-
-Route::get('/transactions', function () {
-    return \App\Transaction::selectRaw('COUNT(*) as count, YEAR(confirmed_at) as year, MONTH(confirmed_at) as month, AVG(fee) as fee, AVG(fee_usd) as fee_usd, AVG(size) as size, AVG(inputs) as inputs, AVG(outputs) as outputs')->groupBy('year')->groupBy('month')->orderBy('year')->orderBy('month')->get();
-});
-
-Route::get('/transactions/{type}', function ($type) {
-    return \App\Transaction::whereType($type)->selectRaw('COUNT(*) as count, YEAR(confirmed_at) as year, MONTH(confirmed_at) as month, AVG(fee) as fee, AVG(size) as size, AVG(inputs) as inputs, AVG(outputs) as outputs')->groupBy('year')->groupBy('month')->orderBy('year')->orderBy('month')->get();
-});

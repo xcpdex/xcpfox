@@ -15,7 +15,7 @@ class Issuance extends Model
      * @var array
      */
     protected $fillable = [
-        'asset', 'asset_longname', 'block_index', 'call_date', 'call_price', 'callable', 'description', 'divisible', 'fee_paid', 'issuer', 'locked', 'quantity', 'source', 'status', 'transfer', 'tx_hash', 'tx_index', 'confirmed_at',
+        'asset', 'asset_longname', 'block_index', 'call_date', 'call_price', 'callable', 'description', 'divisible', 'fee_paid', 'fee_paid_usd', 'issuer', 'locked', 'quantity', 'quantity_normalized', 'source', 'status', 'transfer', 'tx_hash', 'tx_index', 'quality_score', 'confirmed_at',
     ];
 
     /**
@@ -26,4 +26,33 @@ class Issuance extends Model
     protected $dates = [
         'confirmed_at',
     ];
+
+    /**
+     * The attributes that are appended.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'display_name',
+    ];
+
+    /**
+     * Display Name
+     *
+     * @return string
+     */
+    public function getDisplayNameAttribute()
+    {
+        return $this->asset_longname ? $this->asset_longname : $this->asset;
+    }
+
+    /**
+     * Asset Model
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function assetModel()
+    {
+        return $this->belongsTo(Asset::class, 'asset', 'asset_name');
+    }
 }

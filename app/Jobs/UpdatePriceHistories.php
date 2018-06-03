@@ -35,25 +35,38 @@ class UpdatePriceHistories implements ShouldQueue
         {
             $data = json_decode(file_get_contents('https://coincap.io/history/' . $this->ticker, true));
 
-            $last = \App\PriceHistory::whereTicker($this->ticker)->latest('confirmed_at')->first();
+            $this_ticker = $this->ticker;
+            if($this->ticker === 'DTB') $this_ticker = 'DATABITS';
+            if($this->ticker === 'BCY') $this_ticker = 'BITCRYSTALS';
+
+            $last = \App\AssetHistory::where('type', '=', 'price')
+                ->where('asset', '=', $this_ticker)
+                ->where('quality_score', '=', 1)
+                ->latest('confirmed_at')
+                ->first();
 
             foreach($data->price as $result)
             {
                 if($last && $last->timestamp > round($result[0] / 1000)) continue;
 
-                $this_ticker = $this->ticker;
-                if($this->ticker === 'DTB') $this_ticker = 'DATABITS';
-                if($this->ticker === 'BCY') $this_ticker = 'BITCRYSTALS';
+                $confirmed_at = \Carbon\Carbon::createFromTimestamp(round($result[0] / 1000))->toDateString();
 
-                $confirmed_at = \Carbon\Carbon::createFromTimestamp(round($result[0] / 1000), 'America/New_York')->toDateString();
-                if(\App\PriceHistory::whereTicker($this_ticker)->where('confirmed_at', 'like', $confirmed_at . '%')->count()) continue;
+                $price_exists = \App\AssetHistory::where('type', '=', 'price')
+                    ->where('asset', '=', $this_ticker)
+                    ->where('quality_score', '=', 1)
+                    ->where('confirmed_at', 'like', $confirmed_at . '%')
+                    ->exists();
 
-                \App\PriceHistory::firstOrCreate([
-                    'ticker' => $this_ticker,
-                    'price' => $result[1] * 100000000,
+                if($price_exists) continue;
+
+                \App\AssetHistory::firstOrCreate([
+                    'type' => 'price',
+                    'asset' => $this_ticker,
+                    'value' => $result[1] * 100000000,
                     'timestamp' => round($result[0] / 1000),
+                    'quality_score' => 1,
                 ],[
-                    'confirmed_at' => \Carbon\Carbon::createFromTimestamp(round($result[0] / 1000), 'America/New_York'),
+                    'confirmed_at' => \Carbon\Carbon::createFromTimestamp(round($result[0] / 1000)),
                 ]);
             }
         }

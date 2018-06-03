@@ -16,12 +16,12 @@ class CreateMessagesTable extends Migration
         Schema::create('messages', function (Blueprint $table) {
             // Columns
             $table->unsignedBigInteger('message_index');
-            $table->unsignedBigInteger('block_index');
+            $table->unsignedBigInteger('block_index')->index();
             $table->string('command');
             $table->string('category');
             $table->json('bindings');
             $table->unsignedBigInteger('timestamp');
-            $table->timestamp('confirmed_at')->nullable();
+            $table->timestamp('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('message_index');

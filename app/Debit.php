@@ -12,7 +12,7 @@ class Debit extends Model
      * @var array
      */
     protected $fillable = [
-        'action', 'address', 'asset', 'block_index', 'event', 'quantity', 'quantity_usd', 'confirmed_at',
+        'action', 'address', 'asset', 'block_index', 'event', 'quantity', 'quantity_usd', 'quality_score', 'confirmed_at',
     ];
 
     /**

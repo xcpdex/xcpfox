@@ -3,12 +3,9 @@
 @section('title', 'Counterparty Charts')
 
 @section('content')
-<div class="container">
-    <h1 class="my-4 text-center">Counterparty Charts</h1>
-    <div class="alert alert-warning" role="alert">
-        Under Construction &ndash; Some charts may take extra time to load.
-    </div>
-    <h3 class="text-center mt-5">Price Data</h3>
+<div class="container mt-1">
+    <h1 class="text-center">Counterparty Charts</h1>
+    <h3 class="text-center mt-4">Price Data</h3>
     <div class="row">
         <div class="col-md-4 mt-4">
             <div class="card text-center">
@@ -335,6 +332,22 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-4 mt-4">
+            <div class="card text-center">
+                <a href="{{ url(route('charts.average-burn-rate')) }}">
+                    <img class="card-img-top" src="{{ asset('/images/average-bitcoin-burn.png') }}" alt="Average Bitcoin Burn Rate Chart" />
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title font-weight-bold">
+                        <a href="{{ url(route('charts.average-burn-rate')) }}">
+                            Average Burn Rate
+                        </a>
+                    </h5>
+                    <p class="card-text">Average bitcoin rate received during the initial burn offering (January 2014.)</p>
+                    <a href="{{ url(route('charts.average-burn-rate')) }}" class="btn btn-primary">View Chart</a>
+                </div>
+            </div>
+        </div>
     </div>
     <h3 class="text-center mt-5">Asset Data</h3>
     <div class="row">
@@ -492,6 +505,5 @@
             </div>
         </div>
     </div>
-    <p class="text-center mt-5 lead">Interested in learning more about Counterparty? Join our <a href="https://t.me/xcpdex" target="_blank">Telegram Chat</a>!</p>
 </div>
 @endsection

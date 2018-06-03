@@ -13,6 +13,8 @@ class AssetsTableSeeder extends Seeder
     {
         \App\Asset::create([
             'asset_id' => 0,
+            'type' => 'asset',
+            'divisible' => 1,
             'asset_name' => 'BTC',
             'block_index' => 0,
             'asset_longname' => null,
@@ -21,6 +23,8 @@ class AssetsTableSeeder extends Seeder
 
         \App\Asset::create([
             'asset_id' => 1,
+            'type' => 'asset',
+            'divisible' => 1,
             'asset_name' => 'XCP',
             'block_index' => 278319,
             'asset_longname' => null,

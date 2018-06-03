@@ -21,6 +21,78 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function showTotalIssuance(Request $request)
+    {
+        $request->validate([
+            'chart' => 'sometimes|in:area,line,column',
+            'group_by' => 'sometimes|in:date,month,year'
+        ]);
+
+        $chart = $request->input('chart', 'area');
+        $group_by = $request->input('group_by', 'date');
+
+        return view('charts.total-issuance', compact('chart', 'group_by'));        
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showCumulativeIssuance(Request $request)
+    {
+        $request->validate([
+            'chart' => 'sometimes|in:area,line,column',
+            'group_by' => 'sometimes|in:date,month,year'
+        ]);
+
+        $chart = $request->input('chart', 'area');
+        $group_by = $request->input('group_by', 'date');
+
+        return view('charts.cumulative-issuance', compact('chart', 'group_by'));        
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showTotalSent(Request $request)
+    {
+        $request->validate([
+            'chart' => 'sometimes|in:area,line,column',
+            'group_by' => 'sometimes|in:date,month,year'
+        ]);
+
+        $chart = $request->input('chart', 'area');
+        $group_by = $request->input('group_by', 'date');
+
+        return view('charts.total-sent', compact('chart', 'group_by'));        
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showCumulativeSent(Request $request)
+    {
+        $request->validate([
+            'chart' => 'sometimes|in:area,line,column',
+            'group_by' => 'sometimes|in:date,month,year'
+        ]);
+
+        $chart = $request->input('chart', 'area');
+        $group_by = $request->input('group_by', 'date');
+
+        return view('charts.cumulative-sent', compact('chart', 'group_by'));        
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function showTotalSends(Request $request)
     {
         $request->validate([
@@ -334,6 +406,22 @@ class ChartsController extends Controller
         $group_by = $request->input('group_by', 'date');
 
         return view('charts.txs-by-type', compact('chart', 'group_by'));    
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showAverageBurnRate(Request $request)
+    {
+        $request->validate([
+            'chart' => 'sometimes|in:area,line,column',
+        ]);
+
+        $chart = $request->input('chart', 'area');
+
+        return view('charts.average-burn-rate', compact('chart'));        
     }
 
     /**

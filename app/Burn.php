@@ -15,7 +15,7 @@ class Burn extends Model
      * @var array
      */
     protected $fillable = [
-        'block_index', 'burned', 'earned', 'source', 'status', 'tx_hash', 'tx_index', 'confirmed_at',
+        'block_index', 'burned', 'burned_usd', 'earned', 'earned_usd', 'source', 'status', 'tx_hash', 'tx_index', 'quality_score', 'confirmed_at',
     ];
 
     /**
@@ -26,4 +26,33 @@ class Burn extends Model
     protected $dates = [
         'confirmed_at',
     ];
+
+    /**
+     * The attributes that are appended.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'burned_normalized', 'earned_normalized',
+    ];
+
+    /**
+     * Burned Normalized
+     *
+     * @return string
+     */
+    public function getBurnedNormalizedAttribute()
+    {
+        return fromSatoshi($this->burned);
+    }
+
+    /**
+     * Earned Normalized
+     *
+     * @return string
+     */
+    public function getEarnedNormalizedAttribute()
+    {
+        return fromSatoshi($this->earned);
+    }
 }

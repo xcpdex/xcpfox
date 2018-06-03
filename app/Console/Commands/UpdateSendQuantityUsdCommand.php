@@ -11,7 +11,7 @@ class UpdateSendQuantityUsdCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'update:sends:usd';
+    protected $signature = 'update:sends:usd {quality_score}';
 
     /**
      * The console command description.
@@ -37,18 +37,33 @@ class UpdateSendQuantityUsdCommand extends Command
      */
     public function handle()
     {
-        $price_histories = \App\PriceHistory::orderBy('confirmed_at', 'desc')->get();
+        // Set Quality Score
+        $quality_score = $this->argument('quality_score');
 
-        foreach($price_histories as $historical)
+        // Get Asset Tickers
+        $tickers = $this->getPriceHistoryTickers($quality_score);
+
+        // Estimate Send USD
+        foreach($tickers as $ticker)
         {
-            $sends = \App\Send::whereAsset($historical->ticker)->where('quantity', '>', 0)->whereQuantityUsd(0)->where('confirmed_at', 'like', $historical->confirmed_at->toDateString('America/New_York') . '%')->get();
+            \App\Jobs\UpdateSendQuantityUsd::dispatch($ticker->ticker, $quality_score);
+        }
+    }
 
-            foreach($sends as $send)
-            {
-                $send->update([
-                    'quantity_usd' => fromSatoshi($historical->price * $send->quantity),
-                ]);
-            }
+    private function getPriceHistoryTickers($quality_score)
+    {
+        if($quality_score < 4)
+        {
+            return \App\PriceHistory::where('quality_score', '=', $quality_score)
+                ->select('ticker')
+                ->groupBy('ticker')
+                ->get();
+        }
+        else
+        {
+            return \App\PriceHistory::select('ticker')
+                ->groupBy('ticker')
+                ->get();
         }
     }
 }

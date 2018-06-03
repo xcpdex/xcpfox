@@ -15,15 +15,16 @@ class CreateBTCPaysTable extends Migration
     {
         Schema::create('btcpays', function (Blueprint $table) {
             // Columns
-            $table->unsignedBigInteger('tx_index')->unique();
+            $table->unsignedBigInteger('tx_index');
             $table->string('tx_hash')->unique();
             $table->unsignedBigInteger('block_index')->index();
             $table->string('source')->index();
             $table->string('destination')->index();
             $table->unsignedBigInteger('btc_amount');
+            $table->unsignedBigInteger('btc_amount_usd')->default(0);
             $table->string('order_match_id');
             $table->string('status');
-            $table->timestamp('confirmed_at')->nullable();
+            $table->timestamp('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('tx_index');

@@ -15,11 +15,11 @@ class CreateOrderMatchesTable extends Migration
     {
         Schema::create('order_matches', function (Blueprint $table) {
             // Columns
-            $table->string('id')->index();
-            $table->unsignedBigInteger('tx0_index');
+            $table->string('id');
+            $table->unsignedBigInteger('tx0_index')->index();
             $table->string('tx0_hash');
             $table->string('tx0_address')->index();
-            $table->unsignedBigInteger('tx1_index');
+            $table->unsignedBigInteger('tx1_index')->index();
             $table->string('tx1_hash');
             $table->string('tx1_address')->index();
             $table->string('forward_asset');
@@ -35,8 +35,10 @@ class CreateOrderMatchesTable extends Migration
             $table->unsignedBigInteger('tx1_expiration');
             $table->unsignedBigInteger('match_expire_index');
             $table->bigInteger('fee_paid');
+            $table->bigInteger('fee_paid_usd')->default(0);
             $table->string('status')->index();
-            $table->timestamp('confirmed_at')->nullable();
+            $table->unsignedInteger('quality_score')->default(0)->index();
+            $table->timestamp('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('id');

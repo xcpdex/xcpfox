@@ -15,11 +15,11 @@ class CreateBetExpirationsTable extends Migration
     {
         Schema::create('bet_expirations', function (Blueprint $table) {
             // Columns
-            $table->unsignedBigInteger('bet_index')->unique();
+            $table->unsignedBigInteger('bet_index');
+            $table->unsignedBigInteger('block_index')->index();
             $table->string('bet_hash')->unique();
             $table->string('source')->index();
-            $table->unsignedBigInteger('block_index')->index();
-            $table->timestamp('confirmed_at')->nullable();
+            $table->timestamp('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('bet_index');

@@ -12,7 +12,7 @@ class Balance extends Model
      * @var array
      */
     protected $fillable = [
-        'address', 'asset', 'quantity', 'quantity_usd',
+        'address', 'asset', 'quantity', 'quantity_usd', 'message_index', 'block_index', 'quality_score', 'current', 'confirmed_at',
     ];
 
     /**
@@ -51,42 +51,50 @@ class Balance extends Model
      *
      * @param  arr  $message
      * @param  arr  $bindings
-     * @param  str  $debit_or_credit
      * @return \App\Balance
      */
-    public static function updateOrCreateBalance($message, $bindings, $debit_or_credit)
+    public static function updateOrCreateBalance($message, $bindings)
     {
         try
         {
-            // Current Balance
-            $balance = static::whereAsset($bindings['asset'])
-                ->whereAddress($bindings['address'])
+            // Last Balance
+            $last_balance = static::where('address', '=', $bindings['address'])
+                ->where('asset', '=', $bindings['asset'])
+                ->where('current', '=', 1)
+                ->orderBy('message_index', 'desc')
                 ->first();
 
-            // Current Balance +/- Change
-            if($balance && $debit_or_credit === 'credit')
+            $quantity = $bindings['quantity'];
+
+            if($last_balance && $message['category'] === 'credits')
             {
-                $quantity = bcadd($balance->quantity, $bindings['quantity']);
-            }
-            elseif($balance && $debit_or_credit === 'debit')
-            {
-                $quantity = bcsub($balance->quantity, $bindings['quantity']);
-            }
-            else
-            {
-                $quantity = $bindings['quantity'];
+                $quantity = $last_balance->quantity + $quantity;
             }
 
-            return static::updateOrCreate([
-               'asset' => $bindings['asset'],
-               'address' => $bindings['address'],
+            if($last_balance && $message['category'] === 'debits')
+            {
+                $quantity = $last_balance->quantity - $quantity;
+            }
+
+            if($quantity < 0) $quantity = 0;
+
+            static::firstOrCreate([
+                'address' => $bindings['address'],
+                'asset' => $bindings['asset'],
+                'block_index' => $bindings['block_index'],
+                'message_index' => $message['message_index'],
             ],[
+                'current' => 1,
                 'quantity' => $quantity,
+                'quantity_usd' => 0,
+                'confirmed_at' => $bindings['confirmed_at'],
             ]);
+
+            if($last_balance) $last_balance->update(['current' => 0]);
         }
         catch(\Exception $e)
         {
-            \Storage::append('failed.log', 'Balance: ' . $message['message_index'] . ' ' . $debit_or_credit . ' ' . $quantity . ' ' . serialize($e->getMessage()));
+            \Storage::append('failed.log', 'Balance: ' . serialize($e->getMessage()));
         }
     }
 }

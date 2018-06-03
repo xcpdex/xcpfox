@@ -37,6 +37,35 @@ class Message extends Model
     ];
 
     /**
+     * The attributes that are appended.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'url', 'block_url',
+    ];
+
+    /**
+     * URL
+     *
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+        return url(route('messages.show', ['message_index' => $this->message_index]));
+    }
+
+    /**
+     * Block URL
+     *
+     * @return string
+     */
+    public function getBlockUrlAttribute()
+    {
+        return url(route('blocks.show', ['block_hash' => $this->block_index]));
+    }
+
+    /**
      * Block
      * 
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -46,19 +75,28 @@ class Message extends Model
         return $this->belongsTo(Block::class, 'block_index', 'block_index');
     }
 
+    /**
+     * Transaction
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function transaction()
+    {
+        return $this->hasOne(Transaction::class, 'message_index', 'message_index');
+    }
 
     /**
-     * Update or Create Message
+     * First or Create Message
      *
      * @param  arr  $message
      * @param  arr  $bindings
      * @return \App\Asset
      */
-    public static function updateOrCreateMessage($message, $block_time)
+    public static function firstOrCreateMessage($message, $block_time)
     {
         try
         {
-            return static::updateOrCreate([
+            return static::firstOrCreate([
                 'message_index' => $message['message_index'],
             ],[
                 'block_index' => $message['block_index'],

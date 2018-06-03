@@ -15,7 +15,7 @@ class Asset extends Model
      * @var array
      */
     protected $fillable = [
-        'asset_id', 'asset_name', 'asset_longname', 'description', 'issuance', 'issuance_normalized', 'divisible', 'locked', 'block_index', 'confirmed_at',
+        'asset_id', 'asset_name', 'asset_longname', 'type', 'description', 'issuance', 'issuance_normalized', 'divisible', 'locked', 'block_index', 'message_index', 'confirmed_at',
     ];
 
     /**
@@ -26,6 +26,66 @@ class Asset extends Model
     protected $dates = [
         'confirmed_at',
     ];
+
+    /**
+     * The attributes that are appended.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'url', 'block_url',
+        'display_name',
+    ];
+
+    /**
+     * URL
+     *
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+        return url(route('assets.show', ['asset' => $this->display_name]));
+    }
+
+    /**
+     * Block URL
+     *
+     * @return string
+     */
+    public function getBlockUrlAttribute()
+    {
+        return url(route('blocks.show', ['block_hash' => $this->block_index]));
+    }
+
+    /**
+     * Display Name
+     *
+     * @return string
+     */
+    public function getDisplayNameAttribute()
+    {
+        return $this->asset_longname ? $this->asset_longname : $this->asset_name;
+    }
+
+    /**
+     * Balances
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function balances()
+    {
+        return $this->hasMany(Balance::class, 'asset', 'asset_name')->whereCurrent(1)->where('quantity', '>', 0);
+    }
+
+    /**
+     * Sends
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sends()
+    {
+        return $this->hasMany(Send::class, 'asset', 'asset_name');
+    }
 
     /**
      * Update or Create Asset
@@ -48,6 +108,8 @@ class Asset extends Model
                 {
                     return static::createAsset($message, $bindings);
                 }
+
+                \Cache::tags(['issuance_flush'])->flush();
             }
         }
         catch(\Exception $e)
@@ -67,9 +129,12 @@ class Asset extends Model
     {
         try
         {
+            $type = static::getAssetType($bindings);
+
             return static::firstOrCreate([
                 'asset_name' => $bindings['asset'],
             ],[
+                'type' => $type,
                 'asset_id' => getAssetId($bindings['asset']),
                 'asset_longname' => $bindings['asset_longname'],
                 'description' => $bindings['description'],
@@ -78,6 +143,7 @@ class Asset extends Model
                 'divisible' => $bindings['divisible'],
                 'locked' => $bindings['locked'],
                 'block_index' => $bindings['block_index'],
+                'message_index' => $message['message_index'],
                 'confirmed_at' => $bindings['confirmed_at'],
             ]);
         }
@@ -121,5 +187,19 @@ class Asset extends Model
         {
             \Storage::append('failed.log', 'Asset: ' . $bindings['asset'] . ' ' . $message['message_index'] . ' ' . serialize($e->getMessage()));
         }
+    }
+
+    public static function getAssetType($bindings)
+    {
+        if($bindings['asset_longname'])
+        {
+            return 'subasset';
+        }
+        elseif($bindings['asset'][0] === 'A')
+        {
+            return 'numeric';
+        }
+
+        return 'asset';
     }
 }

@@ -15,10 +15,12 @@ class CreateAddressesTable extends Migration
     {
         Schema::create('addresses', function (Blueprint $table) {
             // Columns
-            $table->string('address')->unique();
+            $table->string('address');
+            $table->string('type')->index();
             $table->unsignedBigInteger('options');
             $table->unsignedBigInteger('block_index')->index();
-            $table->timestamp('confirmed_at')->nullable();
+            $table->boolean('burn')->default(0);
+            $table->timestamp('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('address');

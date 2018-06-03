@@ -78,6 +78,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 10,
                 'tries' => 3,
+                'timeout' => 3600,
             ],
         ],
 
@@ -88,6 +89,7 @@ return [
                 'balance' => 'auto',
                 'processes' => 20,
                 'tries' => 3,
+                'timeout' => 3600,
             ],
         ],
     ],

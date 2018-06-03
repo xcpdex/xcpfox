@@ -15,6 +15,66 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/home', [
+    'as' => 'home',
+    'uses' => 'HomeController@index',
+]);
+
+Route::get('/blocks', [
+    'as' => 'blocks.index',
+    'uses' => 'BlocksController@index',
+]);
+
+Route::get('/block/{block}', [
+    'as' => 'blocks.show',
+    'uses' => 'BlocksController@show',
+]);
+
+Route::get('/messages', [
+    'as' => 'messages.index',
+    'uses' => 'MessagesController@index',
+]);
+
+Route::get('/message/{message_index}', [
+    'as' => 'messages.show',
+    'uses' => 'MessagesController@show',
+]);
+
+Route::get('/transactions', [
+    'as' => 'transactions.index',
+    'uses' => 'TransactionsController@index',
+]);
+
+Route::get('/tx/{transaction}', [
+    'as' => 'transactions.show',
+    'uses' => 'TransactionsController@show',
+]);
+
+Route::get('/addresses', [
+    'as' => 'addresses.index',
+    'uses' => 'AddressesController@index',
+]);
+
+Route::get('/address/{address}', [
+    'as' => 'addresses.show',
+    'uses' => 'AddressesController@show',
+]);
+
+Route::get('/assets', [
+    'as' => 'assets.index',
+    'uses' => 'AssetsController@index',
+]);
+
+Route::get('/asset/{asset}', [
+    'as' => 'assets.show',
+    'uses' => 'AssetsController@show',
+]);
+
+Route::get('/sends', [
+    'as' => 'sends.index',
+    'uses' => 'SendsController@index',
+]);
+
 Route::get('/chart', function () {
     return view('chart');
 });
@@ -22,6 +82,16 @@ Route::get('/chart', function () {
 Route::get('/charts', [
     'as' => 'charts.index',
     'uses' => 'ChartsController@index',
+]);
+
+Route::get('/charts/cumulative-issuance', [
+    'as' => 'charts.cumulative-issuance',
+    'uses' => 'ChartsController@showCumulativeIssuance',
+]);
+
+Route::get('/charts/total-issuance', [
+    'as' => 'charts.total-issuance',
+    'uses' => 'ChartsController@showTotalIssuance',
 ]);
 
 Route::get('/charts/total-sends', [
@@ -37,6 +107,16 @@ Route::get('/charts/cumulative-sends', [
 Route::get('/charts/average-order-expiration', [
     'as' => 'charts.average-order-expiration',
     'uses' => 'ChartsController@showAverageOrderExpiration',
+]);
+
+Route::get('/charts/total-sent', [
+    'as' => 'charts.total-sent',
+    'uses' => 'ChartsController@showTotalSent',
+]);
+
+Route::get('/charts/cumulative-sent', [
+    'as' => 'charts.cumulative-sent',
+    'uses' => 'ChartsController@showCumulativeSent',
 ]);
 
 Route::get('/charts/total-orders', [
@@ -119,6 +199,11 @@ Route::get('/charts/txs-by-type', [
     'uses' => 'ChartsController@showTxsByType',
 ]);
 
+Route::get('/charts/average-burn-rate', [
+    'as' => 'charts.average-burn-rate',
+    'uses' => 'ChartsController@showAverageBurnRate',
+]);
+
 Route::get('/charts/average-burn', [
     'as' => 'charts.average-burn',
     'uses' => 'ChartsController@showAverageBurn',
@@ -198,21 +283,3 @@ Route::get('/charts/average-size', [
     'as' => 'charts.average-size',
     'uses' => 'ChartsController@showAverageSize',
 ]);
-
-Route::get('/raw', function () {
-    return \App\Transaction::first()->raw;
-});
-
-Route::get('/json', function () {
-    $counterparty = new \JsonRPC\Client(env('CP_API'));
-    $counterparty->authentication(env('CP_USER'), env('CP_PASS'));
-
-    $data = $counterparty->execute('get_blocks', ['block_indexes' => [500006]]);
-
-    $messages = $data[0]['_messages'];
-    usort($messages, function ($message1, $message2) {
-        return $message1['command'] <=> $message2['command'];
-    });
-
-    return $messages;
-});

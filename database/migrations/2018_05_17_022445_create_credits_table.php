@@ -17,13 +17,14 @@ class CreateCreditsTable extends Migration
             // Columns
             $table->increments('id');
             $table->unsignedBigInteger('block_index')->index();
-            $table->string('address')->index();
+            $table->string('address')->nullable()->index();
             $table->string('asset')->index();
             $table->unsignedBigInteger('quantity');
             $table->unsignedBigInteger('quantity_usd')->default(0);
             $table->string('action');
             $table->string('event');
-            $table->timestamp('confirmed_at')->nullable();
+            $table->unsignedInteger('quality_score')->default(0)->index();
+            $table->timestamp('confirmed_at')->index();
             $table->timestamps();
         });
     }

@@ -36,20 +36,34 @@ class UpdateBlocks implements ShouldQueue
      */
     public function handle()
     {
-        // Get Blocks
-        $blocks = $this->getBlocks($this->first_block, $this->last_block);
+        try
+        {
+            // Get Blocks
+            $blocks = $this->getBlocks($this->first_block, $this->last_block);
+        }
+        catch(\Exception $e)
+        {
+            \Storage::append('failed.log', 'API Failed: [' . $this->first_block . ', ' . $this->last_block . '] ' . serialize($e->getMessage()));
+            return false;
+        }
 
         foreach($blocks as $block_data)
         {
             // Create Block
-            \App\Block::updateOrCreateBlock($block_data);
+            $block = \App\Block::firstOrCreateBlock($block_data);
+
+            if(! $block->processed_at)
+            {
+                // Turn Off While Syncing
+                \App\Jobs\UpdateBlock::dispatch($block);
+            }
 
             // Add Messages
             $this->processMessages($block_data['_messages'], $block_data['block_time']);
         }
 
-        // Useful When Syncing
-        exec('php /var/www/xcpfox.com/artisan update:blocks');
+        // Turn On While Syncing
+        // exec('php /var/www/xcpfox.com/artisan update:blocks');
     }
 
     /**
@@ -79,7 +93,7 @@ class UpdateBlocks implements ShouldQueue
         foreach($messages as $message)
         {
             // Save Message
-            \App\Message::updateOrCreateMessage($message, $block_time);
+            \App\Message::firstOrCreateMessage($message, $block_time);
 
             // Get Bindings
             $bindings = $this->getBindings($message, $block_time);
@@ -107,7 +121,7 @@ class UpdateBlocks implements ShouldQueue
     {
         $bindings = get_object_vars(json_decode($message['bindings']));
 
-        return array_merge($bindings, ['confirmed_at' => \Carbon\Carbon::createFromTimestamp($block_time, 'America/New_York')]);
+        return array_merge($bindings, ['confirmed_at' => \Carbon\Carbon::createFromTimestamp($block_time)]);
     }
 
     /**
@@ -130,24 +144,42 @@ class UpdateBlocks implements ShouldQueue
     private function createModel($message, $bindings)
     {
         // Record Transaction Data
-        $this->updateOrCreateTransaction($message, $bindings);
+        $this->firstOrCreateTransaction($message, $bindings);
 
         // Only Save Valid Messages
         if($this->guardAgainstInvalidMessages($message, $bindings))
         {
-            // Store Any New Addresses
-            \App\Address::firstOrCreateAddress($message, $bindings);
+            // Addresses/Assets/Balances/Replace
+            $this->handleAddressesAssetsBalancesReplace($message, $bindings);
 
-            // Assets/Balances/Replace
-            $this->handleAssetsBalancesReplace($message, $bindings);
+            // Lookup Keys for Model and Bindings
+            $lookup = $this->getCreateLookupKeys($message, $bindings);
+
+            if($lookup)
+            {
+                // Save As Variables Before Unsetting
+                $key = $lookup['model_key'];
+                $value = $bindings[$lookup['bindings_key']];
+
+                // Unset the Lookup Binding Value Used
+                unset($bindings[$lookup['bindings_key']]);
+            }
 
             // Get Model Name From Category Type
             $model_name = $this->getModelName($message);
 
             try
             {
-                // Oo la la
-                $model_name::firstOrCreate($bindings);
+                if($lookup)
+                {
+                    // Oo la la
+                    $model_name::firstOrCreate([$key => $value], $bindings);
+                }
+                else
+                {
+                    // Oo la la
+                    $model_name::firstOrCreate($bindings);
+                }
             }
             catch(\Exception $e)
             {
@@ -163,7 +195,7 @@ class UpdateBlocks implements ShouldQueue
     private function updateModel($message, $bindings)
     {
         // Lookup Keys for Model and Bindings
-        $lookup = $this->getLookupKeys($message, $bindings);
+        $lookup = $this->getUpdateLookupKeys($message, $bindings);
 
         // Save As Variables Before Unsetting
         $key = $lookup['model_key'];
@@ -187,20 +219,20 @@ class UpdateBlocks implements ShouldQueue
     }
 
     /**
-     * Update or Create Transaction
+     * First or Create Transaction
      * Transaction is a subset of messages.
      */
-    private function updateOrCreateTransaction($message, $bindings)
+    private function firstOrCreateTransaction($message, $bindings)
     {
         // Not every message is a tx
         if(isset($bindings['tx_index']))
         {
-            $transaction = \App\Transaction::updateOrCreateTransaction($message, $bindings);
+            $transaction = \App\Transaction::firstOrCreateTransaction($message, $bindings);
 
             if($transaction->processed_at === null)
             {
                 // Turn Off While Syncing
-                // \App\Jobs\UpdateTransaction::dispatch($transaction);
+                \App\Jobs\UpdateTransaction::dispatch($transaction);
             }
         }
     }
@@ -209,15 +241,17 @@ class UpdateBlocks implements ShouldQueue
      * Handle Assets, Balances, Replace
      * This is data that is not always present.
      */
-    private function handleAssetsBalancesReplace($message, $bindings)
+    private function handleAddressesAssetsBalancesReplace($message, $bindings)
     {
+        \App\Address::firstOrCreateAddress($message, $bindings);
+
         if($message['category'] === 'issuances')
         {
             \App\Asset::updateOrCreateAsset($message, $bindings);
         }
         elseif($message['category'] === 'credits' || $message['category'] === 'debits')
         {
-            \App\Balance::updateOrCreateBalance($message, $bindings, str_singular($message['category']));
+            \App\Balance::updateOrCreateBalance($message, $bindings);
         }
         elseif($message['category'] === 'replace')
         {
@@ -227,9 +261,46 @@ class UpdateBlocks implements ShouldQueue
 
     /**
      * Determine Keys
+     * So we can use re-use create logic.
+     */
+    private function getCreateLookupKeys($message, $bindings)
+    {
+        // Symmetric Keys
+        if(in_array($message['category'], ['bets', 'broadcasts', 'btcpays', 'burns', 'cancels', 'destructions', 'dividends', 'issuances', 'orders', 'rps', 'rpsresolves', 'sends']))
+        {
+            $model_key = $bindings_key = 'tx_index';
+        }
+        elseif($message['category'] === 'order_matches' || $message['category'] === 'bet_matches' || $message['category'] === 'rps_matches')
+        {
+            $model_key = $bindings_key = 'id';
+        }
+        elseif($message['category'] === 'order_expirations' || $message['category'] === 'bet_expirations' || $message['category'] === 'rps_expirations')
+        {
+            $model_key = $bindings_key = str_replace('_expirations', '_index', $message['category']);
+        }
+        elseif($message['category'] === 'order_match_expirations' || $message['category'] === 'bet_match_expirations' || $message['category'] === 'rps_match_expirations')
+        {
+            $model_key = $bindings_key = str_replace('_expirations', '_id', $message['category']);
+        }
+        elseif($message['category'] === 'bet_match_resolutions')
+        {
+            $model_key = $bindings_key = str_replace('_resolutions', '_id', $message['category']);
+        }
+
+        // Credits, Debits, Replace
+        if(! isset($model_key)) return false;
+
+        return [
+            'model_key' => $model_key,
+            'bindings_key' => $bindings_key,
+        ];
+    }
+
+    /**
+     * Determine Keys
      * So we can use re-use update logic.
      */
-    private function getLookupKeys($message, $bindings)
+    private function getUpdateLookupKeys($message, $bindings)
     {
         // Symmetric Keys
         if($message['category'] === 'bets' || $message['category'] === 'orders')
@@ -266,7 +337,7 @@ class UpdateBlocks implements ShouldQueue
 
     private function guardAgainstInvalidMessages($message, $bindings)
     {
-        if(isset($bindings['status']) && strpos($bindings['status'], 'invalid') === true)
+        if(isset($bindings['status']) && substr(trim($bindings['status']), 0, 7) === 'invalid')
         {
             return false;
         }

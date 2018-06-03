@@ -72,9 +72,6 @@
                         <img src="{{ asset('/images/logo-v1-large.png') }}" width="100%" height="auto" alt="{{ config('app.name', 'Laravel') }}" style="max-width: 500px" />
                     </a>
                 </div>
-                <div class="links">
-                    <a href="{{ url(route('charts.index')) }}" class="btn btn-primary"><i class="fa fa-bar-chart"></i> Chart Data</a>
-                </div>
             </div>
         </div>
     </body>

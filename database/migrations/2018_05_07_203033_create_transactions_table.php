@@ -15,24 +15,26 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             // Columns
-            $table->unsignedBigInteger('block_index');
-            $table->unsignedBigInteger('tx_index')->unique();
+            $table->unsignedBigInteger('tx_index');
+            $table->unsignedBigInteger('block_index')->index();
+            $table->unsignedBigInteger('message_index')->unique()->nullable();
             $table->string('tx_hash')->unique();
             $table->string('type');
             $table->string('source');
             $table->string('destination')->nullable();
-            $table->integer('quantity')->nullable()->unsigned()->default(0);
+            $table->unsignedInteger('quantity')->default(0);
             $table->unsignedBigInteger('quantity_usd')->default(0);
-            $table->integer('fee')->unsigned()->default(0);
+            $table->unsignedInteger('fee')->default(0);
             $table->unsignedBigInteger('fee_usd')->default(0);
-            $table->integer('size')->unsigned()->default(0);
-            $table->integer('vsize')->unsigned()->default(0);
-            $table->integer('inputs')->unsigned()->default(0);
-            $table->integer('outputs')->unsigned()->default(0);
+            $table->unsignedInteger('size')->default(0);
+            $table->unsignedInteger('vsize')->default(0);
+            $table->unsignedInteger('inputs')->default(0);
+            $table->unsignedInteger('outputs')->default(0);
             $table->json('raw')->nullable();
             $table->boolean('valid');
+            $table->unsignedInteger('quality_score')->default(0)->index();
             $table->unsignedBigInteger('timestamp');
-            $table->timestamp('confirmed_at')->nullable();
+            $table->timestamp('confirmed_at')->index();
             $table->timestamp('processed_at')->nullable();
             $table->timestamps();
             // Indexes

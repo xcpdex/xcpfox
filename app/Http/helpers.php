@@ -10,6 +10,38 @@ function toSatoshi($decimal)
     return bcmul(sprintf("%.8f", (float)$decimal), 100000000, 0);
 }
 
+function getBetType($type)
+{
+    switch($type)
+    {
+        case 0:
+            return 'Bullish CFD';
+        case 1:
+            return 'Bearish CFD';
+        case 2:
+            return 'Equal';
+        case 3:
+            return 'Not Equal';
+    }
+}
+
+function getTitleFromType($type)
+{
+    if($type === 'rps') return 'RPS';
+    if($type === 'btcpays') return 'BTCPay';
+    if($type === 'rpsresolves') return 'RPS Resolve';
+
+    return str_replace('Rps ', 'RPS ', ucfirst(title_case(str_singular($type))));
+}
+
+function getModelNameFromType($type)
+{
+    if($type === 'rps') return '\\App\\Rps';
+    if($type === 'rpsresolves') return '\\App\\Rpsresolve';
+
+    return '\\App\\' . ucfirst(camel_case(str_singular($type)));
+}
+
 function getAssetId($asset_name)
 {
     if($asset_name === 'BTC')

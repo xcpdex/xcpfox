@@ -15,7 +15,7 @@ class Send extends Model
      * @var array
      */
     protected $fillable = [
-        'asset', 'block_index', 'destination', 'quantity', 'quantity_usd', 'source', 'status', 'memo', 'burn', 'tx_hash', 'tx_index', 'confirmed_at',
+        'asset', 'block_index', 'destination', 'quantity', 'quantity_usd', 'source', 'status', 'memo', 'tx_hash', 'tx_index', 'quality_score', 'confirmed_at',
     ];
 
     /**
@@ -26,4 +26,43 @@ class Send extends Model
     protected $dates = [
         'confirmed_at',
     ];
+
+    /**
+     * The attributes that are appended.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'quantity_normalized', 'quantity_usd_normalized',
+    ];
+
+    /**
+     * Quantity Normalized
+     *
+     * @return string
+     */
+    public function getQuantityNormalizedAttribute()
+    {
+        return $this->assetModel->divisible ? fromSatoshi($this->quantity) : sprintf("%.8f", $this->quantity);
+    }
+
+    /**
+     * Quantity USD Normalized
+     *
+     * @return string
+     */
+    public function getQuantityUsdNormalizedAttribute()
+    {
+        return $this->assetModel->divisible ? fromSatoshi($this->quantity_usd) : $this->quantity_usd;
+    }
+
+    /**
+     * Asset
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function assetModel()
+    {
+        return $this->belongsTo(Asset::class, 'asset', 'asset_name');
+    }
 }

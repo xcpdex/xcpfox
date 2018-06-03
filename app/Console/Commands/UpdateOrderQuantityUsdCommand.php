@@ -37,28 +37,46 @@ class UpdateOrderQuantityUsdCommand extends Command
      */
     public function handle()
     {
-        $price_histories = \App\PriceHistory::get();
+        $assets = [];
 
-        foreach($price_histories as $historical)
+        $tickers = \App\PriceHistory::select('ticker')->groupBy('ticker')->get();
+
+        foreach($tickers as $ticker)
         {
-            $orders = \App\Order::whereGetAsset($historical->ticker)->where('get_quantity', '>', 0)->whereGetQuantityUsd(0)->where('confirmed_at', 'like', $historical->confirmed_at->toDateString('America/New_York') . '%')->get();
+            $assets[] = $ticker->ticker;
+        }
+
+        foreach(['get', 'give'] as $key)
+        {
+            $key_asset = "{$key}_asset";
+            $key_quantity = "{$key}_quantity";
+            $key_quantity_usd = "{$key}_quantity_usd";
+            $key_remaining = "{$key}_remaining";
+            $key_remaining_usd = "{$key}_remaining_usd";
+
+            $orders = \App\Order::whereIn($key_asset, $assets)
+                ->where($key_quantity, '>', 0)
+                ->where($key_quantity_usd, '=', 0)
+                ->orderBy('confirmed_at', 'desc')
+                ->get();
 
             foreach($orders as $order)
             {
-                $order->update([
-                    'get_quantity_usd' => fromSatoshi($historical->price * $order->get_quantity),
-                    'get_remaining_usd' => fromSatoshi($historical->price * $order->get_remaining),
-                ]);
-            }
+                $confirmed_at = $order->confirmed_at->toDateString('America/New_York');
 
-            $orders = \App\Order::whereGiveAsset($historical->ticker)->where('give_quantity', '>', 0)->whereGiveQuantityUsd(0)->where('confirmed_at', 'like', $historical->confirmed_at->toDateString('America/New_York') . '%')->get();
+                $historical = \App\PriceHistory::where('ticker', '=', $order->{$key_asset})
+                    ->where('quality_score', '=', 1)
+                    ->where('confirmed_at', 'like', $confirmed_at . '%')
+                    ->first();
 
-            foreach($orders as $order)
-            {
-                $order->update([
-                    'give_quantity_usd' => fromSatoshi($historical->price * $order->give_quantity),
-                    'give_remaining_usd' => fromSatoshi($historical->price * $order->give_remaining),
-                ]);
+                if($historical)
+                {
+                    $order->update([
+                        $key_quantity_usd => fromSatoshi($historical->price * $order->{$key_quantity}),
+                        $key_remaining_usd => fromSatoshi($historical->price * $order->{$key_remaining}),
+                        'quality_score' => $historical->quality_score,
+                    ]);
+                }
             }
         }
     }

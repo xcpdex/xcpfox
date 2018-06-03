@@ -15,7 +15,7 @@ class BetMatchResolution extends Model
      * @var array
      */
     protected $fillable = [
-        'bear_credit', 'bet_match_id', 'bet_match_type_id', 'block_index', 'bull_credit', 'escrow_less_fee', 'fee', 'settled', 'winner', 'confirmed_at',
+        'bear_credit', 'bear_credit_usd', 'bet_match_id', 'bet_match_type_id', 'block_index', 'bull_credit', 'bull_credit_usd', 'escrow_less_fee', 'escrow_less_fee_usd', 'fee', 'fee_usd', 'settled', 'winner', 'quality_score', 'confirmed_at',
     ];
 
     /**

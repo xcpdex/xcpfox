@@ -15,11 +15,11 @@ class CreateOrderExpirationsTable extends Migration
     {
         Schema::create('order_expirations', function (Blueprint $table) {
             // Columns
-            $table->unsignedBigInteger('order_index')->unique();
+            $table->unsignedBigInteger('order_index');
             $table->string('order_hash')->unique();
-            $table->string('source')->index();
             $table->unsignedBigInteger('block_index')->index();
-            $table->timestamp('confirmed_at')->nullable();
+            $table->string('source')->index();
+            $table->timestamp('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('order_index');

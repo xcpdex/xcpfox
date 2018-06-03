@@ -15,13 +15,13 @@ class CreateCancelsTable extends Migration
     {
         Schema::create('cancels', function (Blueprint $table) {
             // Columns
-            $table->unsignedBigInteger('tx_index')->unique();
+            $table->unsignedBigInteger('tx_index');
             $table->string('tx_hash')->unique();
             $table->unsignedBigInteger('block_index')->index();
             $table->string('source')->index();
             $table->string('offer_hash');
             $table->string('status')->index();
-            $table->timestamp('confirmed_at')->nullable();
+            $table->timestamp('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('tx_index');

@@ -65,11 +65,13 @@ class UpdateTransaction implements ShouldQueue
                 'inputs' => count($rt_data['vin']),
                 'outputs' => count($rt_data['vout']),
                 'raw' => $rt_data,
+                'quality_score' => 1,
                 'processed_at' => \Carbon\Carbon::now(),
             ]);
         }
         catch(\Exception $e)
         {
+            \Storage::append('failed.log', 'Update TX: ' . serialize($e->getMessage()));
         }
     }
 
@@ -81,13 +83,18 @@ class UpdateTransaction implements ShouldQueue
 
         try
         {
-            $historical = \App\PriceHistory::whereTicker('BTC')->where('confirmed_at', 'like', $confirmed_at)->latest('confirmed_at')->firstOrFail();
+            $historical = \App\AssetHistory::whereType('price')
+                ->whereQualityScore(1)
+                ->whereAsset('BTC')
+                ->where('confirmed_at', 'like', $confirmed_at)
+                ->latest('confirmed_at')
+                ->firstOrFail();
         }
         catch(\Exception $e)
         {
-            $historical = \App\PriceHistory::whereTicker('BTC')->latest('confirmed_at')->first();
+            return 0;
         }
 
-        return $historical->price * $satoshis / 100000000;
+        return $historical->value * $satoshis / 100000000;
     }
 }

@@ -15,11 +15,11 @@ class CreateRpsMatchExpirationsTable extends Migration
     {
         Schema::create('rps_match_expirations', function (Blueprint $table) {
             // Columns
-            $table->string('rps_match_id')->index();
+            $table->string('rps_match_id');
+            $table->unsignedBigInteger('block_index')->index();
             $table->string('tx0_address')->index();
             $table->string('tx1_address')->index();
-            $table->unsignedBigInteger('block_index')->index();
-            $table->timestamp('confirmed_at')->nullable();
+            $table->timestamp('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('rps_match_id');

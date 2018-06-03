@@ -20,6 +20,12 @@
         "vue": "^2.5.7"
     },
     "dependencies": {
-        "font-awesome": "^4.7.0"
+        "date-fns": "^1.29.0",
+        "font-awesome": "^4.7.0",
+        "laravel-vue-pagination": "^1.2.0",
+        "vue-timeago": "^4.0.1",
+        "vue-truncate-filter": "^1.1.7",
+        "vue2-highcharts": "^1.2.3",
+        "vuejs-paginator": "^2.0.2"
     }
 }

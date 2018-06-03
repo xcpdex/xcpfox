@@ -20,6 +20,11 @@ class CreateBalancesTable extends Migration
             $table->string('asset')->index();
             $table->unsignedBigInteger('quantity');
             $table->unsignedBigInteger('quantity_usd')->default(0);
+            $table->unsignedBigInteger('message_index')->index();
+            $table->unsignedBigInteger('block_index')->index();
+            $table->boolean('current')->index();
+            $table->unsignedInteger('quality_score')->default(0)->index();
+            $table->timestamp('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->index(['address', 'asset']);

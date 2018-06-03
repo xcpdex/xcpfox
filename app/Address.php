@@ -15,7 +15,7 @@ class Address extends Model
      * @var array
      */
     protected $fillable = [
-        'address', 'options', 'block_index', 'confirmed_at',
+        'address', 'type', 'options', 'block_index', 'burn', 'confirmed_at',
     ];
 
     /**
@@ -28,6 +28,25 @@ class Address extends Model
     ];
 
     /**
+     * The attributes that are appended.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'url',
+    ];
+
+    /**
+     * URL
+     *
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+        return url(route('addresses.show', ['address' => $this->address]));
+    }
+
+    /**
      * Balances
      * 
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -37,6 +56,25 @@ class Address extends Model
         return $this->hasMany(Balance::class, 'address');
     }
 
+    /**
+     * Credits
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function credits()
+    {
+        return $this->hasMany(Credit::class, 'address');
+    }
+
+    /**
+     * Debits
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function debits()
+    {
+        return $this->hasMany(Debit::class, 'address');
+    }
     /**
      * Issuances
      * 
@@ -77,10 +115,13 @@ class Address extends Model
                 // Found a Needle
                 if(isset($bindings[$address_field]))
                 {
+                    $type = static::getAddressType($bindings[$address_field]);
+
                     // Create Address
                     return static::firstOrCreate([
                         'address' => $bindings[$address_field],
                     ],[
+                        'type' => $type,
                         'options' => 0,
                         'block_index' => $bindings['block_index'],
                         'confirmed_at' => $bindings['confirmed_at'],
@@ -114,5 +155,27 @@ class Address extends Model
         {
             \Storage::append('failed.log', 'Replace: ' . $bindings['address'] . ' ' . serialize($e->getMessage()));
         }
+    }
+
+    public static function getAddressType($address)
+    {
+        if(strpos($address, '_') !== false)
+        {
+            return 'multisig';
+        }
+        elseif($address[0] === '1')
+        {
+            return 'p2pkh';
+        }
+        elseif($address[0] === '3')
+        {
+            return 'p2sh';
+        }
+        elseif($address[0] === 'b')
+        {
+            return 'bech32';
+        }
+
+        return 'unknown';
     }
 }

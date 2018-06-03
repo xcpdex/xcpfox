@@ -11,7 +11,7 @@ class UpdateOrderMatchQuantityUsdCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'update:ordermatches:usd';
+    protected $signature = 'update:ordermatches:usd {quality_score}';
 
     /**
      * The console command description.
@@ -37,27 +37,33 @@ class UpdateOrderMatchQuantityUsdCommand extends Command
      */
     public function handle()
     {
-        $price_histories = \App\PriceHistory::get();
+        // Set Quality Score
+        $quality_score = $this->argument('quality_score');
 
-        foreach($price_histories as $historical)
+        // Get Asset Tickers
+        $tickers = $this->getPriceHistoryTickers($quality_score);
+
+        // Estimate Order Match USD
+        foreach($tickers as $ticker)
         {
-            $order_matches = \App\OrderMatch::whereForwardAsset($historical->ticker)->where('forward_quantity', '>', 0)->whereForwardQuantityUsd(0)->where('confirmed_at', 'like', $historical->confirmed_at->toDateString('America/New_York') . '%')->get();
+            \App\Jobs\UpdateOrderMatchQuantityUsd::dispatch($ticker->ticker, $quality_score);
+        }
+    }
 
-            foreach($order_matches as $order_match)
-            {
-                $order_match->update([
-                    'forward_quantity_usd' => fromSatoshi($historical->price * $order_match->forward_quantity),
-                ]);
-            }
-
-            $order_matches = \App\OrderMatch::whereBackwardAsset($historical->ticker)->where('backward_quantity', '>', 0)->whereBackwardQuantityUsd(0)->where('confirmed_at', 'like', $historical->confirmed_at->toDateString('America/New_York') . '%')->get();
-
-            foreach($order_matches as $order_match)
-            {
-                $order_match->update([
-                    'backward_quantity_usd' => fromSatoshi($historical->price * $order_match->backward_quantity),
-                ]);
-            }
+    private function getPriceHistoryTickers($quality_score)
+    {
+        if($quality_score < 4)
+        {
+            return \App\PriceHistory::where('quality_score', '=', $quality_score)
+                ->select('ticker')
+                ->groupBy('ticker')
+                ->get();
+        }
+        else
+        {
+            return \App\PriceHistory::select('ticker')
+                ->groupBy('ticker')
+                ->get();
         }
     }
 }
