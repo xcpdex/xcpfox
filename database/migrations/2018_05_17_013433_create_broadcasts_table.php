@@ -16,8 +16,8 @@ class CreateBroadcastsTable extends Migration
         Schema::create('broadcasts', function (Blueprint $table) {
             // Columns
             $table->unsignedBigInteger('tx_index');
-            $table->string('tx_hash')->unique();
             $table->unsignedBigInteger('block_index')->index();
+            $table->string('tx_hash')->unique();
             $table->string('source')->index();
             $table->decimal('value', 25, 6)->nullable();
             $table->unsignedBigInteger('fee_fraction_int')->nullable();
@@ -25,7 +25,7 @@ class CreateBroadcastsTable extends Migration
             $table->boolean('locked');
             $table->string('status');
             $table->unsignedBigInteger('timestamp');
-            $table->timestamp('confirmed_at')->index();
+            $table->datetime('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('tx_index');

@@ -19,7 +19,7 @@ class CreateReplacesTable extends Migration
             $table->string('address')->index();
             $table->unsignedBigInteger('options');
             $table->unsignedBigInteger('block_index')->index();
-            $table->timestamp('confirmed_at')->index();
+            $table->datetime('confirmed_at')->index();
             $table->timestamps();
         });
     }

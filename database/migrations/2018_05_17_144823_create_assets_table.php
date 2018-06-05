@@ -17,19 +17,20 @@ class CreateAssetsTable extends Migration
             // Columns
             $table->unsignedBigInteger('block_index')->index();
             $table->unsignedBigInteger('message_index')->default(0)->index();
-            $table->string('asset_id');
-            $table->string('asset_name')->index();
+            $table->string('asset_name');
             $table->string('asset_longname')->nullable();
             $table->string('type')->index();
+            $table->string('owner')->nullable()->index();
+            $table->string('issuer')->nullable()->index();
             $table->text('description')->nullable();
             $table->unsignedBigInteger('issuance')->default(0);
             $table->decimal('issuance_normalized', 27, 8)->default(0);
             $table->boolean('divisible')->default(0);
             $table->boolean('locked')->default(0);
-            $table->timestamp('confirmed_at')->index();
+            $table->datetime('confirmed_at')->index();
             $table->timestamps();
             // Indexes
-            $table->primary('asset_id');
+            $table->primary('asset_name');
         });
     }
 

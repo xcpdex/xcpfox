@@ -37,17 +37,33 @@ class UpdateBlocksCommand extends Command
      */
     public function handle()
     {
-        $block = \App\Block::orderBy('block_index', 'desc')->first();
-
-        $first_block = $block ? $block->block_index : 278319;
-
-        if(\Cache::get('block_height') - $first_block < 100)
+        if($this->guardAgainstSyncingDuringActiveRollbacks())
         {
-            \App\Jobs\UpdateBlocks::dispatch($first_block, \Cache::get('block_height'))->onQueue('high');
+            $block = \App\Block::orderBy('block_index', 'desc')->first();
+
+            $last_block = $block ? $block->block_index : 278319;
+
+            $next_block = $last_block + 1;
+
+            if(\Cache::get('block_height') - $last_block < 10)
+            {
+                \App\Jobs\UpdateBlocks::dispatch($next_block, \Cache::get('block_height'))->onQueue('high');
+            }
+            else
+            {
+                \App\Jobs\UpdateBlocks::dispatch($next_block, $next_block + 10, true)->onQueue('high');
+            }
         }
-        else
-        {
-            \App\Jobs\UpdateBlocks::dispatch($first_block, $first_block + 10)->onQueue('high');
-        }
+    }
+
+    /**
+     * Active Rollback Guard
+     *
+     * @return boolean
+     */
+    private function guardAgainstSyncingDuringActiveRollbacks()
+    {
+        // Active Rollbacks Haven't Been Processed
+        return \App\Rollback::whereNull('processed_at')->doesntExist();
     }
 }

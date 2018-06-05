@@ -84,24 +84,19 @@ class Block extends Model
      */
     public static function firstOrCreateBlock($data)
     {
-        try
-        {
-            return static::firstOrCreate([
-                'block_index' => $data['block_index'],
-            ],[
-                'block_hash' => $data['block_hash'],
-                'ledger_hash' => $data['ledger_hash'],
-                'txlist_hash' => $data['txlist_hash'],
-                'messages_hash' => $data['messages_hash'],
-                'previous_block_hash' => $data['previous_block_hash'],
-                'difficulty' => $data['difficulty'],
-                'timestamp' => $data['block_time'],
-                'confirmed_at' => \Carbon\Carbon::createFromTimestamp($data['block_time']),
-            ]);
-        }
-        catch(\Exception $e)
-        {
-            \Storage::append('failed.log', 'Block: ' . $data['block_index'] . ' ' . serialize($e->getMessage()));
-        }
+        \Cache::tags(['block_flush'])->flush();
+
+        return static::firstOrCreate([
+            'block_index' => $data['block_index'],
+        ],[
+            'block_hash' => $data['block_hash'],
+            'ledger_hash' => $data['ledger_hash'],
+            'txlist_hash' => $data['txlist_hash'],
+            'messages_hash' => $data['messages_hash'],
+            'previous_block_hash' => $data['previous_block_hash'],
+            'difficulty' => $data['difficulty'],
+            'timestamp' => $data['block_time'],
+            'confirmed_at' => \Carbon\Carbon::createFromTimestamp($data['block_time']),
+        ]);
     }
 }

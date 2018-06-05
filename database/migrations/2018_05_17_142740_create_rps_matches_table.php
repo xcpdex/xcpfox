@@ -35,7 +35,7 @@ class CreateRpsMatchesTable extends Migration
             $table->unsignedBigInteger('match_expire_index')->index();
             $table->string('status')->index();
             $table->unsignedInteger('quality_score')->default(0)->index();
-            $table->timestamp('confirmed_at')->index();
+            $table->datetime('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('id');

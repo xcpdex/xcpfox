@@ -21,7 +21,7 @@ class CreateMessagesTable extends Migration
             $table->string('category');
             $table->json('bindings');
             $table->unsignedBigInteger('timestamp');
-            $table->timestamp('confirmed_at')->index();
+            $table->datetime('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('message_index');

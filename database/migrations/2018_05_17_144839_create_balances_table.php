@@ -24,7 +24,7 @@ class CreateBalancesTable extends Migration
             $table->unsignedBigInteger('block_index')->index();
             $table->boolean('current')->index();
             $table->unsignedInteger('quality_score')->default(0)->index();
-            $table->timestamp('confirmed_at')->index();
+            $table->datetime('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->index(['address', 'asset']);

@@ -26,8 +26,8 @@
         <div class="col-lg-8 mt-4 mb-2">
             <chart-transactions chart="total" group="month" type="line"></chart-transactions>
             <p class="text-center text-muted mt-2">Welcome to XCP FOX, a Counterparty block explorer.</p>
-            <p class="text-center card-text">
-                <a href="https://t.me/xcpfox" class="btn btn-outline-success d-inline d-md-none">
+            <p class="text-center card-text mt-4">
+                <a href="https://t.me/xcpfox" class="btn btn-lg btn-outline-success d-inline d-md-none">
                     <i class="fa fa-telegram"></i> Join our Telegram
                 </a>
             </p>
@@ -38,8 +38,8 @@
         </div>
     </div>
     <br />
-    <blocks page="1" per_page="10"></blocks>
+    <assets page="1" per_page="10"></assets>
     <br />
-    <transactions page="1" per_page="10"></transactions>
+    <blocks page="1" per_page="10"></blocks>
 </div>
 @endsection

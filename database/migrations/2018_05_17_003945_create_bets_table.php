@@ -16,8 +16,8 @@ class CreateBetsTable extends Migration
         Schema::create('bets', function (Blueprint $table) {
             // Columns
             $table->unsignedBigInteger('tx_index');
-            $table->string('tx_hash')->unique();
             $table->unsignedBigInteger('block_index')->index();
+            $table->string('tx_hash')->unique();
             $table->string('source')->index();
             $table->string('feed_address');
             $table->unsignedBigInteger('bet_type');
@@ -37,7 +37,7 @@ class CreateBetsTable extends Migration
             $table->unsignedBigInteger('fee_fraction_int');
             $table->string('status');
             $table->unsignedInteger('quality_score')->default(0)->index();
-            $table->timestamp('confirmed_at')->index();
+            $table->datetime('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('tx_index');

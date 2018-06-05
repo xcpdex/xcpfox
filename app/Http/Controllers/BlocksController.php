@@ -30,6 +30,8 @@ class BlocksController extends Controller
         catch(\Exception $e)
         {
             $block = \App\Block::withCount('messages')->findOrFail($block);
+
+            return redirect($block->url);
         }
 
         $fee = \Cache::remember('block_' . $block->block_index . '_fee', 1440, function () use ($block) {

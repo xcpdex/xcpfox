@@ -46,7 +46,6 @@ class BlockHeightCommand extends Command
         {
             $this->call('update:blocks');
             // $this->call('update:blocks:next');
-            \Cache::tags(['block_flush'])->flush();
         }
     }
 

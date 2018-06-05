@@ -19,7 +19,7 @@ class CreateRpsMatchExpirationsTable extends Migration
             $table->unsignedBigInteger('block_index')->index();
             $table->string('tx0_address')->index();
             $table->string('tx1_address')->index();
-            $table->timestamp('confirmed_at')->index();
+            $table->datetime('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('rps_match_id');

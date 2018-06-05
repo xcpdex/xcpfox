@@ -34,8 +34,8 @@ class CreateTransactionsTable extends Migration
             $table->boolean('valid');
             $table->unsignedInteger('quality_score')->default(0)->index();
             $table->unsignedBigInteger('timestamp');
-            $table->timestamp('confirmed_at')->index();
-            $table->timestamp('processed_at')->nullable();
+            $table->datetime('confirmed_at')->index();
+            $table->datetime('processed_at')->nullable()->index();
             $table->timestamps();
             // Indexes
             $table->primary('tx_index');

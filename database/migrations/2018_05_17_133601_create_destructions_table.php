@@ -16,8 +16,8 @@ class CreateDestructionsTable extends Migration
         Schema::create('destructions', function (Blueprint $table) {
             // Columns
             $table->unsignedBigInteger('tx_index');
-            $table->string('tx_hash')->unique();
             $table->unsignedBigInteger('block_index')->index();
+            $table->string('tx_hash')->unique();
             $table->string('source')->index();
             $table->string('asset');
             $table->unsignedBigInteger('quantity');
@@ -25,7 +25,7 @@ class CreateDestructionsTable extends Migration
             $table->string('tag');
             $table->string('status')->index();
             $table->unsignedInteger('quality_score')->default(0)->index();
-            $table->timestamp('confirmed_at')->index();
+            $table->datetime('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('tx_index');

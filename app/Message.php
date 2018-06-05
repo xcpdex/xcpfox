@@ -92,24 +92,17 @@ class Message extends Model
      * @param  arr  $bindings
      * @return \App\Asset
      */
-    public static function firstOrCreateMessage($message, $block_time)
+    public static function firstOrCreateMessage($message, $bindings)
     {
-        try
-        {
-            return static::firstOrCreate([
-                'message_index' => $message['message_index'],
-            ],[
-                'block_index' => $message['block_index'],
-                'command' => $message['command'],
-                'category' => isset($message['category']) ? $message['category'] : '',
-                'bindings' => $message['bindings'],
-                'timestamp' => $message['timestamp'],
-                'confirmed_at' => \Carbon\Carbon::createFromTimestamp($block_time, 'America/New_York'),
-            ]);
-        }
-        catch(\Exception $e)
-        {
-            \Storage::append('failed.log', 'Message: ' . $message['message_index'] . ' ' . serialize($e->getMessage()));
-        }
+        return static::firstOrCreate([
+            'message_index' => $message['message_index'],
+        ],[
+            'block_index' => $message['block_index'],
+            'command' => $message['command'],
+            'category' => isset($message['category']) ? $message['category'] : '',
+            'bindings' => $message['bindings'],
+            'timestamp' => $message['timestamp'],
+            'confirmed_at' => $bindings['confirmed_at'],
+        ]);
     }
 }

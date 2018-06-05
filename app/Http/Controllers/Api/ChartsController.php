@@ -234,13 +234,13 @@ class ChartsController extends Controller
             switch($group_by)
             {
                 case 'date':
-                    $results = \App\Transaction::selectRaw('DATE(confirmed_at) as date, COUNT(*) as count')->groupBy('date')->orderBy('date')->get();
+                    $results = \App\Transaction::whereNotNull('processed_at')->selectRaw('DATE(confirmed_at) as date, COUNT(*) as count')->groupBy('date')->orderBy('date')->get();
                     break;
                 case 'month':
-                    $results = \App\Transaction::selectRaw('YEAR(confirmed_at) as year, MONTH(confirmed_at) as month, COUNT(*) as count')->groupBy('month')->groupBy('year')->orderBy('year')->orderBy('month')->get();
+                    $results = \App\Transaction::whereNotNull('processed_at')->selectRaw('YEAR(confirmed_at) as year, MONTH(confirmed_at) as month, COUNT(*) as count')->groupBy('month')->groupBy('year')->orderBy('year')->orderBy('month')->get();
                     break;
                 case 'year':
-                    $results = \App\Transaction::selectRaw('YEAR(confirmed_at) as year, COUNT(*) as count')->groupBy('year')->orderBy('year')->get();
+                    $results = \App\Transaction::whereNotNull('processed_at')->selectRaw('YEAR(confirmed_at) as year, COUNT(*) as count')->groupBy('year')->orderBy('year')->get();
                     break;
             }
             return \App\Http\Resources\CountResource::collection($results);

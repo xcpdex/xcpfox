@@ -15,6 +15,7 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.component('search', require('./components/SearchComponent.vue'));
 Vue.component('statistics', require('./components/StatisticsComponent.vue'));
 Vue.component('addresses', require('./components/AddressesComponent.vue'));
 Vue.component('assets', require('./components/AssetsComponent.vue'));

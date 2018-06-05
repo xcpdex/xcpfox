@@ -15,9 +15,32 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/json', function () {
+    $counterparty = new \JsonRPC\Client(env('CP_API'));
+    $counterparty->authentication(env('CP_USER'), env('CP_PASS'));
+    return $counterparty->execute('get_blocks', ['block_indexes' => ['488471', '488472']]);
+});
+
+Route::get('/json2', function () {
+    $counterparty = new \JsonRPC\Client(env('CP_API'));
+    $counterparty->authentication(env('CP_USER'), env('CP_PASS'));
+    return $counterparty->execute('get_blocks', ['block_indexes' => range(488470,488480)]);
+});
+
+Route::get('/json3', function () {
+    $counterparty = new \JsonRPC\Client(env('CP_API'));
+    $counterparty->authentication(env('CP_USER'), env('CP_PASS'));
+    return $counterparty->execute('get_blocks', ['block_indexes' => range(488471,488472)]);
+});
+
 Route::get('/home', [
     'as' => 'home',
     'uses' => 'HomeController@index',
+]);
+
+Route::get('/search', [
+    'as' => 'search.index',
+    'uses' => 'SearchController@index',
 ]);
 
 Route::get('/blocks', [
@@ -73,6 +96,26 @@ Route::get('/asset/{asset}', [
 Route::get('/sends', [
     'as' => 'sends.index',
     'uses' => 'SendsController@index',
+]);
+
+Route::get('/leaderboard', [
+    'as' => 'leaderboard.index',
+    'uses' => 'LeaderboardController@index',
+]);
+
+Route::get('/docs', [
+    'as' => 'docs',
+    'uses' => 'PagesController@getDocs',
+]);
+
+Route::get('/docs/node-setup', [
+    'as' => 'node',
+    'uses' => 'PagesController@getNodeSetup',
+]);
+
+Route::get('/faq', [
+    'as' => 'faq',
+    'uses' => 'PagesController@getFaq',
 ]);
 
 Route::get('/chart', function () {

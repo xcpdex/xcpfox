@@ -47,8 +47,8 @@ class UpdateBlock implements ShouldQueue
                 'stripped_size' => $block_data['strippedsize'],
                 'weight' => $block_data['weight'],
                 'tx_count' => count($block_data['tx']),
-                'confirmed_at' => \Carbon\Carbon::createFromTimestamp($block_data['time']),
-                'processed_at' => \Carbon\Carbon::now(),
+                'confirmed_at' => $this->block->confirmed_at,
+                'processed_at' => \Carbon\Carbon::now()->toDateTimeString(),
             ]);
         }
         catch(\Exception $e)

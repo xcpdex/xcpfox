@@ -47,6 +47,11 @@
           credits: {
             enabled: false
           },
+          plotOptions: {
+            line: {
+              animation: false
+            }
+          },
           responsive: {
             rules: [{
               condition: {
@@ -60,16 +65,15 @@
                     }
                   }
                 },
-                yAxis: {
-                  labels: {
-                    align: 'left',
-                    x: 0,
-                    y: -2
-                  },
+                yAxis: [{
                   title: {
                     text: ''
                   }
-                }
+                },{
+                  title: {
+                    text: ''
+                  }
+                }]
               }
             }]
           },
@@ -89,7 +93,7 @@
           lineCharts.delegateMethod('showLoading', 'Loading...');
           setTimeout(() => {
               lineCharts.addSeries({name: 'Transactions', yAxis: 0, zIndex: 2, data: data.data})
-              lineCharts.addSeries({name: 'Cumulative', yAxis: 1, zIndex: 1, color: '#999999', data: self.$_chart_transactions_accumulate(data.data)})
+              lineCharts.addSeries({name: 'Cumulative', yAxis: 1, zIndex: 1, color: 'rgba(0, 0, 0, 0.20)', data: self.$_chart_transactions_accumulate(data.data)})
               lineCharts.hideLoading()
           }, 2000)
         });

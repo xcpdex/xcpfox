@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Asset extends Model
 {
-    protected $primaryKey = 'asset_id';
+    protected $primaryKey = 'asset_name';
     public $incrementing = false;
 
     /**
@@ -15,7 +15,7 @@ class Asset extends Model
      * @var array
      */
     protected $fillable = [
-        'asset_id', 'asset_name', 'asset_longname', 'type', 'description', 'issuance', 'issuance_normalized', 'divisible', 'locked', 'block_index', 'message_index', 'confirmed_at',
+        'asset_name', 'asset_longname', 'type', 'issuer', 'owner', 'description', 'issuance', 'issuance_normalized', 'divisible', 'locked', 'block_index', 'message_index', 'confirmed_at',
     ];
 
     /**
@@ -74,7 +74,37 @@ class Asset extends Model
      */
     public function balances()
     {
+        return $this->hasMany(Balance::class, 'asset', 'asset_name');
+    }
+
+    /**
+     * Current Balances
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function currentBalances()
+    {
         return $this->hasMany(Balance::class, 'asset', 'asset_name')->whereCurrent(1)->where('quantity', '>', 0);
+    }
+
+    /**
+     * Dividends
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function dividends()
+    {
+        return $this->hasMany(Dividend::class, 'asset', 'asset_name');
+    }
+
+    /**
+     * Issuances
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function issuances()
+    {
+        return $this->hasMany(Issuance::class, 'asset', 'asset_name');
     }
 
     /**
@@ -96,25 +126,18 @@ class Asset extends Model
      */
     public static function updateOrCreateAsset($message, $bindings)
     {
-        try
+        if($bindings['status'] === 'valid')
         {
-            if($bindings['status'] === 'valid')
-            {
-                if($asset = static::whereAssetName($bindings['asset'])->first())
-                {
-                    return $asset->updateAsset($message, $bindings);
-                }
-                else
-                {
-                    return static::createAsset($message, $bindings);
-                }
+            \Cache::tags(['issuance_flush'])->flush();
 
-                \Cache::tags(['issuance_flush'])->flush();
+            if($asset = static::whereAssetName($bindings['asset'])->first())
+            {
+                return $asset->updateAsset($message, $bindings);
             }
-        }
-        catch(\Exception $e)
-        {
-            \Storage::append('failed.log', 'Asset: ' . $bindings['asset'] . ' ' . $message['message_index'] . ' ' . serialize($e->getMessage()));
+            else
+            {
+                return static::createAsset($message, $bindings);
+            }
         }
     }
 
@@ -127,30 +150,24 @@ class Asset extends Model
      */
     public static function createAsset($message, $bindings)
     {
-        try
-        {
-            $type = static::getAssetType($bindings);
+        $type = getAssetType($bindings);
 
-            return static::firstOrCreate([
-                'asset_name' => $bindings['asset'],
-            ],[
-                'type' => $type,
-                'asset_id' => getAssetId($bindings['asset']),
-                'asset_longname' => $bindings['asset_longname'],
-                'description' => $bindings['description'],
-                'issuance' => $bindings['quantity'],
-                'issuance_normalized' => $bindings['divisible'] ? fromSatoshi($bindings['quantity']) : $bindings['quantity'],
-                'divisible' => $bindings['divisible'],
-                'locked' => $bindings['locked'],
-                'block_index' => $bindings['block_index'],
-                'message_index' => $message['message_index'],
-                'confirmed_at' => $bindings['confirmed_at'],
-            ]);
-        }
-        catch(\Exception $e)
-        {
-            \Storage::append('failed.log', 'Asset: ' . $bindings['asset'] . ' ' . $message['message_index'] . ' ' . serialize($e->getMessage()));
-        }
+        return static::firstOrCreate([
+            'asset_name' => $bindings['asset'],
+        ],[
+            'type' => $type,
+            'owner' => $bindings['source'],
+            'issuer' => $bindings['issuer'],
+            'asset_longname' => $bindings['asset_longname'],
+            'description' => $bindings['description'],
+            'issuance' => $bindings['quantity'],
+            'issuance_normalized' => $bindings['divisible'] ? fromSatoshi($bindings['quantity']) : $bindings['quantity'],
+            'divisible' => $bindings['divisible'],
+            'locked' => $bindings['locked'],
+            'block_index' => $bindings['block_index'],
+            'message_index' => $message['message_index'],
+            'confirmed_at' => $bindings['confirmed_at'],
+        ]);
     }
 
     /**
@@ -162,44 +179,25 @@ class Asset extends Model
      */
     public function updateAsset($message, $bindings)
     {
-        try
+        if(isset($bindings['quantity']))
         {
-            if(isset($bindings['quantity']))
+            $issuance = $this->issuance + $bindings['quantity'];
+            $issuance_normalized = $this->divisible ? fromSatoshi($issuance) : $issuance;
+
+            if($issuance > 9223372036854775807)
             {
-                $issuance = $this->issuance + $bindings['quantity'];
-                $issuance_normalized = $this->divisible ? $this->issuance_normalized + fromSatoshi($bindings['quantity']) : $this->issuance_normalized + $bindings['quantity'];
-
-                if($issuance > 9223372036854775807)
-                {
-                    $issuance = 9223372036854775807;
-                    $issuance_normalized = fromSatoshi(9223372036854775807);
-                }
+                $issuance = 9223372036854775807;
+                $issuance_normalized = fromSatoshi(9223372036854775807);
             }
-
-            return $this->update([
-                'description' => $bindings['description'],
-                'issuance' => isset($issuance) ? $issuance : $this->issuance,
-                'issuance_normalized' => isset($issuance_normalized) ? $issuance_normalized : $this->issuance_normalized,
-                'locked' => ! $this->locked && $bindings['locked'] ? 1 : $this->locked,
-            ]);
-        }
-        catch(\Exception $e)
-        {
-            \Storage::append('failed.log', 'Asset: ' . $bindings['asset'] . ' ' . $message['message_index'] . ' ' . serialize($e->getMessage()));
-        }
-    }
-
-    public static function getAssetType($bindings)
-    {
-        if($bindings['asset_longname'])
-        {
-            return 'subasset';
-        }
-        elseif($bindings['asset'][0] === 'A')
-        {
-            return 'numeric';
         }
 
-        return 'asset';
+        return $this->update([
+            'issuer' => $bindings['issuer'],
+            'description' => $bindings['description'],
+            'issuance' => isset($issuance) ? $issuance : $this->issuance,
+            'issuance_normalized' => isset($issuance_normalized) ? $issuance_normalized : $this->issuance_normalized,
+            'locked' => ! $this->locked && $bindings['locked'] ? 1 : $this->locked,
+            'confirmed_at' => $bindings['confirmed_at'],
+        ]);
     }
 }

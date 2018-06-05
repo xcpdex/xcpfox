@@ -66,6 +66,7 @@ class UpdateTransaction implements ShouldQueue
                 'outputs' => count($rt_data['vout']),
                 'raw' => $rt_data,
                 'quality_score' => 1,
+                'confirmed_at' => $this->transaction->confirmed_at,
                 'processed_at' => \Carbon\Carbon::now(),
             ]);
         }

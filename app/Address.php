@@ -47,6 +47,26 @@ class Address extends Model
     }
 
     /**
+     * Issued Assets
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function issuedAssets()
+    {
+        return $this->hasMany(Asset::class, 'issuer');
+    }
+
+    /**
+     * Owned Assets
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function ownedAssets()
+    {
+        return $this->hasMany(Asset::class, 'owner');
+    }
+
+    /**
      * Balances
      * 
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -54,6 +74,36 @@ class Address extends Model
     public function balances()
     {
         return $this->hasMany(Balance::class, 'address');
+    }
+
+    /**
+     * Balances (Current)
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function currentBalances()
+    {
+        return $this->hasMany(Balance::class, 'address')->whereCurrent('1')->where('quantity', '>', 0);
+    }
+
+    /**
+     * Bets
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function bets()
+    {
+        return $this->hasMany(Bet::class, 'source');
+    }
+
+    /**
+     * Broadcasts
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function broadcasts()
+    {
+        return $this->hasMany(Broadcast::class, 'source');
     }
 
     /**
@@ -75,6 +125,17 @@ class Address extends Model
     {
         return $this->hasMany(Debit::class, 'address');
     }
+
+    /**
+     * Dividends
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function dividends()
+    {
+        return $this->hasMany(Dividend::class, 'source');
+    }
+
     /**
      * Issuances
      * 
@@ -85,14 +146,24 @@ class Address extends Model
         return $this->hasMany(Issuance::class, 'issuer');
     }
 
-    public function getBalance($asset)
+    /**
+     * Orders
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function orders()
     {
-        return $this->balances()->asset($asset)->orderBy('message_index', 'desc')->first();
+        return $this->hasMany(Order::class, 'source');
     }
 
-    public function getBalanceHistory($asset)
+    /**
+     * Sends
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sends()
     {
-        return $this->balances()->asset($asset)->orderBy('message_index', 'desc')->get();
+        return $this->hasMany(Send::class, 'source');
     }
 
     /**
@@ -104,34 +175,27 @@ class Address extends Model
      */
     public static function firstOrCreateAddress($message, $bindings)
     {
-        try
-        {
-            // Known Column Names
-            $address_fields = ['source', 'address', 'issuer', 'destination', 'tx0_address', 'tx1_address'];
+        // Known Column Names
+        $address_columns = ['source', 'address', 'issuer', 'destination', 'tx0_address', 'tx1_address'];
 
-            // Needle in Haystack
-            foreach($address_fields as $address_field)
+        // Needle in Haystack
+        foreach($address_columns as $address_column)
+        {
+            // Found a Needle
+            if(isset($bindings[$address_column]))
             {
-                // Found a Needle
-                if(isset($bindings[$address_field]))
-                {
-                    $type = static::getAddressType($bindings[$address_field]);
+                $type = getAddressType($bindings[$address_column]);
 
-                    // Create Address
-                    return static::firstOrCreate([
-                        'address' => $bindings[$address_field],
-                    ],[
-                        'type' => $type,
-                        'options' => 0,
-                        'block_index' => $bindings['block_index'],
-                        'confirmed_at' => $bindings['confirmed_at'],
-                    ]);
-                }
+                // Create Address
+                return static::firstOrCreate([
+                    'address' => $bindings[$address_column],
+                ],[
+                    'type' => $type,
+                    'options' => 0,
+                    'block_index' => $bindings['block_index'],
+                    'confirmed_at' => $bindings['confirmed_at'],
+                ]);
             }
-        }
-        catch(\Exception $e)
-        {
-            \Storage::append('failed.log', 'Address: ' . $message['message_index'] . ' ' . serialize($e->getMessage()));
         }
     }
 
@@ -143,39 +207,11 @@ class Address extends Model
      */
     public static function updateAddressOptions($bindings)
     {
-        try
-        {
-            static::updateOrCreate([
-                'address' => $bindings['address'],
-            ],[
-                'options' => $bindings['options'],
-            ]);
-        }
-        catch(\Exception $e)
-        {
-            \Storage::append('failed.log', 'Replace: ' . $bindings['address'] . ' ' . serialize($e->getMessage()));
-        }
-    }
-
-    public static function getAddressType($address)
-    {
-        if(strpos($address, '_') !== false)
-        {
-            return 'multisig';
-        }
-        elseif($address[0] === '1')
-        {
-            return 'p2pkh';
-        }
-        elseif($address[0] === '3')
-        {
-            return 'p2sh';
-        }
-        elseif($address[0] === 'b')
-        {
-            return 'bech32';
-        }
-
-        return 'unknown';
+        static::updateOrCreate([
+            'address' => $bindings['address'],
+        ],[
+            'options' => $bindings['options'],
+            'confirmed_at' => $bindings['confirmed_at'],
+        ]);
     }
 }

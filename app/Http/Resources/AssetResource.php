@@ -19,7 +19,7 @@ class AssetResource extends Resource
             'display_name' => $this->display_name,
             'description' => $this->description,
             'issuance' => $this->issuance,
-            'issuance_normalized' => $this->issuance_normalized,
+            'issuance_normalized' => number_format($this->issuance_normalized, 8),
             'divisible' => $this->divisible,
             'locked' => $this->locked,
             'block_time' => $this->confirmed_at,

@@ -1,7 +1,7 @@
 <template>
     <div class="row">
         <div class="col-4">
-            <form class="form-inline">
+            <form class="form-inline mt-1">
                 <select v-model="selected" v-on:change="goToUrl" class="form-control">
                     <option v-for="option in options" v-bind:value="option.value" :selected="selected == option.value">
                         {{ option.value }}
@@ -10,7 +10,7 @@
             </form>
         </div>
         <div class="col-4">
-            <p class="lead text-center text-muted mt-1">Page {{ data && data.meta ? data.meta.current_page : '' }}</p>
+            <p class="lead text-center text-muted mt-2">Page {{ data && data.meta ? data.meta.current_page : '' }}</p>
         </div>
         <div class="col-4">
             <next-prev :per_page="per_page" :links="data.links" :float="'float-right'"></next-prev>

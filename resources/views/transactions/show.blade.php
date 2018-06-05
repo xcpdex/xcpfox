@@ -33,7 +33,7 @@
             </div>
             <div class="row mb-2">
                 <div class="col-md-3 font-weight-bold">Source:</div>
-                <div class="col-md-9">{{ $transaction->source }}</div>
+                <div class="col-md-9"><a href="{{ url(route('addresses.show', ['address' => $transaction->source])) }}">{{ $transaction->source }}</a></div>
             </div>
             @if($transaction->processed_at)
             @if($transaction->destination)
@@ -95,9 +95,10 @@
             Raw Transaction Data
         </div>
         <div class="card-body">
-            <pre>{{ $raw_tx }}</pre>
+            <pre class="mb-0">{{ $raw_tx }}</pre>
         </div>
     </div>
     @endif
+    @include('layouts.cta')
 </div>
 @endsection

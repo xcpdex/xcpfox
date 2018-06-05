@@ -24,7 +24,7 @@ class CreateDebitsTable extends Migration
             $table->string('action');
             $table->string('event');
             $table->unsignedInteger('quality_score')->default(0)->index();
-            $table->timestamp('confirmed_at')->index();
+            $table->datetime('confirmed_at')->index();
             $table->timestamps();
         });
     }

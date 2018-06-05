@@ -29,7 +29,7 @@ class CreateBetMatchResolutionsTable extends Migration
             $table->unsignedBigInteger('fee');
             $table->unsignedBigInteger('fee_usd')->default(0);
             $table->unsignedInteger('quality_score')->default(0)->index();
-            $table->timestamp('confirmed_at')->index();
+            $table->datetime('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('bet_match_id');

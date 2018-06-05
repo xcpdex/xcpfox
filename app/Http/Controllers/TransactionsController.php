@@ -30,6 +30,8 @@ class TransactionsController extends Controller
         catch(\Exception $e)
         {
             $transaction = \App\Transaction::findOrFail($transaction);
+
+            return redirect($transaction->url);
         }
 
         $tx_data = getModelNameFromType($transaction->type)::whereTxIndex($transaction->tx_index)->first();

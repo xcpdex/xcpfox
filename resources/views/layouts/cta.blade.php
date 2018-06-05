@@ -1,0 +1,1 @@
+<p class="lead text-center text-muted mt-5">Interested in Counterparty? <br class="d-block d-md-none" /> <a href="https://t.me/xcpfox">Join our Telegram chat!</a></p>

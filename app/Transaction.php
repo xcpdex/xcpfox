@@ -154,35 +154,18 @@ class Transaction extends Model
      */
     public static function firstOrCreateTransaction($message, $bindings)
     {
-        try
-        {
-            return static::firstOrCreate([
-                'tx_index' => $bindings['tx_index'],
-            ],[
-                'message_index' => $message['message_index'],
-                'type' => $message['category'],
-                'source' => $bindings['source'],
-                'tx_hash' => $bindings['tx_hash'],
-                'block_index' => $bindings['block_index'],
-                'destination' => isset($bindings['destination']) ? $bindings['destination'] : null,
-                'valid' => strpos($bindings['status'], 'invalid') === false ? 1 : 0,
-                'timestamp' => $message['timestamp'],
-                'confirmed_at' => $bindings['confirmed_at'],
-            ]);
-        }
-        catch(\Exception $e)
-        {
-            \Storage::append('failed.log', 'Transaction: ' . $message['message_index'] . ' ' . serialize($e->getMessage()));
-        }
-    }
-
-    /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
-    public function getRouteKeyName()
-    {
-        return 'tx_hash';
+        return static::firstOrCreate([
+            'tx_index' => $bindings['tx_index'],
+        ],[
+            'message_index' => $message['message_index'],
+            'type' => $message['category'],
+            'source' => $bindings['source'],
+            'tx_hash' => $bindings['tx_hash'],
+            'block_index' => $bindings['block_index'],
+            'destination' => isset($bindings['destination']) ? $bindings['destination'] : null,
+            'valid' => strpos($bindings['status'], 'invalid') === false ? 1 : 0,
+            'timestamp' => $message['timestamp'],
+            'confirmed_at' => $bindings['confirmed_at'],
+        ]);
     }
 }

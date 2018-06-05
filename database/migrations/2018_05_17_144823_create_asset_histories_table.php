@@ -20,7 +20,7 @@ class CreateAssetHistoriesTable extends Migration
             $table->unsignedBigInteger('value')->default(0);
             $table->unsignedInteger('quality_score')->default(0)->index();
             $table->unsignedBigInteger('timestamp');
-            $table->timestamp('confirmed_at')->index();
+            $table->datetime('confirmed_at')->index();
             $table->timestamps();
         });
     }

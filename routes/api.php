@@ -13,6 +13,11 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::get('/search', [
+    'as' => 'api.search.index',
+    'uses' => 'Api\SearchController@index',
+]);
+
 Route::get('/statistics', [
     'as' => 'api.statistics.index',
     'uses' => 'Api\StatisticsController@index',

@@ -16,8 +16,8 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             // Columns
             $table->unsignedBigInteger('tx_index');
-            $table->string('tx_hash')->unique();
             $table->unsignedBigInteger('block_index')->index();
+            $table->string('tx_hash')->unique();
             $table->string('source')->index();
             $table->string('give_asset')->index();
             $table->unsignedBigInteger('give_quantity');
@@ -41,7 +41,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('fee_provided_remaining_usd')->default(0);
             $table->string('status')->index();
             $table->unsignedInteger('quality_score')->default(0)->index();
-            $table->timestamp('confirmed_at')->index();
+            $table->datetime('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('tx_index');

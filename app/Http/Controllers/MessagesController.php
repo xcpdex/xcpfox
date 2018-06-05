@@ -23,7 +23,7 @@ class MessagesController extends Controller
      */
     public function show(Request $request, $message_index)
     {
-        $message = \App\Message::findOrFail($message_index);
+        $message = \App\Message::with('transaction')->findOrFail($message_index);
 
         $message_type = getTitleFromType($message->category);
 

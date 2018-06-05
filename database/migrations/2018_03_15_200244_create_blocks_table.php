@@ -31,8 +31,8 @@ class CreateBlocksTable extends Migration
             $table->unsignedBigInteger('weight')->default(0);
             $table->unsignedBigInteger('tx_count')->default(0);
             $table->unsignedBigInteger('timestamp');
-            $table->timestamp('confirmed_at')->index();
-            $table->timestamp('processed_at')->nullable();
+            $table->datetime('confirmed_at')->index();
+            $table->datetime('processed_at')->nullable()->index();
             $table->timestamps();
             // Indexes
             $table->primary('block_index');

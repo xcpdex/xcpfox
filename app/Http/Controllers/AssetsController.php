@@ -25,11 +25,17 @@ class AssetsController extends Controller
     {
         try
         {
-            $asset = \App\Asset::whereAssetName($asset_name)->withCount('balances', 'sends')->firstOrFail();
+            $asset = \Cache::tags([$asset_name])->rememberForever('assets_show_' . $asset_name, function () use ($asset_name) {
+                return \App\Asset::where('asset_name', '=', $asset_name)
+                    ->withCount('currentBalances', 'sends')
+                    ->orWhere('asset_longname', '=', $asset_name)
+                    ->withCount('currentBalances', 'sends')
+                    ->firstOrFail();
+            });
         }
         catch(\Exception $e)
         {
-            $asset = \App\Asset::whereAssetLongname($asset_name)->withCount('balances', 'sends')->firstOrFail();
+            //
         }
 
         return view('assets.show', compact('asset'));

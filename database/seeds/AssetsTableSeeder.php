@@ -12,7 +12,6 @@ class AssetsTableSeeder extends Seeder
     public function run()
     {
         \App\Asset::create([
-            'asset_id' => 0,
             'type' => 'asset',
             'divisible' => 1,
             'asset_name' => 'BTC',
@@ -22,7 +21,6 @@ class AssetsTableSeeder extends Seeder
         ]);
 
         \App\Asset::create([
-            'asset_id' => 1,
             'type' => 'asset',
             'divisible' => 1,
             'asset_name' => 'XCP',

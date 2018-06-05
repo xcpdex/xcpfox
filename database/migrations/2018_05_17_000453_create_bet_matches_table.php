@@ -42,7 +42,7 @@ class CreateBetMatchesTable extends Migration
             $table->unsignedBigInteger('fee_fraction_int');
             $table->string('status')->index();
             $table->unsignedInteger('quality_score')->default(0)->index();
-            $table->timestamp('confirmed_at')->index();
+            $table->datetime('confirmed_at')->index();
             $table->timestamps();
             // Indexes
             $table->primary('id');
