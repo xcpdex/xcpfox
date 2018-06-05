@@ -38,16 +38,8 @@ class UpdateBlocks implements ShouldQueue
      */
     public function handle()
     {
-        try
-        {
-            // Get Blocks
-            $blocks = $this->getBlocks($this->first_block, $this->last_block);
-        }
-        catch(\Exception $e)
-        {
-            \Storage::append('failed.log', 'API Failed: [' . $this->first_block . ', ' . $this->last_block . '] ' . serialize($e->getMessage()));
-            return false;
-        }
+        // Get Blocks
+        $blocks = $this->getBlocks($this->first_block, $this->last_block);
 
         foreach($blocks as $block_data)
         {
@@ -116,24 +108,7 @@ class UpdateBlocks implements ShouldQueue
                     $this->handleReorg($message, $bindings);
                 }
             }
-            else
-            {
-                \Storage::append('failed.log', 'Message: ' . $message['message_index']);
-                return false;
-            }
         }
-    }
-
-    /**
-     * Get Bindings
-     * Nice array for avoiding database calls.
-     */
-    private function getBindings($message, $block_time)
-    {
-        $bindings = get_object_vars(json_decode($message['bindings']));
-        $confirmed_at = \Carbon\Carbon::createFromTimestamp($block_time)->toDateTimeString();
-
-        return array_merge($bindings, ['confirmed_at' => $confirmed_at]);
     }
 
     /**
@@ -160,6 +135,9 @@ class UpdateBlocks implements ShouldQueue
             // Addresses/Assets/Balances/Replace
             $this->handleAddressesAssetsBalancesReplace($message, $bindings);
 
+            // Get Model Name From Category Type
+            $model_name = getModelNameFromType($message['category']);
+
             // Lookup Keys for Model and Bindings
             $lookup = getCreateLookupKeys($message, $bindings);
 
@@ -171,27 +149,14 @@ class UpdateBlocks implements ShouldQueue
 
                 // Unset the Lookup Binding Value Used
                 unset($bindings[$lookup['bindings_key']]);
-            }
 
-            // Get Model Name From Category Type
-            $model_name = getModelNameFromType($message['category']);
-
-            try
-            {
-                if($lookup)
-                {
-                    // Oo la la
-                    $model_name::firstOrCreate([$key => $value], $bindings);
-                }
-                else
-                {
-                    // Oo la la
-                    $model_name::firstOrCreate($bindings);
-                }
+                // Oo la la
+                $model_name::firstOrCreate([$key => $value], $bindings);
             }
-            catch(\Exception $e)
+            else
             {
-                \Storage::append('failed.log', 'Insert: ' . $message['message_index'] . ' ' . serialize($e->getMessage()));
+                // Oo la la
+                $model_name::firstOrCreate($bindings);
             }
         }
     }
@@ -215,15 +180,8 @@ class UpdateBlocks implements ShouldQueue
         // Get Model Name From Category Type
         $model_name = getModelNameFromType($message['category']);
 
-        try
-        {
-            // Oo la la
-            return $model_name::updateOrCreate([$key => $value], $bindings);
-        }
-        catch(\Exception $e)
-        {
-            \Storage::append('failed.log', 'Update: ' . $message['message_index'] . ' ' . serialize($e->getMessage()));
-        }
+        // Oo la la
+        return $model_name::updateOrCreate([$key => $value], $bindings);
     }
 
     /**
@@ -244,26 +202,19 @@ class UpdateBlocks implements ShouldQueue
             \Redis::connection()->del('queues:high');
             \Redis::connection()->del('queues:default');
 
-            try
+            // Delete All the Things
+            \DB::transaction(function () use($bindings, $rollback)
             {
-                // Delete All the Things
-                \DB::transaction(function () use($bindings, $rollback)
+                $tables = ['blocks', 'comments', 'messages', 'transactions', 'bet_expirations', 'bet_match_expirations', 'bet_match_resolutions', 'bet_matches', 'bets', 'broadcasts', 'btcpays', 'burns', 'cancels', 'credits', 'debits', 'destructions', 'dividends', 'issuances', 'order_expirations', 'order_match_expirations', 'order_matches', 'orders', 'replaces', 'rps', 'rps_expirations', 'rps_match_expirations', 'rpsresolves', 'sends', 'addresses', 'assets', 'balances'];
+
+                foreach($tables as $table)
                 {
-                    $tables = ['blocks', 'comments', 'messages', 'transactions', 'bet_expirations', 'bet_match_expirations', 'bet_match_resolutions', 'bet_matches', 'bets', 'broadcasts', 'btcpays', 'burns', 'cancels', 'credits', 'debits', 'destructions', 'dividends', 'issuances', 'order_expirations', 'order_match_expirations', 'order_matches', 'orders', 'replaces', 'rps', 'rps_expirations', 'rps_match_expirations', 'rpsresolves', 'sends', 'addresses', 'assets', 'balances'];
+                   \DB::table($table)->where('block_index', '>', $bindings['block_index'])->delete();
+                }
 
-                    foreach($tables as $table)
-                    {
-                       \DB::table($table)->where('block_index', '>', $bindings['block_index'])->delete();
-                    }
-
-                    // Mark Completed
-                    $rollback->update(['processed_at' => \Carbon\Carbon::now()]);
-                });
-            }
-            catch(\Exception $e)
-            {
-                \Storage::append('failed.log', 'Reorg: ' . $message['message_index'] . ' ' . serialize($e->getMessage()));
-            }
+                // Mark Completed
+                $rollback->update(['processed_at' => \Carbon\Carbon::now()]);
+            });
         }
     }
 
@@ -287,6 +238,18 @@ class UpdateBlocks implements ShouldQueue
         {
             \App\Address::updateAddressOptions($bindings);
         }
+    }
+
+    /**
+     * Get Bindings
+     * Nice array for avoiding database calls.
+     */
+    private function getBindings($message, $block_time)
+    {
+        $bindings = get_object_vars(json_decode($message['bindings']));
+        $confirmed_at = \Carbon\Carbon::createFromTimestamp($block_time)->toDateTimeString();
+
+        return array_merge($bindings, ['confirmed_at' => $confirmed_at]);
     }
 
     private function guardAgainstInvalidMessages($message, $bindings)

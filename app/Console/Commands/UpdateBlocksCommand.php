@@ -63,7 +63,6 @@ class UpdateBlocksCommand extends Command
      */
     private function guardAgainstSyncingDuringActiveRollbacks()
     {
-        // Active Rollbacks Haven't Been Processed
         return \App\Rollback::whereNull('processed_at')->doesntExist();
     }
 }

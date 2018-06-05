@@ -99,4 +99,26 @@ class Block extends Model
             'confirmed_at' => \Carbon\Carbon::createFromTimestamp($data['block_time']),
         ]);
     }
+
+    /**
+     * Update Block
+     *
+     * @param  arr  $data
+     * @return \App\Block
+     */
+    public function updateBlock($data)
+    {
+        $this->update([
+            'next_block_hash' => isset($data['nextblockhash']) ? $data['nextblockhash'] : null,
+            'merkle_root' => $data['merkleroot'],
+            'chainwork' => $data['chainwork'],
+            'nonce' => $data['nonce'],
+            'size' => $data['size'],
+            'stripped_size' => $data['strippedsize'],
+            'weight' => $data['weight'],
+            'tx_count' => count($data['tx']),
+            'confirmed_at' => $this->confirmed_at,
+            'processed_at' => \Carbon\Carbon::now()->toDateTimeString(),
+        ]);
+    }
 }

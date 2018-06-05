@@ -34,34 +34,16 @@ class UpdateBlock implements ShouldQueue
      */
     public function handle()
     {
-        try
-        {
-            $block_data = $this->getBlock($this->block->block_hash);
+        $data = $this->getBlock();
 
-            $this->block->update([
-                'next_block_hash' => isset($block_data['nextblockhash']) ? $block_data['nextblockhash'] : null,
-                'merkle_root' => $block_data['merkleroot'],
-                'chainwork' => $block_data['chainwork'],
-                'nonce' => $block_data['nonce'],
-                'size' => $block_data['size'],
-                'stripped_size' => $block_data['strippedsize'],
-                'weight' => $block_data['weight'],
-                'tx_count' => count($block_data['tx']),
-                'confirmed_at' => $this->block->confirmed_at,
-                'processed_at' => \Carbon\Carbon::now()->toDateTimeString(),
-            ]);
-        }
-        catch(\Exception $e)
-        {
-            \Storage::append('failed.log', 'Update Block: ' . serialize($e->getMessage()));
-        }
+        $this->block->updateBlock($data);
     }
 
     /**
      * Bitcoin API
      */
-    private function getBlock($block_hash)
+    private function getBlock()
     {
-        return $this->bitcoin->execute('getblock', [$block_hash]);
+        return $this->bitcoin->execute('getblock', [$this->block->block_hash]);
     }
 }

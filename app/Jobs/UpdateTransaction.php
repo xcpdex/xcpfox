@@ -22,15 +22,9 @@ class UpdateTransaction implements ShouldQueue
      */
     public function __construct(\App\Transaction $transaction)
     {
-        try
-        {
-            $this->counterparty = new \JsonRPC\Client(env('CP_API'));
-            $this->counterparty->authentication(env('CP_USER'), env('CP_PASS'));
-            $this->transaction = $transaction;
-        }
-        catch(\Exception $e)
-        {
-        }
+        $this->counterparty = new \JsonRPC\Client(env('CP_API'));
+        $this->counterparty->authentication(env('CP_USER'), env('CP_PASS'));
+        $this->transaction = $transaction;
     }
 
     /**
@@ -40,62 +34,37 @@ class UpdateTransaction implements ShouldQueue
      */
     public function handle()
     {
-        if($this->transaction->processed_at) return true;
-
-        try
+        if(! $this->transaction->processed_at)
         {
-            $rt_data = $this->counterparty->execute('getrawtransaction', [
-                'tx_hash' => $this->transaction->tx_hash,
-                'verbose' => true,
-            ]);
+            $raw = $this->getRawTransaction();
 
-            $tx_data = $this->counterparty->execute('get_tx_info', [
-                'tx_hex' => $rt_data['hex'],
-                'block_index' => $this->transaction->block_index,
-            ]);
+            $data = $this->getTxInfo($raw);
 
-            $this->transaction->update([
-                'destination' => $tx_data[1],
-                'quantity' => is_null($tx_data[2]) ? 0 : $tx_data[2],
-                'quantity_usd' => $this->getUSD($this->transaction, $tx_data[2]),
-                'fee' => $tx_data[3],
-                'fee_usd' => $this->getUSD($this->transaction, $tx_data[3]),
-                'size' => $rt_data['size'],
-                'vsize' => $rt_data['vsize'],
-                'inputs' => count($rt_data['vin']),
-                'outputs' => count($rt_data['vout']),
-                'raw' => $rt_data,
-                'quality_score' => 1,
-                'confirmed_at' => $this->transaction->confirmed_at,
-                'processed_at' => \Carbon\Carbon::now(),
-            ]);
-        }
-        catch(\Exception $e)
-        {
-            \Storage::append('failed.log', 'Update TX: ' . serialize($e->getMessage()));
+            $this->transaction->updateTransaction($raw, $data);
         }
     }
 
-    private function getUSD($transaction, $satoshis)
+    /**
+     * Counterparty API
+     * getrawtransaction
+     */
+    private function getRawTransaction()
     {
-        if(is_null($satoshis)) $satoshis = 0;
+        return $this->counterparty->execute('getrawtransaction', [
+            'tx_hash' => $this->transaction->tx_hash,
+            'verbose' => true,
+        ]);
+    }
 
-        $confirmed_at = $transaction->confirmed_at->toDateString() . '%';
-
-        try
-        {
-            $historical = \App\AssetHistory::whereType('price')
-                ->whereQualityScore(1)
-                ->whereAsset('BTC')
-                ->where('confirmed_at', 'like', $confirmed_at)
-                ->latest('confirmed_at')
-                ->firstOrFail();
-        }
-        catch(\Exception $e)
-        {
-            return 0;
-        }
-
-        return $historical->value * $satoshis / 100000000;
+    /**
+     * Counterparty API
+     * getrawtransaction
+     */
+    private function getTxInfo($raw)
+    {
+        return $this->counterparty->execute('get_tx_info', [
+            'tx_hex' => $raw['hex'],
+            'block_index' => $this->transaction->block_index,
+        ]);
     }
 }

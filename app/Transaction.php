@@ -168,4 +168,30 @@ class Transaction extends Model
             'confirmed_at' => $bindings['confirmed_at'],
         ]);
     }
+
+    /**
+     * Update Transaction
+     *
+     * @param  arr  $raw
+     * @param  arr  $data
+     * @return \App\Transaction
+     */
+    public function updateTransaction($raw, $data)
+    {
+        return $this->update([
+            'destination' => $data[1],
+            'quantity' => is_null($data[2]) ? 0 : $data[2],
+            'quantity_usd' => \App\AssetHistory::convertBTCtoUSD($this, $data[2]),
+            'fee' => $data[3],
+            'fee_usd' => \App\AssetHistory::convertBTCtoUSD($this, $data[3]),
+            'size' => $raw['size'],
+            'vsize' => $raw['vsize'],
+            'inputs' => count($raw['vin']),
+            'outputs' => count($raw['vout']),
+            'raw' => $raw,
+            'quality_score' => 1,
+            'confirmed_at' => $this->confirmed_at,
+            'processed_at' => \Carbon\Carbon::now(),
+        ]);
+    }
 }
