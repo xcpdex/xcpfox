@@ -12,7 +12,7 @@ class Balance extends Model
      * @var array
      */
     protected $fillable = [
-        'address', 'asset', 'quantity', 'quantity_usd', 'message_index', 'block_index', 'quality_score', 'current', 'confirmed_at',
+        'address', 'asset', 'quantity', 'quantity_usd', 'block_index', 'quality_score', 'current', 'confirmed_at',
     ];
 
     /**
@@ -64,47 +64,10 @@ class Balance extends Model
     }
 
     /**
-     * Update Current Balance
-     *
-     * @param  arr  $message
-     * @param  arr  $bindings
-     * @return \App\Balance
+     * Current Balances
      */
-    public static function updateOrCreateBalance($message, $bindings)
+    public function scopeCurrent($query)
     {
-        // Last Balance
-        $last_balance = static::where('address', '=', $bindings['address'])
-            ->where('asset', '=', $bindings['asset'])
-            ->where('current', '=', 1)
-            ->orderBy('message_index', 'desc')
-            ->first();
-
-        $quantity = $bindings['quantity'];
-
-        if($last_balance && $message['category'] === 'credits')
-        {
-            $quantity = $last_balance->quantity + $quantity;
-        }
-
-        if($last_balance && $message['category'] === 'debits')
-        {
-            $quantity = $last_balance->quantity - $quantity;
-        }
-
-        if($quantity < 0) $quantity = 0;
-
-        static::firstOrCreate([
-            'address' => $bindings['address'],
-            'asset' => $bindings['asset'],
-            'block_index' => $bindings['block_index'],
-            'message_index' => $message['message_index'],
-        ],[
-            'current' => 1,
-            'quantity' => $quantity,
-            'quantity_usd' => 0,
-            'confirmed_at' => $bindings['confirmed_at'],
-        ]);
-
-        if($last_balance) $last_balance->update(['current' => 0]);
+        return $query->where('current', '=', 1)->where('quantity', '>', 0);
     }
 }

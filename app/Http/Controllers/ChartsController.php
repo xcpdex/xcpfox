@@ -13,7 +13,7 @@ class ChartsController extends Controller
      */
     public function index(Request $request)
     {
-        return view('charts.index');      
+        return view('charts.index');
     }
 
     /**
@@ -21,17 +21,9 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showTotalIssuance(Request $request)
+    public function showAddresses(Request $request)
     {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.total-issuance', compact('chart', 'group_by'));        
+        return $this->getControllerTemplate($request, 'addresses');
     }
 
     /**
@@ -39,17 +31,9 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showCumulativeIssuance(Request $request)
+    public function showActiveAddresses(Request $request)
     {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.cumulative-issuance', compact('chart', 'group_by'));        
+        return $this->getControllerTemplate($request, 'active-addresses');
     }
 
     /**
@@ -57,17 +41,9 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showTotalSent(Request $request)
+    public function showHodlAddresses(Request $request)
     {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.total-sent', compact('chart', 'group_by'));        
+        return $this->getControllerTemplate($request, 'hodl-addresses');
     }
 
     /**
@@ -75,17 +51,9 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showCumulativeSent(Request $request)
+    public function showAssets(Request $request)
     {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.cumulative-sent', compact('chart', 'group_by'));        
+        return $this->getControllerTemplate($request, 'assets');
     }
 
     /**
@@ -93,17 +61,9 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showTotalSends(Request $request)
+    public function showActiveAssets(Request $request)
     {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.total-sends', compact('chart', 'group_by'));        
+        return $this->getControllerTemplate($request, 'active-assets');
     }
 
     /**
@@ -111,17 +71,9 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showCumulativeSends(Request $request)
+    public function showBlockShare(Request $request)
     {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.cumulative-sends', compact('chart', 'group_by'));      
+        return $this->getControllerTemplate($request, 'block-share');
     }
 
     /**
@@ -129,17 +81,9 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showAverageOrderExpiration(Request $request)
+    public function showFees(Request $request)
     {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.average-order-expiration', compact('chart', 'group_by'));        
+        return $this->getControllerTemplate($request, 'fees');
     }
 
     /**
@@ -147,449 +91,9 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showTotalOrders(Request $request)
+    public function showFeeRates(Request $request)
     {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.total-orders', compact('chart', 'group_by'));        
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showCumulativeOrders(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.cumulative-orders', compact('chart', 'group_by'));      
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showTotalAssets(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.total-assets', compact('chart', 'group_by'));        
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showCumulativeAssets(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.cumulative-assets', compact('chart', 'group_by'));      
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showTotalAddresses(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.total-addresses', compact('chart', 'group_by'));        
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showCumulativeAddresses(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.cumulative-addresses', compact('chart', 'group_by'));      
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showTotalTransactions(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.total-transactions', compact('chart', 'group_by'));        
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showCumulativeTransactions(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.cumulative-transactions', compact('chart', 'group_by'));      
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showTransactionTypes(Request $request)
-    {
-        return view('charts.transaction-types');      
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showTotalMessages(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.total-messages', compact('chart', 'group_by'));        
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showCumulativeMessages(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.cumulative-messages', compact('chart', 'group_by'));      
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showMessageCategories(Request $request)
-    {
-        return view('charts.message-categories');      
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showXcpPrice(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-        ]);
-
-        $chart = $request->input('chart', 'area');
-
-        return view('charts.xcp-price', compact('chart'));    
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showXcpVolume(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-        ]);
-
-        $chart = $request->input('chart', 'area');
-
-        return view('charts.xcp-volume', compact('chart'));    
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showXcpMarketCap(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-        ]);
-
-        $chart = $request->input('chart', 'area');
-
-        return view('charts.xcp-market-cap', compact('chart'));    
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showTxsByType(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.txs-by-type', compact('chart', 'group_by'));    
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showAverageBurnRate(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-        ]);
-
-        $chart = $request->input('chart', 'area');
-
-        return view('charts.average-burn-rate', compact('chart'));        
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showAverageBurn(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-        ]);
-
-        $chart = $request->input('chart', 'area');
-
-        return view('charts.average-burn', compact('chart'));        
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showAverageBurnUsd(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-        ]);
-
-        $chart = $request->input('chart', 'area');
-
-        return view('charts.average-burn-usd', compact('chart'));        
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showTotalBurn(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-        ]);
-
-        $chart = $request->input('chart', 'area');
-
-        return view('charts.total-burn', compact('chart'));        
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showTotalBurnUsd(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-        ]);
-
-        $chart = $request->input('chart', 'area');
-
-        return view('charts.total-burn-usd', compact('chart'));        
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showCumulativeBurn(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-        ]);
-
-        $chart = $request->input('chart', 'area');
-
-        return view('charts.cumulative-burn', compact('chart'));        
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showCumulativeBurnUsd(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-        ]);
-
-        $chart = $request->input('chart', 'area');
-
-        return view('charts.cumulative-burn-usd', compact('chart'));        
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showTotalFees(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.total-fees', compact('chart', 'group_by'));        
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showTotalFeesUsd(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.total-fees-usd', compact('chart', 'group_by'));      
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showCumulativeFees(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.cumulative-fees', compact('chart', 'group_by'));        
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showCumulativeFeesUsd(Request $request)
-    {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.cumulative-fees-usd', compact('chart', 'group_by'));      
+        return $this->getControllerTemplate($request, 'fee-rates');
     }
 
     /**
@@ -599,15 +103,7 @@ class ChartsController extends Controller
      */
     public function showAverageFee(Request $request)
     {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.average-fee', compact('chart', 'group_by'));        
+        return $this->getControllerTemplate($request, 'average-fee');
     }
 
     /**
@@ -615,17 +111,9 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showAverageFeeUsd(Request $request)
+    public function showMessages(Request $request)
     {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.average-fee-usd', compact('chart', 'group_by'));      
+        return $this->getControllerTemplate($request, 'messages');
     }
 
     /**
@@ -633,17 +121,9 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showAverageFeeRate(Request $request)
+    public function showOrders(Request $request)
     {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.average-fee-rate', compact('chart', 'group_by'));        
+        return $this->getControllerTemplate($request, 'orders');
     }
 
     /**
@@ -651,17 +131,11 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showTotalSize(Request $request)
+    public function showRegistrationFee(Request $request)
     {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
+        $override = $request->input('currency', 'XCP');
 
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.total-size', compact('chart', 'group_by'));        
+        return $this->getControllerTemplate($request, 'registration-fee', $override);
     }
 
     /**
@@ -669,17 +143,9 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showCumulativeSize(Request $request)
+    public function showSends(Request $request)
     {
-        $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
-            'group_by' => 'sometimes|in:date,month,year'
-        ]);
-
-        $chart = $request->input('chart', 'area');
-        $group_by = $request->input('group_by', 'date');
-
-        return view('charts.cumulative-size', compact('chart', 'group_by'));        
+        return $this->getControllerTemplate($request, 'sends');
     }
 
     /**
@@ -687,16 +153,38 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showAverageSize(Request $request)
+    public function showTransactions(Request $request)
+    {
+        return $this->getControllerTemplate($request, 'transactions');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showTransactionSize(Request $request)
+    {
+        return $this->getControllerTemplate($request, 'transaction-size');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    private function getControllerTemplate(Request $request, $view, $override=null)
     {
         $request->validate([
-            'chart' => 'sometimes|in:area,line,column',
+            'chart_type' => 'sometimes|in:area,line,column',
+            'currency' => 'sometimes|in:BTC,USD,XCP',
             'group_by' => 'sometimes|in:date,month,year'
         ]);
 
-        $chart = $request->input('chart', 'area');
+        $chart_type = $request->input('chart_type', 'line');
+        $currency = $override ? $override : $request->input('currency', 'BTC');
         $group_by = $request->input('group_by', 'date');
 
-        return view('charts.average-size', compact('chart', 'group_by'));        
+        return view("charts.{$view}", compact('chart_type', 'currency', 'group_by'));
     }
 }

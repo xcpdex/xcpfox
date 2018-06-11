@@ -45,7 +45,7 @@ class BlockHeightCommand extends Command
         if($this->isNewBlockHeight())
         {
             $this->call('update:blocks');
-            // $this->call('update:blocks:next');
+            $this->call('update:blocks:next');
         }
     }
 

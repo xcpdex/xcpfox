@@ -5,505 +5,437 @@
 @section('content')
 <div class="container mt-1">
     <h1 class="text-center">Counterparty Charts</h1>
-    <h3 class="text-center mt-4">Price Data</h3>
     <div class="row">
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.xcp-price')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/xcp-price-usd.png') }}" alt="XCP Price Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.xcp-price')) }}">
-                            XCP Price
+        <div class="col-md-6">
+            <h3 class="text-center mt-5">Transaction Data</h3>
+            <div class="row">
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.transactions')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-transactions.png') }}" alt="Total Transactions Chart" />
                         </a>
-                    </h5>
-                    <p class="card-text">USD price history for Counterparty's native currency XCP.</p>
-                    <a href="{{ url(route('charts.xcp-price')) }}" class="btn btn-primary">View Chart</a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.transactions')) }}">
+                                    Transactions Per Day
+                                </a>
+                            </h5>
+                            <p class="card-text">Chart showing number of confirmed bitcoin transactions using Counterparty.</p>
+                            <a href="{{ url(route('charts.transactions')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.pie.transactions')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-transaction-types.png') }}" alt="Transaction Types Chart" />
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.pie.transactions')) }}">
+                                    Transaction Types
+                                </a>
+                            </h5>
+                            <p class="card-text">Breakdown of the types of transactions written to the Bitcoin blockchain.</p>
+                            <a href="{{ url(route('charts.pie.transactions')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.xcp-market-cap')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/xcp-market-cap-usd.png') }}" alt="XCP Market Cap Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.xcp-market-cap')) }}">
-                            XCP Market Cap
+        <div class="col-md-6">
+            <h3 class="text-center mt-5">Message Data</h3>
+            <div class="row">
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.messages')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-messages.png') }}" alt="Total Messages Chart" />
                         </a>
-                    </h5>
-                    <p class="card-text">USD market cap history for Counterparty's native currency XCP.</p>
-                    <a href="{{ url(route('charts.xcp-market-cap')) }}" class="btn btn-primary">View Chart</a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.messages')) }}">
+                                    Messages Per Day
+                                </a>
+                            </h5>
+                            <p class="card-text">Chart showing total messages or "operations" processed by federated nodes.</p>
+                            <a href="{{ url(route('charts.messages')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.xcp-volume')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/xcp-volume-usd.png') }}" alt="XCP Volume Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.xcp-volume')) }}">
-                            XCP Volume
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.pie.messages')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-message-categories.png') }}" alt="Message Use Chart" />
                         </a>
-                    </h5>
-                    <p class="card-text">USD volume history for Counterparty's native currency XCP.</p>
-                    <a href="{{ url(route('charts.xcp-volume')) }}" class="btn btn-primary">View Chart</a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.pie.messages')) }}">
+                                    Message Categories
+                                </a>
+                            </h5>
+                            <p class="card-text">Breakdown of protocol messages processed by federated nodes.</p>
+                            <a href="{{ url(route('charts.pie.messages')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <h3 class="text-center mt-5">Message Data</h3>
     <div class="row">
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.message-categories')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/message-use.png') }}" alt="Message Use Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.message-categories')) }}">
-                            Message Categories
+        <div class="col-md-6">
+            <h3 class="text-center mt-5">Fee Data</h3>
+            <div class="row">
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.averageFee')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-average-fee.png') }}" alt="Average Counterparty Fee Chart" />
                         </a>
-                    </h5>
-                    <p class="card-text">Breakdown of protocol messages and their use in the network.</p>
-                    <a href="{{ url(route('charts.message-categories')) }}" class="btn btn-primary">View Chart</a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.averageFee')) }}">
+                                    Average Fee
+                                </a>
+                            </h5>
+                            <p class="card-text">Chart of the average transaction fee paid by a Counterparty user.</p>
+                            <a href="{{ url(route('charts.averageFee')) }}" class="btn btn-primary">BTC</a>
+                            <a href="{{ url(route('charts.averageFee', ['currency' => 'USD'])) }}" class="btn btn-primary">USD</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.fees')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-transaction-fees.png') }}" alt="Total Counterparty Fees Chart" />
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.fees')) }}">
+                                    Total Fees
+                                </a>
+                            </h5>
+                            <p class="card-text">Chart of total transaction fees paid by all Counterparty users across the network.</p>
+                            <a href="{{ url(route('charts.fees')) }}" class="btn btn-primary">BTC</a>
+                            <a href="{{ url(route('charts.fees', ['currency' => 'USD'])) }}" class="btn btn-primary">USD</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.total-messages')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/total-messages.png') }}" alt="Total Messages Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.total-messages')) }}">
-                            Total Messages
+        <div class="col-md-6">
+            <h3 class="text-center mt-5">Fee Rate Data</h3>
+            <div class="row">
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.areaRange.feeRate')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-average-fee-rate.png') }}" alt="Average Counterparty Fee Rate Chart" />
                         </a>
-                    </h5>
-                    <p class="card-text">Chart showing total messages or "operations" processed by the network.</p>
-                    <a href="{{ url(route('charts.total-messages')) }}" class="btn btn-primary">View Chart</a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.areaRange.feeRate')) }}">
+                                    Avg. Fee Rate
+                                </a>
+                            </h5>
+                            <p class="card-text">Chart of the average fee rate paid by a Counterparty user (satoshis per byte.)</p>
+                            <a href="{{ url(route('charts.areaRange.feeRate')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.cumulative-messages')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/cumulative-messages.png') }}" alt="Cumulative Messages Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.cumulative-messages')) }}">
-                            Cumulative Messages
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.feeRates')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-fee-rates.png') }}" alt="Counterparty Fee Rates Chart" />
                         </a>
-                    </h5>
-                    <p class="card-text">Cumulative messages or "operations" processed by the network over time.</p>
-                    <a href="{{ url(route('charts.cumulative-messages')) }}" class="btn btn-primary">View Chart</a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.feeRates')) }}">
+                                    Fee Rates Paid
+                                </a>
+                            </h5>
+                            <p class="card-text">A closer look at the fee rates paid by Counterparty users over the last 7 days.</p>
+                            <a href="{{ url(route('charts.feeRates')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <h3 class="text-center mt-5">TX Data</h3>
     <div class="row">
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.transaction-types')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/transaction-types.png') }}" alt="Transaction Types Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.transaction-types')) }}">
-                            Transaction Types
+        <div class="col-md-6">
+            <h3 class="text-center mt-5">Size Data</h3>
+            <div class="row">
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.areaRange.transactionSize')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-average-transaction-size.png') }}" alt="Average Transacation Size Chart" />
                         </a>
-                    </h5>
-                    <p class="card-text">Breakdown of types of transactions written to the Bitcoin blockchain.</p>
-                    <a href="{{ url(route('charts.transaction-types')) }}" class="btn btn-primary">View Chart</a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.areaRange.transactionSize')) }}">
+                                    Average Tx Size
+                                </a>
+                            </h5>
+                            <p class="card-text">Chart of the average size, in bytes, of a Counterparty transaction.</p>
+                            <a href="{{ url(route('charts.areaRange.transactionSize')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.transactionSize')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-transaction-size.png') }}" alt="Total Transaction Data Chart" />
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.transactionSize')) }}">
+                                    Total Tx Data
+                                </a>
+                            </h5>
+                            <p class="card-text">Chart of the total amount of block space used by Counterparty transactions.</p>
+                            <a href="{{ url(route('charts.transactionSize')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.total-transactions')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/total-transactions.png') }}" alt="Total Transactions Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.total-transactions')) }}">
-                            Total Transactions
+        <div class="col-md-6">
+            <h3 class="text-center mt-5">Block Data</h3>
+            <div class="row">
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.blockShare')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-block-share.png') }}" alt="Counterparty Block Share Chart" />
                         </a>
-                    </h5>
-                    <p class="card-text">Chart showing total # of bitcoin transactions using Counterparty.</p>
-                    <a href="{{ url(route('charts.total-transactions')) }}" class="btn btn-primary">View Chart</a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.blockShare')) }}">
+                                    Block Share
+                                </a>
+                            </h5>
+                            <p class="card-text">What percent of Bitcoin transactions are Counterparty transactions per month.</p>
+                            <a href="{{ url(route('charts.blockShare')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.cumulative-transactions')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/cumulative-transactions.png') }}" alt="Cumulative Transactions Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.cumulative-transactions')) }}">
-                            Cumulative Transactions
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.pie.blocks')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-block-presence.png') }}" alt="Counterparty Block Presence Chart" />
                         </a>
-                    </h5>
-                    <p class="card-text">Cumulative # of bitcoin transactions using Counterparty over time.</p>
-                    <a href="{{ url(route('charts.cumulative-transactions')) }}" class="btn btn-primary">View Chart</a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.pie.blocks')) }}">
+                                    Block Presence
+                                </a>
+                            </h5>
+                            <p class="card-text">What percent of Bitcoin blocks have contained Counterparty transactions since launch.</p>
+                            <a href="{{ url(route('charts.pie.blocks')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <h3 class="text-center mt-5">Size Data</h3>
     <div class="row">
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.average-size')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/average-transaction-size.png') }}" alt="Average Transacation Size Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.average-size')) }}">
-                            Average Size
+        <div class="col-md-6">
+            <h3 class="text-center mt-5">Asset Data</h3>
+            <div class="row">
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.assets')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-new-assets.png') }}" alt="New Assets Chart" />
                         </a>
-                    </h5>
-                    <p class="card-text">Chart of the average size, in bytes, of a Counterparty transaction.</p>
-                    <a href="{{ url(route('charts.average-size')) }}" class="btn btn-primary">View Chart</a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.assets')) }}">
+                                    New Assets
+                                </a>
+                            </h5>
+                            <p class="card-text">New Counterparty asset registrations shown per day, per month, and per year.</p>
+                            <a href="{{ url(route('charts.assets')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.activeAssets')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-active-assets.png') }}" alt="Active Assets Chart" />
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.activeAssets')) }}">
+                                    Active Assets
+                                </a>
+                            </h5>
+                            <p class="card-text">Active assets, based on whether any holders had a change in their balance.</p>
+                            <a href="{{ url(route('charts.activeAssets')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.registrationFee')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-registration-fee.png') }}" alt="Average Registration Fee Chart" />
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.registrationFee')) }}">
+                                    Registration Fee
+                                </a>
+                            </h5>
+                            <p class="card-text">Average registration fee paid by asset issuers to create an asset of any type.</p>
+                            <a href="{{ url(route('charts.registrationFee')) }}" class="btn btn-primary">XCP</a>
+                            <a href="{{ url(route('charts.registrationFee', ['currency' => 'USD'])) }}" class="btn btn-primary">USD</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.pie.assets')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-asset-types.png') }}" alt="Counterparty Asset Types Chart" />
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.pie.assets')) }}">
+                                    Asset Types
+                                </a>
+                            </h5>
+                            <p class="card-text">Breakdown of the types of assets that users register: asset, subasset, or numeric.</p>
+                            <a href="{{ url(route('charts.pie.assets')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.total-size')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/total-transaction-data.png') }}" alt="Total Transaction Data Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.total-size')) }}">
-                            Total Size
+        <div class="col-md-6">
+            <h3 class="text-center mt-5">Address Data</h3>
+            <div class="row">
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.addresses')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-new-addresses.png') }}" alt="New Addresses Chart" />
                         </a>
-                    </h5>
-                    <p class="card-text">Chart of the total amount of data used by Counterparty transactions.</p>
-                    <a href="{{ url(route('charts.total-size')) }}" class="btn btn-primary">View Chart</a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.addresses')) }}">
+                                    New Addresses
+                                </a>
+                            </h5>
+                            <p class="card-text">New addresses, based on their first time seen using Counterparty.</p>
+                            <a href="{{ url(route('charts.addresses')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.cumulative-size')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/cumulative-transaction-data.png') }}" alt="Cumulative Transaction Data Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.cumulative-size')) }}">
-                            Cumulative Size
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.activeAddresses')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-active-addresses.png') }}" alt="Active Addresses Chart" />
                         </a>
-                    </h5>
-                    <p class="card-text">Cumulative transaction data used by Counterparty users over time.</p>
-                    <a href="{{ url(route('charts.cumulative-size')) }}" class="btn btn-primary">View Chart</a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.activeAddresses')) }}">
+                                    Active Addresses
+                                </a>
+                            </h5>
+                            <p class="card-text">Active addresses, based on whether they had any balance changes during period.</p>
+                            <a href="{{ url(route('charts.activeAddresses')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.hodlAddresses')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-hodl-addresses.png') }}" alt="Counterparty Hodl Addresses Chart" />
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.hodlAddresses')) }}">
+                                    Hodl Addresses
+                                </a>
+                            </h5>
+                            <p class="card-text">Hodl addresses are addresses which have received tokens but never-ever spent them.</p>
+                            <a href="{{ url(route('charts.hodlAddresses')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.pie.addresses')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-address-types.png') }}" alt="Counterparty Address Types Chart" />
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.pie.addresses')) }}">
+                                    Address Types
+                                </a>
+                            </h5>
+                            <p class="card-text">Breakdown of the types of addresses that users use: P2PKH, P2SH, Multisig.</p>
+                            <a href="{{ url(route('charts.pie.addresses')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <h3 class="text-center mt-5">Fee Data</h3>
     <div class="row">
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.average-fee')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/average-counterparty-fee.png') }}" alt="Average Counterparty Fee Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.average-fee')) }}">
-                            Average Fee
+        <div class="col-md-6">
+            <h3 class="text-center mt-5">Send Data</h3>
+            <div class="row">
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.sends')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-asset-sends.png') }}" alt="Asset Sends Chart" />
                         </a>
-                    </h5>
-                    <p class="card-text">Chart of the average transaction fee paid by a Counterparty user.</p>
-                    <a href="{{ url(route('charts.average-fee')) }}" class="btn btn-primary">BTC</a>
-                    <a href="{{ url(route('charts.average-fee-usd')) }}" class="btn btn-primary">USD</a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.sends')) }}">
+                                    Sends Per Day
+                                </a>
+                            </h5>
+                            <p class="card-text">Total number of asset sends made, shown per day, per month, and per year.</p>
+                            <a href="{{ url(route('charts.sends')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.total-fees')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/total-counterparty-fees.png') }}" alt="Total Counterparty Fees Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.total-fees')) }}">
-                            Total Fees
+        <div class="col-md-6">
+            <h3 class="text-center mt-5">Order Data</h3>
+            <div class="row">
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.orders')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-dex-orders.png') }}" alt="Total Orders Chart" />
                         </a>
-                    </h5>
-                    <p class="card-text">Chart of all transaction fees paid by Counterparty users.</p>
-                    <a href="{{ url(route('charts.total-fees')) }}" class="btn btn-primary">BTC</a>
-                    <a href="{{ url(route('charts.total-fees-usd')) }}" class="btn btn-primary">USD</a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.orders')) }}">
+                                    Orders Per Day
+                                </a>
+                            </h5>
+                            <p class="card-text">Total number of dex orders placed, shown per day, per month, and per year.</p>
+                            <a href="{{ url(route('charts.orders')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.cumulative-fees')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/cumulative-counterparty-fees.png') }}" alt="Cumulative Counterparty Fees Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.cumulative-fees')) }}">
-                            Cumulative Fees
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.areaRange.orderExpiration')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-average-order-expiration.png') }}" alt="Total Orders Chart" />
                         </a>
-                    </h5>
-                    <p class="card-text">Cumulative transaction fees paid by Counterparty users over time.</p>
-                    <a href="{{ url(route('charts.cumulative-fees')) }}" class="btn btn-primary">BTC</a>
-                    <a href="{{ url(route('charts.cumulative-fees-usd')) }}" class="btn btn-primary">USD</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.average-fee-rate')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/average-fee-rate.png') }}" alt="Average Counterparty Fee Rate Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.average-fee-rate')) }}">
-                            Avg. Fee Rate
-                        </a>
-                    </h5>
-                    <p class="card-text">Chart of the average fee rate paid by a Counterparty user.</p>
-                    <a href="{{ url(route('charts.average-fee-rate')) }}" class="btn btn-primary">View Chart</a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.areaRange.orderExpiration')) }}">
+                                    Avg. Order Expiration
+                                </a>
+                            </h5>
+                            <p class="card-text">The average order duration selected by traders when placing dex orders.</p>
+                            <a href="{{ url(route('charts.areaRange.orderExpiration')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <h3 class="text-center mt-5">Burn Data</h3>
-    <div class="row">
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.average-burn')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/average-bitcoin-burn.png') }}" alt="Average Bitcoin Burn Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.average-burn')) }}">
-                            Average Burn
-                        </a>
-                    </h5>
-                    <p class="card-text">Average bitcoin burn during the initial burn offering (January 2014.)</p>
-                    <a href="{{ url(route('charts.average-burn')) }}" class="btn btn-primary">BTC</a>
-                    <a href="{{ url(route('charts.average-burn-usd')) }}" class="btn btn-primary">USD</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.total-burn')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/total-bitcoin-burned.png') }}" alt="Total Bitcoin Burn Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.total-burn')) }}">
-                            Total Burn
-                        </a>
-                    </h5>
-                    <p class="card-text">Total bitcoin burned during the initial burn offering (January 2014.)</p>
-                    <a href="{{ url(route('charts.total-burn')) }}" class="btn btn-primary">BTC</a>
-                    <a href="{{ url(route('charts.total-burn-usd')) }}" class="btn btn-primary">USD</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.cumulative-burn')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/cumulative-bitcoin-burned.png') }}" alt="Cumulative Bitcoin Burn Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.cumulative-burn')) }}">
-                            Cumulative Burn
-                        </a>
-                    </h5>
-                    <p class="card-text">Cumulative bitcoin burned during the initial burn offering (January 2014.)</p>
-                    <a href="{{ url(route('charts.cumulative-burn')) }}" class="btn btn-primary">BTC</a>
-                    <a href="{{ url(route('charts.cumulative-burn-usd')) }}" class="btn btn-primary">USD</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.average-burn-rate')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/average-bitcoin-burn.png') }}" alt="Average Bitcoin Burn Rate Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.average-burn-rate')) }}">
-                            Average Burn Rate
-                        </a>
-                    </h5>
-                    <p class="card-text">Average bitcoin rate received during the initial burn offering (January 2014.)</p>
-                    <a href="{{ url(route('charts.average-burn-rate')) }}" class="btn btn-primary">View Chart</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <h3 class="text-center mt-5">Asset Data</h3>
-    <div class="row">
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.total-assets')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/average-bitcoin-burn.png') }}" alt="Total Assets Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.total-assets')) }}">
-                            Total Assets
-                        </a>
-                    </h5>
-                    <p class="card-text">Total assets registered by day, month, and year.</p>
-                    <a href="{{ url(route('charts.total-assets')) }}" class="btn btn-primary">View Chart</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.cumulative-assets')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/average-bitcoin-burn.png') }}" alt="Cumulative Assets Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.cumulative-assets')) }}">
-                            Cumulative Assets
-                        </a>
-                    </h5>
-                    <p class="card-text">Cumulative Counterparty asset registrations over time.</p>
-                    <a href="{{ url(route('charts.cumulative-assets')) }}" class="btn btn-primary">View Chart</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <h3 class="text-center mt-5">Address Data</h3>
-    <div class="row">
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.total-addresses')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/average-bitcoin-burn.png') }}" alt="Total Addresses Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.total-addresses')) }}">
-                            Total Addresses
-                        </a>
-                    </h5>
-                    <p class="card-text">Total new addresses seen per day, month, and year.</p>
-                    <a href="{{ url(route('charts.total-addresses')) }}" class="btn btn-primary">View Chart</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.cumulative-addresses')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/average-bitcoin-burn.png') }}" alt="Cumulative Addresses Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.cumulative-addresses')) }}">
-                            Cumulative Addresses
-                        </a>
-                    </h5>
-                    <p class="card-text">Cumulative addresses having used Counterparty over time.</p>
-                    <a href="{{ url(route('charts.cumulative-addresses')) }}" class="btn btn-primary">View Chart</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <h3 class="text-center mt-5">Order Data</h3>
-    <div class="row">
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.total-orders')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/average-bitcoin-burn.png') }}" alt="Total Orders Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.total-orders')) }}">
-                            Total Orders
-                        </a>
-                    </h5>
-                    <p class="card-text">Total orders seen per day, month, and year.</p>
-                    <a href="{{ url(route('charts.total-orders')) }}" class="btn btn-primary">View Chart</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.cumulative-orders')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/average-bitcoin-burn.png') }}" alt="Cumulative Orders Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.cumulative-orders')) }}">
-                            Cumulative Orders
-                        </a>
-                    </h5>
-                    <p class="card-text">Cumulative orders over time.</p>
-                    <a href="{{ url(route('charts.cumulative-orders')) }}" class="btn btn-primary">View Chart</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.average-order-expiration')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/average-bitcoin-burn.png') }}" alt="Total Orders Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.average-order-expiration')) }}">
-                            Average Order Expiration
-                        </a>
-                    </h5>
-                    <p class="card-text">Total orders seen per day, month, and year.</p>
-                    <a href="{{ url(route('charts.average-order-expiration')) }}" class="btn btn-primary">View Chart</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <h3 class="text-center mt-5">Send Data</h3>
-    <div class="row">
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.total-sends')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/average-bitcoin-burn.png') }}" alt="Total Sends Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.total-sends')) }}">
-                            Total Sends
-                        </a>
-                    </h5>
-                    <p class="card-text">Total orders seen per day, month, and year.</p>
-                    <a href="{{ url(route('charts.total-sends')) }}" class="btn btn-primary">View Chart</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mt-4">
-            <div class="card text-center">
-                <a href="{{ url(route('charts.cumulative-sends')) }}">
-                    <img class="card-img-top" src="{{ asset('/images/average-bitcoin-burn.png') }}" alt="Cumulative Sends Chart" />
-                </a>
-                <div class="card-body">
-                    <h5 class="card-title font-weight-bold">
-                        <a href="{{ url(route('charts.cumulative-sends')) }}">
-                            Cumulative Sends
-                        </a>
-                    </h5>
-                    <p class="card-text">Cumulative orders over time.</p>
-                    <a href="{{ url(route('charts.cumulative-sends')) }}" class="btn btn-primary">View Chart</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('layouts.cta')
 </div>
 @endsection

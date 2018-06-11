@@ -23,7 +23,7 @@ class AddressesController extends Controller
      */
     public function show(Request $request, $address)
     {
-        $address = \App\Address::withCount('issuedAssets', 'ownedAssets')->with('currentBalances')->findOrFail($address);
+        $address = \App\Address::findOrFail($address);
 
         return view('addresses.show', compact('address'));
     }

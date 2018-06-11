@@ -1,0 +1,1 @@
+<a href="{{ url(route('charts.index')) }}" class="d-none d-sm-inline btn btn-outline-primary mt-1 float-right">&laquo; Back</a>

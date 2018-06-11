@@ -1,10 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Counterparty Assets')
-
-@section('header')
-    <link rel="canonical" href="{{ url(route('assets.index')) }}">
-@endsection
+@section('canonical', url(route('assets.index')))
 
 @section('content')
 <div class="container mt-1">

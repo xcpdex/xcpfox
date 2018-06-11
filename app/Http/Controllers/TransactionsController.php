@@ -21,6 +21,16 @@ class TransactionsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function typeIndex(Request $request, $type)
+    {
+        return view('transactions.type-index', compact('request', 'type'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function show(Request $request, $transaction)
     {
         try
@@ -29,6 +39,8 @@ class TransactionsController extends Controller
         }
         catch(\Exception $e)
         {
+            if(! is_numeric($transaction)) throw $e;
+
             $transaction = \App\Transaction::findOrFail($transaction);
 
             return redirect($transaction->url);

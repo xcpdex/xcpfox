@@ -1,10 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Bitcoin Blocks')
-
-@section('header')
-    <link rel="canonical" href="{{ url(route('blocks.index')) }}">
-@endsection
+@section('canonical', url(route('blocks.index')))
 
 @section('content')
 <div class="container mt-1">

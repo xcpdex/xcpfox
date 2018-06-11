@@ -54,6 +54,12 @@ class UpdateBlocks implements ShouldQueue
 
             // Add Messages
             $this->processMessages($block_data['_messages'], $block_data['block_time']);
+
+            if(! $this->syncing)
+            {
+                // New Balances
+                \App\Jobs\UpdateBalances::dispatch($block);
+            }
         }
 
         if($this->syncing)
@@ -132,8 +138,8 @@ class UpdateBlocks implements ShouldQueue
         // Only Save Valid Messages
         if($this->guardAgainstInvalidMessages($message, $bindings))
         {
-            // Addresses/Assets/Balances/Replace
-            $this->handleAddressesAssetsBalancesReplace($message, $bindings);
+            // Addresses/Assets/Replace
+            $this->handleAddressAndAssetChanges($message, $bindings);
 
             // Get Model Name From Category Type
             $model_name = getModelNameFromType($message['category']);
@@ -205,7 +211,7 @@ class UpdateBlocks implements ShouldQueue
             // Delete All the Things
             \DB::transaction(function () use($bindings, $rollback)
             {
-                $tables = ['blocks', 'comments', 'messages', 'transactions', 'bet_expirations', 'bet_match_expirations', 'bet_match_resolutions', 'bet_matches', 'bets', 'broadcasts', 'btcpays', 'burns', 'cancels', 'credits', 'debits', 'destructions', 'dividends', 'issuances', 'order_expirations', 'order_match_expirations', 'order_matches', 'orders', 'replaces', 'rps', 'rps_expirations', 'rps_match_expirations', 'rpsresolves', 'sends', 'addresses', 'assets', 'balances'];
+                $tables = ['blocks', 'messages', 'transactions', 'bet_expirations', 'bet_match_expirations', 'bet_match_resolutions', 'bet_matches', 'bets', 'broadcasts', 'btcpays', 'burns', 'cancels', 'credits', 'debits', 'destructions', 'dividends', 'issuances', 'order_expirations', 'order_match_expirations', 'order_matches', 'orders', 'replaces', 'rps', 'rps_expirations', 'rps_match_expirations', 'rpsresolves', 'sends', 'addresses', 'assets', 'balances'];
 
                 foreach($tables as $table)
                 {
@@ -219,20 +225,16 @@ class UpdateBlocks implements ShouldQueue
     }
 
     /**
-     * Handle Assets, Balances, Replace
+     * Handle Assets and Addresses
      * This is data that is not always present.
      */
-    private function handleAddressesAssetsBalancesReplace($message, $bindings)
+    private function handleAddressAndAssetChanges($message, $bindings)
     {
         \App\Address::firstOrCreateAddress($message, $bindings);
 
         if($message['category'] === 'issuances')
         {
             \App\Asset::updateOrCreateAsset($message, $bindings);
-        }
-        elseif($message['category'] === 'credits' || $message['category'] === 'debits')
-        {
-            \App\Balance::updateOrCreateBalance($message, $bindings);
         }
         elseif($message['category'] === 'replace')
         {

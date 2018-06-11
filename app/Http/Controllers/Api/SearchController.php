@@ -35,8 +35,8 @@ class SearchController extends Controller
             }
             else
             {
-                $results = \App\Asset::where('asset_name', 'like', '%' . $request->q . '%')
-                    ->orWhere('asset_longname', 'like', '%' . $request->q . '%')
+                $results = \App\Asset::where('asset_name', 'like', $request->q . '%')
+                    ->orWhere('asset_longname', 'like', $request->q . '%')
                     ->selectRaw('asset_name as result, confirmed_at, asset_longname as extra')
                     ->paginate($request->input('per_page', 10));
             }

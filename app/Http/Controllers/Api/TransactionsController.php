@@ -40,14 +40,13 @@ class TransactionsController extends Controller
 
         if(in_array($tx_type, ['bets', 'broadcasts', 'btcpays', 'burns', 'cancels', 'dividends', 'issuances', 'orders', 'rps', 'rpsresolves', 'sends']))
         {
-            return \Cache::tags([$tx_type . '_flush'])->rememberForever('api_transactions_show_' . $tx_type . '_' . $request->input('page', 1) . '_' . $request->input('per_page', 10), function () use ($request, $tx_type) {
-                $transactions = \App\Transaction::with('relatedModel')
-                    ->whereNotNull('processed_at')
+            return \Cache::tags(['block_flush'])->rememberForever('api_transactions_show_' . $tx_type . '_' . $request->input('page', 1) . '_' . $request->input('per_page', 10), function () use ($request, $tx_type) {
+                $transactions = \App\Transaction::whereNotNull('processed_at')
                     ->where('type', '=', $tx_type)
                     ->orderBy('tx_index', 'desc')
                     ->paginate($request->input('per_page', 10));
 
-                return \App\Http\Resources\TransactionTypeResource::collection($transactions);
+                return \App\Http\Resources\TransactionResource::collection($transactions);
             });
         }
     }

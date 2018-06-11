@@ -5,14 +5,21 @@
         Statistics
     </div>
     <div class="card-body">
-        <div v-for="stat in stats" class="row">
-            <div class="col-5 col-md-6 mb-2">
+        <template v-for="stat in stats">
+        <div v-if="stat.type !== 'rps' && stat.type !== 'rpsresolves'" class="row">
+            <div class="col-6 col-sm-8 col-lg-9 mb-2">
                 <b class="text-capitalize">{{ stat.type }}:</b>
             </div>
-            <div class="col-7 col-md-6 mb-2">
+            <div class="col-6 col-sm-4 col-lg-3 mb-2 text-right">
                 {{ stat.count.toLocaleString('en') }}
             </div>
         </div>
+        </template>
+        <p class="card-text text-center mt-3">
+            <a href="https://xcpfox.com/charts">
+                Click here for more charts and data &raquo;
+            </a>
+        </p>
     </div>
 </div>
 </template>

@@ -20,7 +20,7 @@ class BlocksController extends Controller
 
         return \Cache::tags(['block_flush'])->rememberForever('api_blocks_index_' . $request->input('page', 1) . '_' . $request->input('per_page', 10), function () use ($request) {
             $blocks = \App\Block::whereNotNull('processed_at')
-                ->withCount('messages', 'transactions')
+                ->withCount('addresses', 'messages', 'transactions')
                 ->orderBy('block_index', 'desc')
                 ->paginate($request->input('per_page', 10));
 

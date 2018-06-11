@@ -83,7 +83,7 @@ class Address extends Model
      */
     public function currentBalances()
     {
-        return $this->hasMany(Balance::class, 'address')->whereCurrent('1')->where('quantity', '>', 0);
+        return $this->hasMany(Balance::class, 'address')->whereCurrent('1');
     }
 
     /**
@@ -167,6 +167,16 @@ class Address extends Model
     }
 
     /**
+     * Transactions
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'source');
+    }
+
+    /**
      * First or Create Address
      *
      * @param  arr  $message
@@ -179,16 +189,16 @@ class Address extends Model
         $address_columns = ['source', 'address', 'issuer', 'destination', 'tx0_address', 'tx1_address'];
 
         // Needle in Haystack
-        foreach($address_columns as $address_column)
+        foreach($address_columns as $address)
         {
             // Found a Needle
-            if(isset($bindings[$address_column]))
+            if(isset($bindings[$address]))
             {
-                $type = getAddressType($bindings[$address_column]);
+                $type = getAddressType($bindings[$address]);
 
                 // Create Address
-                return static::firstOrCreate([
-                    'address' => $bindings[$address_column],
+                $address = static::firstOrCreate([
+                    'address' => $bindings[$address],
                 ],[
                     'type' => $type,
                     'options' => 0,

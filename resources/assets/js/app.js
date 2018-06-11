@@ -24,8 +24,9 @@ Vue.component('messages', require('./components/MessagesComponent.vue'));
 Vue.component('transactions', require('./components/TransactionsComponent.vue'));
 Vue.component('next-prev', require('./components/NextPrevComponent.vue'));
 Vue.component('table-tools', require('./components/TableToolsComponent.vue'));
-Vue.component('chart-assets', require('./components/ChartAssetsComponent.vue'));
-Vue.component('chart-transactions', require('./components/ChartTransactionsComponent.vue'));
+Vue.component('chart', require('./components/ChartComponent.vue'));
+Vue.component('chart-area-range', require('./components/ChartAreaRangeComponent.vue'));
+Vue.component('chart-pie', require('./components/ChartPieComponent.vue'));
 
 const app = new Vue({
     el: '#app'

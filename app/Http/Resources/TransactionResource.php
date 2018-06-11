@@ -15,10 +15,11 @@ class TransactionResource extends Resource
     public function toArray($request)
     {
         return [
-            'tx_index' => $this->tx_index,
-            'block_index' => $this->block_index,
-            'message_index' => $this->message_index,
-            'type' => $this->type,
+            'tx_index' => number_format($this->tx_index),
+            'block_index' => number_format($this->block_index),
+            'message_index' => number_format($this->message_index),
+            'type' => getTitleFromType($this->type),
+            'category' => $this->type,
             'tx_hash' => $this->tx_hash,
             'source' => $this->source,
             'destination' => $this->destination,
@@ -28,8 +29,13 @@ class TransactionResource extends Resource
             'size' => $this->size,
             'vsize' => $this->vsize,
             'valid' => $this->valid,
+            'block_time' => $this->confirmed_at,
+            'block_time_ago' => $this->confirmed_at->diffForHumans(),
             'block_url' => $this->block_url,
+            'source_url' => $this->source_url,
+            'destination_url' => $this->destination_url,
             'url' => $this->url,
+            'related' => $this->relatedModel,
         ];
     }
 }

@@ -33,9 +33,19 @@ class Bet extends Model
      * @var array
      */
     protected $appends = [
-        'wager_quantity_normalized', 'wager_quantity_usd_normalized', 'wager_remaining_normalized', 'wager_remaining_usd_normalized',
+        'display_type', 'wager_quantity_normalized', 'wager_quantity_usd_normalized', 'wager_remaining_normalized', 'wager_remaining_usd_normalized',
         'counterwager_quantity_normalized', 'counterwager_quantity_usd_normalized', 'counterwager_remaining_normalized', 'counterwager_remaining_usd_normalized',
     ];
+
+    /**
+     * Display Type
+     *
+     * @return string
+     */
+    public function getDisplayTypeAttribute()
+    {
+        return getBetType($this->type);
+    }
 
     /**
      * Wager Quantity Normalized

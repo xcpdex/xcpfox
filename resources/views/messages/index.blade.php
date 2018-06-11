@@ -1,10 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Counterparty Messages')
-
-@section('header')
-    <link rel="canonical" href="{{ url(route('messages.index')) }}">
-@endsection
+@section('canonical', url(route('messages.index')))
 
 @section('content')
 <div class="container mt-1">

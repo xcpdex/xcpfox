@@ -12,6 +12,22 @@
     </h1>
     <div class="card mt-4">
         <div class="card-header font-weight-bold">
+            Counterparty Information
+        </div>
+        <div class="card-body">
+            <div class="row mb-2">
+                <div class="col-md-3 font-weight-bold">Message Index:</div>
+                <div class="col-md-9">{{ $transaction->message_index }}</div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-3 font-weight-bold">Message Type:</div>
+                <div class="col-md-9"><a href="{{ url(route('transactions.typeIndex', ['type' => $transaction->type])) }}">{{ $tx_type }}</a></div>
+            </div>
+            @include('transactions.partials.' . $transaction->type)
+        </div>
+    </div>
+    <div class="card mt-4">
+        <div class="card-header font-weight-bold">
             Transaction Information
         </div>
         <div class="card-body">
@@ -71,22 +87,6 @@
                 <div class="col-md-9">{{ $transaction->outputs }}</div>
             </div>
             @endif
-        </div>
-    </div>
-    <div class="card mt-4">
-        <div class="card-header font-weight-bold">
-            Counterparty Information
-        </div>
-        <div class="card-body">
-            <div class="row mb-2">
-                <div class="col-md-3 font-weight-bold">Message Index:</div>
-                <div class="col-md-9">{{ $transaction->message_index }}</div>
-            </div>
-            <div class="row mb-2">
-                <div class="col-md-3 font-weight-bold">Message Type:</div>
-                <div class="col-md-9">{{ $tx_type }}</div>
-            </div>
-            @include('transactions.partials.' . $transaction->type)
         </div>
     </div>
     @if($raw_tx)

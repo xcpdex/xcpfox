@@ -24,7 +24,15 @@
     </div>
     <div class="row">
         <div class="col-lg-8 mt-4 mb-2">
-            <chart-transactions chart="total" group="month" type="line"></chart-transactions>
+            <chart
+                source="{{ url(route('api.charts.transactions', ['group_by' => 'month'])) }}"
+                title="Counterparty Transactions"
+                yaxis="Transactions"
+                group_by="month"
+                type="line"
+                cumulative="true"
+            >
+            </chart>
             <p class="text-center text-muted mt-2">Welcome to XCP FOX, a Counterparty block explorer.</p>
             <p class="text-center card-text mt-4">
                 <a href="https://t.me/xcpfox" class="btn btn-lg btn-outline-success d-inline d-md-none">
@@ -37,9 +45,6 @@
             <statistics></statistics>
         </div>
     </div>
-    <br />
-    <assets page="1" per_page="10"></assets>
-    <br />
-    <blocks page="1" per_page="10"></blocks>
+    <transactions page="1" per_page="10"></transactions>
 </div>
 @endsection

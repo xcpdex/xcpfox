@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Counterparty API Docs')
+@section('description', str_limit(trim(preg_replace( "/\r|\n/", " ", strip_tags(@markdown($content)))), 300))
+@section('canonical', url(route('docs')))
 
 @section('content')
 <div class="container mt-1">

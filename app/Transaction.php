@@ -42,7 +42,7 @@ class Transaction extends Model
      * @var array
      */
     protected $appends = [
-        'url', 'block_url',
+        'url', 'block_url', 'message_url', 'source_url', 'destination_url',
         'fee_normalized', 'fee_usd_normalized',
         'quantity_normalized', 'quantity_usd_normalized',
     ];
@@ -65,6 +65,36 @@ class Transaction extends Model
     public function getBlockUrlAttribute()
     {
         return url(route('blocks.show', ['block_hash' => $this->block_index]));
+    }
+
+    /**
+     * Message URL
+     *
+     * @return string
+     */
+    public function getMessageUrlAttribute()
+    {
+        return url(route('messages.show', ['message' => $this->message_index]));
+    }
+
+    /**
+     * Source URL
+     *
+     * @return string
+     */
+    public function getSourceUrlAttribute()
+    {
+        return url(route('addresses.show', ['address' => $this->source]));
+    }
+
+    /**
+     * Destination URL
+     *
+     * @return string
+     */
+    public function getDestinationUrlAttribute()
+    {
+        return $this->destination ? url(route('addresses.show', ['address' => $this->destination])) : null;
     }
 
     /**

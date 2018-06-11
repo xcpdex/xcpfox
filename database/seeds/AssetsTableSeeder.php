@@ -14,6 +14,8 @@ class AssetsTableSeeder extends Seeder
         \App\Asset::create([
             'type' => 'asset',
             'divisible' => 1,
+            'issuance' => $this->getSupply('BTC'),
+            'issuance_normalized' => fromSatoshi($this->getSupply('BTC')),
             'asset_name' => 'BTC',
             'block_index' => 0,
             'asset_longname' => null,
@@ -23,10 +25,20 @@ class AssetsTableSeeder extends Seeder
         \App\Asset::create([
             'type' => 'asset',
             'divisible' => 1,
+            'issuance' => $this->getSupply('XCP'),
+            'issuance_normalized' => fromSatoshi($this->getSupply('XCP')),
             'asset_name' => 'XCP',
             'block_index' => 278319,
             'asset_longname' => null,
             'confirmed_at' => '2014-01-02 17:19:37'
         ]);
+    }
+
+    private function getSupply($asset)
+    {
+        $counterparty = new \JsonRPC\Client(env('CP_API'));
+        $counterparty->authentication(env('CP_USER'), env('CP_PASS'));
+
+        return $counterparty->execute('get_supply', ['asset' => $asset]);
     }
 }

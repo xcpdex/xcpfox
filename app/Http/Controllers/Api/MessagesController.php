@@ -26,6 +26,5 @@ class MessagesController extends Controller
 
             return \App\Http\Resources\MessageResource::collection($messages);
         });
-
     }
 }

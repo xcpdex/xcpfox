@@ -19,6 +19,8 @@ class AverageResource extends Resource
             return [
                 \Carbon\Carbon::createFromFormat('Y-m-d', $this->date)->timestamp * 1000,
                 (float) $this->average,
+                (float) $this->minimum,
+                (float) $this->maximum,
             ];
         }
         elseif(isset($this->month))
@@ -26,6 +28,8 @@ class AverageResource extends Resource
             return [
                 $this->year . '-' . $this->month,
                 (float) $this->average,
+                (float) $this->minimum,
+                (float) $this->maximum,
             ];
         }
         elseif(isset($this->year))
@@ -33,6 +37,8 @@ class AverageResource extends Resource
             return [
                 $this->year,
                 (float) $this->average,
+                (float) $this->minimum,
+                (float) $this->maximum,
             ];
         }
     }

@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Counterparty FAQ')
+@section('description', str_limit(trim(preg_replace( "/\r|\n/", " ", strip_tags(@markdown($content)))), 300))
+@section('canonical', url(route('faq')))
 
 @section('content')
 <div class="container mt-1">

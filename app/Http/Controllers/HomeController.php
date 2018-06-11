@@ -14,7 +14,6 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $market_data = $this->getMarketData();
-
         return view('home', compact('market_data'));
     }
 
@@ -22,7 +21,6 @@ class HomeController extends Controller
     {
         return \Cache::remember('api_market_data', 60, function () {
             $data = json_decode(file_get_contents('http://coincap.io/history/XCP', true));
-
             return [
                 'price' => '$' . number_format(last($data->price)[1], 2),
                 'volume' => '$' . number_format(last($data->volume)[1]),

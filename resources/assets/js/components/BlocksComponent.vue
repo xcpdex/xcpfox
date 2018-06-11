@@ -11,28 +11,32 @@
                 <table class="table table-bordered mb-0">
                      <thead class="card-header">
                         <tr>
-                            <th colspan="5">Bitcoin</th>
-                            <th colspan="2">Counterparty</th>
+                            <th colspan="4">Counterparty</th>
+                            <th colspan="6">Bitcoin</th>
                         </tr>
                         <tr>
-                            <th>Height</th>
                             <th>Age</th>
+                            <th>Messages</th>
+                            <th>Transactions</th>
+                            <th>XCP</th>
+                            <th>Height</th>
+                            <th>Timestamp</th>
                             <th>Transactions</th>
                             <th>Size (kB)</th>
                             <th>Weight (kWU)</th>
-                            <th>Messages</th>
-                            <th>Transactions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="block in blocks.data">
-                            <td><a :href="block.url">{{ block.block_height }}</a></td>
                             <td>{{ block.block_time_ago }}</td>
-                            <td>{{ block.tx_count }}</td>
-                            <td>{{ block.size }}</td>
-                            <td>{{ block.weight }}</td>
-                            <td><a :href="block.url">{{ block.messages_count }}</a></td>
-                            <td><a :href="block.url">{{ block.transactions_count }}</a></td>
+                            <td class="text-right"><a :href="block.url">{{ block.messages_count }}</a></td>
+                            <td class="text-right"><a :href="block.url">{{ block.transactions_count }}</a></td>
+                            <td :class="block.messages_count > 0 ? 'text-success' : 'text-danger'"><i class="fa" :class="block.messages_count > 0 ? 'fa-check-circle' : 'fa-times-circle'"></i> {{ block.messages_count > 0 ? 'Yes' : 'No' }}</td>
+                            <td><a :href="block.url">{{ block.block_height }}</a></td>
+                            <td>{{ block.block_time }}</td>
+                            <td class="text-right">{{ block.tx_count }}</td>
+                            <td class="text-right">{{ block.size }}</td>
+                            <td class="text-right">{{ block.weight }}</td>
                         </tr>
                     </tbody>
                 </table>

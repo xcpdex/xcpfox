@@ -1,10 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Search Results')
-
-@section('header')
-    <link rel="canonical" href="{{ url(route('search.index')) }}">
-@endsection
+@section('canonical', url(route('search.index')))
 
 @section('content')
 <div class="container mt-1">

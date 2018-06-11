@@ -23,4 +23,14 @@ class Debit extends Model
     protected $dates = [
         'confirmed_at',
     ];
+
+    /**
+     * Transaction
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class, 'event', 'tx_hash');
+    }
 }

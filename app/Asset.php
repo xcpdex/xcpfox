@@ -33,7 +33,7 @@ class Asset extends Model
      * @var array
      */
     protected $appends = [
-        'url', 'block_url',
+        'url', 'block_url', 'owner_url',
         'display_name',
     ];
 
@@ -55,6 +55,16 @@ class Asset extends Model
     public function getBlockUrlAttribute()
     {
         return url(route('blocks.show', ['block_hash' => $this->block_index]));
+    }
+
+    /**
+     * Owner URL
+     *
+     * @return string
+     */
+    public function getOwnerUrlAttribute()
+    {
+        return url(route('addresses.show', ['address' => $this->owner]));
     }
 
     /**
@@ -84,7 +94,7 @@ class Asset extends Model
      */
     public function currentBalances()
     {
-        return $this->hasMany(Balance::class, 'asset', 'asset_name')->whereCurrent(1)->where('quantity', '>', 0);
+        return $this->hasMany(Balance::class, 'asset', 'asset_name')->current();
     }
 
     /**
@@ -179,6 +189,8 @@ class Asset extends Model
      */
     public function updateAsset($message, $bindings)
     {
+        \Cache::tags([$this->asset_name, $this->asset_longname])->flush();
+
         if(isset($bindings['quantity']))
         {
             $issuance = $this->issuance + $bindings['quantity'];
@@ -192,7 +204,7 @@ class Asset extends Model
         }
 
         return $this->update([
-            'issuer' => $bindings['issuer'],
+            'owner' => $bindings['issuer'],
             'description' => $bindings['description'],
             'issuance' => isset($issuance) ? $issuance : $this->issuance,
             'issuance_normalized' => isset($issuance_normalized) ? $issuance_normalized : $this->issuance_normalized,

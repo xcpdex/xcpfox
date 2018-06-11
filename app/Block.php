@@ -47,6 +47,16 @@ class Block extends Model
     }
 
     /**
+     * Addresses
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function addresses()
+    {
+        return $this->hasManyThrough(Address::class, Balance::class, 'block_index', 'address', 'block_index', 'address');
+    }
+
+    /**
      * Messages
      * 
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

@@ -68,4 +68,34 @@ class PagesController extends Controller
 
         return view('pages.node-setup', compact('content'));
     }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getTerms(Request $request)
+    {
+        return view('pages.terms');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getPrivacy(Request $request)
+    {
+        return view('pages.privacy');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getDisclaimer(Request $request)
+    {
+        return view('pages.disclaimer');
+    }
 }

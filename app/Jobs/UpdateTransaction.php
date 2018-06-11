@@ -40,7 +40,10 @@ class UpdateTransaction implements ShouldQueue
 
             $data = $this->getTxInfo($raw);
 
-            $this->transaction->updateTransaction($raw, $data);
+            if($raw && $data)
+            {
+                $this->transaction->updateTransaction($raw, $data);
+            }
         }
     }
 
