@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class MessagesController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Message Index
      *
      * @return \Illuminate\Http\Response
      */
@@ -17,13 +17,13 @@ class MessagesController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Show a Message
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $message_index)
+    public function show(Request $request, $message)
     {
-        $message = \App\Message::with('transaction')->findOrFail($message_index);
+        $message = \App\Message::with('transaction')->findOrFail($message);
 
         $message_type = getTitleFromType($message->category);
 

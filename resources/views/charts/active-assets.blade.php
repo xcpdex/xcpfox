@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Active Counterparty Assets')
-@section('canonical',  url(route('charts.activeAssets')))
+@section('title', $group_by === 'date' ? 'Active Assets Per Day' : 'Active Assets Per ' . ucfirst($group_by))
+@section('canonical', url(route('charts.activeAssets')))
+@section('description', 'Active Counterparty assets, based on whether any holders had a change in their balance.')
 
 @section('content')
 <div class="container mt-1">

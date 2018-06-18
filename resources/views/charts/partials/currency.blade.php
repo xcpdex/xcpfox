@@ -21,7 +21,7 @@
     </div>
     <div class="col-8 col-md-4 offset-md-2 col-lg-2 offset-lg-0 mt-4">
         <div class="btn-group d-flex" role="group" aria-label="Currency">
-            <a href="{{ url(route($route, ['chart_type' => $chart_type, 'group_by' => $group_by])) }}" role="button" class="btn btn-sm btn-outline-primary w-100{{ $currency === 'BTC' || $currency === 'XCP' ? ' active' : '' }}">{{ \Route::currentRouteName() === 'charts.registrationFee' ? 'XCP' : 'BTC' }}</a>
+            <a href="{{ url(route($route, ['chart_type' => $chart_type, 'group_by' => $group_by])) }}" role="button" class="btn btn-sm btn-outline-primary w-100{{ $currency === 'BTC' || $currency === 'XCP' ? ' active' : '' }}">{{ in_array(\Route::currentRouteName(), ['charts.registrationFee', 'charts.gasFees']) ? 'XCP' : 'BTC' }}</a>
             <a href="{{ url(route($route, ['chart_type' => $chart_type, 'group_by' => $group_by, 'currency' => 'USD'])) }}" role="button" class="btn btn-sm btn-outline-primary w-100{{ $currency === 'USD' ? ' active' : '' }}">USD</a>
         </div>
     </div>

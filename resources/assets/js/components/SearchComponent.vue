@@ -23,7 +23,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="result in results.data">
-                                <td class="text-capitalize">{{ result.type }}</td>
+                                <td class="text-uppercase">{{ result.type }}</td>
                                 <td><a :href="result.url">{{ result.result }}</a></td>
                                 <td>{{ result.time_ago }}</td>
                             </tr>

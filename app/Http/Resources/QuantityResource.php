@@ -18,21 +18,21 @@ class QuantityResource extends Resource
         {
             return [
                 \Carbon\Carbon::createFromFormat('Y-m-d', $this->date)->timestamp * 1000,
-                (float) $this->quantity / 1000000000000000000,
+                (float) fromSatoshi($this->quantity),
             ];
         }
         elseif(isset($this->month))
         {
             return [
                 $this->year . '-' . $this->month,
-                (float) $this->quantity / 1000000000000000000,
+                (float) fromSatoshi($this->quantity),
             ];
         }
         elseif(isset($this->year))
         {
             return [
                 $this->year,
-                (float) $this->quantity / 1000000000000000000,
+                (float) fromSatoshi($this->quantity),
             ];
         }
     }

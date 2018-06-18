@@ -46,6 +46,7 @@ class BlockHeightCommand extends Command
         {
             $this->call('update:blocks');
             $this->call('update:blocks:next');
+            $this->call('update:supply');
         }
     }
 

@@ -19,7 +19,7 @@ class HomeController extends Controller
 
     private function getMarketData()
     {
-        return \Cache::remember('api_market_data', 60, function () {
+        return \Cache::remember('api_market_data', 5, function () {
             $data = json_decode(file_get_contents('http://coincap.io/history/XCP', true));
             return [
                 'price' => '$' . number_format(last($data->price)[1], 2),

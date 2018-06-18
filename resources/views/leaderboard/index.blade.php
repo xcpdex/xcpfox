@@ -4,6 +4,7 @@
 
 @section('content')
 <div class="container mt-1">
+    @include('layouts.ads')
     <a name="top"></a>
     <h1>Leaderboard <small class="lead">Top 10</small></h1>
     <div class="card bg-light my-4">

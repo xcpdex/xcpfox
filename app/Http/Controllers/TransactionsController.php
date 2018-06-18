@@ -7,23 +7,13 @@ use Illuminate\Http\Request;
 class TransactionsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Transaction Index
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $type=null)
     {
-        return view('transactions.index', compact('request'));
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function typeIndex(Request $request, $type)
-    {
-        return view('transactions.type-index', compact('request', 'type'));
+        return view('transactions.index', compact('request', 'type'));
     }
 
     /**
@@ -39,11 +29,25 @@ class TransactionsController extends Controller
         }
         catch(\Exception $e)
         {
-            if(! is_numeric($transaction)) throw $e;
+            \App\Jobs\UpdateMempool::dispatchNow();
 
-            $transaction = \App\Transaction::findOrFail($transaction);
+            try
+            {
+                $mempool = \App\Mempool::where('command', '=', 'insert')->whereTxHash($transaction)->firstOrFail();
 
-            return redirect($transaction->url);
+                $tx_data = json_decode($mempool->bindings);
+                $tx_type = getTitleFromType($mempool->category);
+
+                return view('mempool.show', compact('mempool', 'tx_data', 'tx_type'));
+            }
+            catch(\Exception $e)
+            {
+                if(! is_numeric($transaction)) throw $e;
+
+                $transaction = \App\Transaction::findOrFail($transaction);
+
+                return redirect($transaction->url);
+            }
         }
 
         $tx_data = getModelNameFromType($transaction->type)::whereTxIndex($transaction->tx_index)->first();
@@ -54,6 +58,7 @@ class TransactionsController extends Controller
         {
             $raw_tx = $transaction->raw;
             unset($raw_tx['confirmations']);
+            $raw_tx['confirmations'] = \Cache::get('block_height') - $transaction->block_index + 1;
             $raw_tx = json_encode($raw_tx, JSON_PRETTY_PRINT);
         }
 

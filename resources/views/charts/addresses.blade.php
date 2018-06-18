@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'New Counterparty Addresses')
-@section('canonical',  url(route('charts.addresses')))
+@section('title', $group_by === 'date' ? 'New Addresses Per Day' : 'New Addresses Per ' . ucfirst($group_by))
+@section('canonical', url(route('charts.addresses')))
+@section('description', 'Bitcoin addresses shown based on their first time seen using Counterparty.')
 
 @section('content')
 <div class="container mt-1">

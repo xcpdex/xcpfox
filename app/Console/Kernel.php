@@ -14,7 +14,9 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\BlockHeightCommand::class,
+        Commands\UpdateBitcoinBalancesCommand::class,
         Commands\UpdateBlocksCommand::class,
+        Commands\UpdateMempoolCommand::class,
         Commands\UpdatePriceHistoriesCommand::class,
     ];
 
@@ -26,9 +28,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('update:price')->daily();
         $schedule->command('block:height')->everyMinute();
+        $schedule->command('update:mempool')->everyMinute();
         $schedule->command('horizon:snapshot')->everyFiveMinutes();
+        $schedule->command('update:bitcoin')->cron('0 */2 * * *');
+        $schedule->command('update:price')->daily();
     }
 
     /**

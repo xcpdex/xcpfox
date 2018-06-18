@@ -4,6 +4,7 @@
 
 @section('content')
 <div class="container mt-1">
+    @include('layouts.ads')
     <h1>Disclaimer</h1>
     <div class="card mt-4">
         <div class="card-header font-weight-bold">

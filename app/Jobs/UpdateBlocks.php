@@ -138,8 +138,8 @@ class UpdateBlocks implements ShouldQueue
         // Only Save Valid Messages
         if($this->guardAgainstInvalidMessages($message, $bindings))
         {
-            // Addresses/Assets/Replace
-            $this->handleAddressAndAssetChanges($message, $bindings);
+            // Handle Addresses & Address Options
+            $this->handleAddresses($message, $bindings);
 
             // Get Model Name From Category Type
             $model_name = getModelNameFromType($message['category']);
@@ -225,18 +225,14 @@ class UpdateBlocks implements ShouldQueue
     }
 
     /**
-     * Handle Assets and Addresses
+     * Handle Addresses
      * This is data that is not always present.
      */
-    private function handleAddressAndAssetChanges($message, $bindings)
+    private function handleAddresses($message, $bindings)
     {
         \App\Address::firstOrCreateAddress($message, $bindings);
 
-        if($message['category'] === 'issuances')
-        {
-            \App\Asset::updateOrCreateAsset($message, $bindings);
-        }
-        elseif($message['category'] === 'replace')
+        if($message['category'] === 'replace')
         {
             \App\Address::updateAddressOptions($bindings);
         }

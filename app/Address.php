@@ -205,6 +205,26 @@ class Address extends Model
                     'block_index' => $bindings['block_index'],
                     'confirmed_at' => $bindings['confirmed_at'],
                 ]);
+
+                if($type === 'multisig')
+                {
+                    $addresses =  array_values(array_filter(explode('_', $bindings[$address]), 'remove_keys'));
+
+                    foreach($addresses as $address)
+                    {
+                        $type = getAddressType($address);
+
+                        // Create Address
+                        $address = static::firstOrCreate([
+                            'address' => $address,
+                        ],[
+                            'type' => $type,
+                            'options' => 0,
+                            'block_index' => $bindings['block_index'],
+                            'confirmed_at' => $bindings['confirmed_at'],
+                        ]);
+                    }
+                }
             }
         }
     }

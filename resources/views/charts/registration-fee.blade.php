@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Asset Registration Fee')
-@section('canonical',  url(route('charts.registrationFee')))
+@section('canonical', url(route('charts.registrationFee')))
+@section('description', 'Average Counterparty asset registration fee paid by asset issuers to create an asset of any type. Available in USD and XCP.')
 
 @section('content')
 <div class="container mt-1">

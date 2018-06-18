@@ -18,8 +18,8 @@
     components: {
       VueHighcharts
     },
-    data(){
-      return{
+    data() {
+      return {
         Highcharts: Highcharts,
         options: {
           chart: {
@@ -29,7 +29,7 @@
             borderWidth: 1,
             borderRadius: 4,
             borderColor: 'rgba(0, 0, 0, 0.125)',
-            height: (9 / 16 * 100) + '%', // 16:9 ratio
+            height: (9 / 16 * 100) + '%' // 16:9 ratio
           },
           title: {
             text: this.title
@@ -44,12 +44,12 @@
             floor: 0,
             title: {
               text: this.yaxis
-            },
+            }
           } : [{
             floor: 0,
             title: {
               text: this.yaxis + ' (Average)'
-            },
+            }
           },{
             floor: 0,
             title: {
@@ -59,7 +59,7 @@
           }],
           tooltip: {
               crosshairs: true,
-              shared: true,
+              shared: true
           },
           legend: {
             enabled: false
@@ -76,10 +76,13 @@
                 maxWidth: 500
               },
               chartOptions: {
+                chart: {
+                  height: 300
+                },
                 xAxis: {
                   labels: {
                     formatter: function () {
-                      return '';
+                      return ''
                     }
                   }
                 },
@@ -108,22 +111,40 @@
     },
     methods: {
       $_area_range_chart_update() {
-        var api = this.source + '?group_by=' + this.group_by
+        var api = this.source
         var self = this
         $.get(api, function(data) {
-          let areaRangeCharts = self.$refs.areaRangeCharts;
-          areaRangeCharts.delegateMethod('showLoading', 'Loading...');
+          let areaRangeCharts = self.$refs.areaRangeCharts
+          areaRangeCharts.delegateMethod('showLoading', 'Loading...')
           setTimeout(() => {
-              if(self.combined === 'true'){
-                areaRangeCharts.addSeries({name: 'Average', zIndex: 1, marker: {fillColor: 'white', lineWidth: 2, lineColor: Highcharts.getOptions().colors[0]}, data: self.$_area_range_chart_averages(data.data)})
-                areaRangeCharts.addSeries({name: 'Range', type: 'arearange', lineWidth: 0, linkedTo: ':previous', color: Highcharts.getOptions().colors[0], fillOpacity: 0.3, zIndex: 0, marker: {enabled: false}, data: self.$_area_range_chart_ranges(data.data)})
-              }else{
-                areaRangeCharts.addSeries({name: 'Average', yAxis: 0, zIndex: 1, marker: {fillColor: 'white', lineWidth: 2, lineColor: Highcharts.getOptions().colors[0]}, data: self.$_area_range_chart_averages(data.data)})
-                areaRangeCharts.addSeries({name: 'Range', yAxis: 1, type: 'arearange', lineWidth: 0, linkedTo: ':previous', color: Highcharts.getOptions().colors[0], fillOpacity: 0.3, zIndex: 0, marker: {enabled: false}, data: self.$_area_range_chart_ranges(data.data)})
-              }
-              areaRangeCharts.hideLoading()
+            areaRangeCharts.addSeries({
+              name: 'Average',
+              yAxis: 0,
+              zIndex: 1,
+              marker: {
+                fillColor: 'white',
+                lineWidth: 2,
+                lineColor: Highcharts.getOptions().colors[0]
+              },
+              data: self.$_area_range_chart_averages(data.data)
+            })
+            areaRangeCharts.addSeries({
+              name: 'Range',
+              yAxis: self.combined === 'true' ? 0 : 1,
+              type: 'arearange',
+              lineWidth: 0,
+              linkedTo: ':previous',
+              color: Highcharts.getOptions().colors[0],
+              fillOpacity: 0.3,
+              zIndex: 0,
+              marker: {
+                enabled: false
+              },
+              data: self.$_area_range_chart_ranges(data.data)
+            })
+            areaRangeCharts.hideLoading()
           }, 2000)
-        });
+        })
       },
       $_area_range_chart_averages(data) {
         var averages = new Array()
@@ -142,5 +163,5 @@
         return ranges
       }
     }
-}
+  }
 </script>

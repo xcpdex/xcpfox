@@ -1,10 +1,7 @@
 <template>
 <div>
     <next-prev :per_page="per_page" :links="blocks.links" :float="'float-right'"></next-prev>
-    <h1>
-        Blocks
-        <small class="lead">{{ blocks.meta ? blocks.meta.total.toLocaleString('en') : '' }}</small>
-    </h1>
+    <h1>Blocks <small class="lead">{{ blocks.meta ? blocks.meta.total.toLocaleString('en') : '' }}</small></h1>
     <div class="card my-4">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -31,7 +28,8 @@
                             <td>{{ block.block_time_ago }}</td>
                             <td class="text-right"><a :href="block.url">{{ block.messages_count }}</a></td>
                             <td class="text-right"><a :href="block.url">{{ block.transactions_count }}</a></td>
-                            <td :class="block.messages_count > 0 ? 'text-success' : 'text-danger'"><i class="fa" :class="block.messages_count > 0 ? 'fa-check-circle' : 'fa-times-circle'"></i> {{ block.messages_count > 0 ? 'Yes' : 'No' }}</td>
+                            <td v-if="block.messages_count > 0" class="text-success"><i class="fa fa-check-circle"></i> Yes</td>
+                            <td v-else class="text-danger"><i class="fa fa-times-circle"></i> No</td>
                             <td><a :href="block.url">{{ block.block_height }}</a></td>
                             <td>{{ block.block_time }}</td>
                             <td class="text-right">{{ block.tx_count }}</td>

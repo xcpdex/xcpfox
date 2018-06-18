@@ -1,10 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Terms of Use')
+@section('title', 'Terms of Service')
 
 @section('content')
 <div class="container mt-1">
-    <h1>Terms of Use</h1>
+    @include('layouts.ads')
+    <h1>Terms of Service</h1>
     <div class="card mt-4">
         <div class="card-header font-weight-bold">
             Last Updated: 06/05/2018

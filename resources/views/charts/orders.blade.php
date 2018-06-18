@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Counterparty Orders Chart')
-@section('canonical',  url(route('charts.orders')))
+@section('canonical', url(route('charts.orders')))
+@section('description', 'Total number of dex orders placed, shown per day, per month, and per year.')
 
 @section('content')
 <div class="container mt-1">

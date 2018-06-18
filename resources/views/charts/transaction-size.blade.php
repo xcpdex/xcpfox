@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Total Transaction Data')
-@section('canonical',  url(route('charts.transactionSize')))
+@section('canonical', url(route('charts.transactionSize')))
+@section('description', 'Chart of the total amount of block space used by Counterparty transactions.')
 
 @section('content')
 <div class="container mt-1">

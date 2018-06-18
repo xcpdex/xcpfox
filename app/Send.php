@@ -57,6 +57,26 @@ class Send extends Model
     }
 
     /**
+     * Destination Address
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function destinationAddress()
+    {
+        return $this->belongsTo(Address::class, 'destination', 'address');
+    }
+
+    /**
+     * Source Address
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function sourceAddress()
+    {
+        return $this->belongsTo(Address::class, 'source', 'address');
+    }
+
+    /**
      * Asset
      * 
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -15,8 +15,8 @@ class MessageResource extends Resource
     public function toArray($request)
     {
         return [
-            'block_index' => $this->block_index,
-            'message_index' => $this->message_index,
+            'block_index' => number_format($this->block_index),
+            'message_index' => number_format($this->message_index),
             'command' => $this->command,
             'category' => getTitleFromType($this->category),
             'bindings' => json_decode($this->bindings),

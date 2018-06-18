@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class PiechartsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Show Address Types
      *
      * @return \Illuminate\Http\Response
      */
@@ -17,7 +17,7 @@ class PiechartsController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Show Asset Types
      *
      * @return \Illuminate\Http\Response
      */
@@ -27,7 +27,7 @@ class PiechartsController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Show Block Presence
      *
      * @return \Illuminate\Http\Response
      */
@@ -37,7 +37,7 @@ class PiechartsController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Show Message Categories
      *
      * @return \Illuminate\Http\Response
      */
@@ -47,7 +47,7 @@ class PiechartsController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Show Transaction Types
      *
      * @return \Illuminate\Http\Response
      */

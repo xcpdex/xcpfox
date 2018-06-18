@@ -33,7 +33,7 @@ class Issuance extends Model
      * @var array
      */
     protected $appends = [
-        'display_name',
+        'display_name', 'fee_paid_normalized',
     ];
 
     /**
@@ -44,6 +44,16 @@ class Issuance extends Model
     public function getDisplayNameAttribute()
     {
         return $this->asset_longname ? $this->asset_longname : $this->asset;
+    }
+
+    /**
+     * Fee Paid
+     *
+     * @return string
+     */
+    public function getFeePaidNormalizedAttribute()
+    {
+        return fromSatoshi($this->fee_paid);
     }
 
     /**

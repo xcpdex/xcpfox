@@ -15,11 +15,15 @@ class StatisticsController extends Controller
     public function index(Request $request)
     {
         return \Cache::remember('api_stats_index', 1440, function () {
-            return \App\Transaction::where('valid', '=', 1)
-                ->selectRaw('COUNT(*) as count, type')
+            $results = \App\Transaction::where('valid', '=', 1)
+                ->where('type', '!=', 'rps')
+                ->where('type', '!=', 'rpsresolves')
+                ->selectRaw('COUNT(tx_index) as count, type')
                 ->groupBy('type')
                 ->orderBy('count', 'desc')
                 ->get();
+
+            return \App\Http\Resources\StatisticResource::collection($results);
         });
     }
 }

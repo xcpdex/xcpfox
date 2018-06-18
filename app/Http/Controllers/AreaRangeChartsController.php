@@ -7,7 +7,17 @@ use Illuminate\Http\Request;
 class AreaRangeChartsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Show Average Burn Rate
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showBurnRate(Request $request)
+    {
+        return $this->getControllerTemplate($request, 'burn-rate');
+    }
+
+    /**
+     * Show Average Fee Rate
      *
      * @return \Illuminate\Http\Response
      */
@@ -17,7 +27,7 @@ class AreaRangeChartsController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Show Average Order Expiration
      *
      * @return \Illuminate\Http\Response
      */
@@ -27,7 +37,7 @@ class AreaRangeChartsController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Show Average Transaction Size
      *
      * @return \Illuminate\Http\Response
      */
@@ -37,7 +47,7 @@ class AreaRangeChartsController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Controller Template (DRY)
      *
      * @return \Illuminate\Http\Response
      */
@@ -49,6 +59,6 @@ class AreaRangeChartsController extends Controller
 
         $group_by = $request->input('group_by', 'month');
 
-        return view("charts.area-range.{$view}", compact('group_by'));
+        return view('charts.area-range.' . $view, compact('group_by'));
     }
 }

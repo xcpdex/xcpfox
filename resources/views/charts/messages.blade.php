@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Counterparty Messages Chart')
-@section('canonical',  url(route('charts.messages')))
+@section('title', $group_by === 'date' ? 'Counterparty Messages Per Day' : 'Counterparty Messages Per ' . ucfirst($group_by))
+@section('canonical', url(route('charts.messages')))
+@section('description', 'Chart showing total messages or "operations" processed by federated nodes in the Counterparty network.')
 
 @section('content')
 <div class="container mt-1">

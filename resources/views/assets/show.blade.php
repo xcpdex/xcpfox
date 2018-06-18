@@ -1,80 +1,92 @@
 @extends('layouts.app')
 
-@section('title', $asset->display_name . ' Counterparty Asset')
+@section('title', $asset->display_name === 'BTC' ? 'BTC Holder Information' : $asset->display_name . ' Asset Information')
+@section('canonical', url(route('assets.show', ['asset' => $asset->display_name])))
 
 @section('content')
 <div class="container mt-1">
-    <h1 class="mb-4">{{ $asset->display_name }}</h1>
+    @include('layouts.ads')
+    @include('assets.partials.page-title')
+    @include('assets.partials.market-history')
     <div class="row">
         <div class="col-md-8">
-            <div class="card">
+            <div class="card mt-4">
                 <div class="card-header font-weight-bold">
                     Asset Information
                 </div>
                 <div class="card-body">
-                    <div class="row mb-2">
-                        <div class="col-md-3 font-weight-bold font-weight-bold">Description:</div>
-                        <div class="col-md-9">{{ $asset->description }}</div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3 font-weight-bold font-weight-bold">Issuance:</div>
-                        <div class="col-md-9">{{ number_format($asset->issuance_normalized, 8) }}</div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3 font-weight-bold font-weight-bold">Holders:</div>
-                        <div class="col-md-9">{{ $asset->current_balances_count }}</div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3 font-weight-bold font-weight-bold">Issuer:</div>
-                        <div class="col-md-9"><a href="{{ url(route('addresses.show', ['address' => $asset->issuer])) }}">{{ $asset->issuer }}</a></div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3 font-weight-bold font-weight-bold">Owner:</div>
-                        <div class="col-md-9"><a href="{{ url(route('addresses.show', ['address' => $asset->owner])) }}">{{ $asset->owner }}</a></div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-md-3 font-weight-bold">Issued:</div>
-                        <div class="col-md-9">{{ $asset->confirmed_at->toDayDateTimeString() }}</div>
-                    </div>
+                    @include('assets.partials.asset')
                 </div>
             </div>
-        </div>
-        <div class="col-md-4 mt-4">
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-8 mt-4">
-            <div class="card">
+            <div class="card mt-4">
                 <div class="card-header font-weight-bold">
-                    Top 10 Holders
+                    Issuance Settings
                 </div>
                 <div class="card-body">
-                    @foreach($top_holders as $top_holder)
-                    <div class="row mb-2">
-                        <div class="col-7 col-md-6 font-weight-bold">{{ $top_holder->address }}</div>
-                        <div class="col-5 col-md-6 text-right">{{ number_format($top_holder->quantity_normalized, 8) }}</div>
-                    </div>
-                    @endforeach
+                    @include('assets.partials.issuance-settings')
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mt-4">
-            <div class="card">
+        <div class="col-md-4">
+            <div class="card mt-4">
                 <div class="card-header font-weight-bold">
                     Holders also own...
                 </div>
                 <div class="card-body">
-                    @foreach($related_assets as $related_asset)
-                    <div class="row mb-2">
-                        <div class="col-6 font-weight-bold">{{ substr($related_asset->asset, 0, 1) === 'A' ? str_limit($related_asset->asset, 12) : $related_asset->asset }}</div>
-                        <div class="col-3 text-right">{{ number_format($related_asset->count / $asset->current_balances_count * 100) }}%</div>
-                        <div class="col-3 text-right">{{ number_format($related_asset->count) }}</div>
-                    </div>
-                    @endforeach
+                    <list-assets
+                         source="{{ url(route('api.charts.assets.relatedAssets', ['asset_name' => $asset->asset_name])) }}"
+                     >
+                     </list-assets>
                 </div>
             </div>
         </div>
     </div>
+    @if($asset->current_balances_count > 0)
+    <div class="card mt-4">
+        <div class="card-header font-weight-bold">
+            Holders <small class="ml-1">{{ number_format($asset->current_balances_count) }} Total</small>
+        </div>
+        <div class="card-body">
+            @include('assets.partials.active-addresses')
+        </div>
+    </div>
+    @endif
+    @if($asset->asset_name !== 'BTC' && $asset->sends_count > 0)
+    <div class="card mt-4">
+        <div class="card-header font-weight-bold">
+            Sends <small class="ml-1">{{ number_format($asset->sends_count) }} Total</small>
+        </div>
+        <div class="card-body">
+            @include('assets.partials.unique-sends')
+        </div>
+    </div>
+    <div class="card mt-4">
+        <div class="card-header font-weight-bold">
+            Sent <small class="ml-1">{{ number_format($sends_total) }} {{ $asset->display_name }}</small>
+        </div>
+        <div class="card-body">
+            @include('assets.partials.tokens-sent')
+        </div>
+    </div>
+    @endif
+    @if($trades_count > 0)
+    <div class="card mt-4">
+        <div class="card-header font-weight-bold">
+            Trades <small class="ml-1">{{ number_format($trades_count) }} Total</small>
+        </div>
+        <div class="card-body">
+            @include('assets.partials.unique-trades')
+        </div>
+    </div>
+    <div class="card mt-4">
+        <div class="card-header font-weight-bold">
+            Traded <small class="ml-1">{{ number_format($trades_total) }} {{ $asset->display_name }}</small>
+        </div>
+        <div class="card-body">
+            @include('assets.partials.tokens-traded')
+        </div>
+    </div>
+    @endif
     @include('layouts.cta')
 </div>
 @endsection

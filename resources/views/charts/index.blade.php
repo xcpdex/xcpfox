@@ -1,13 +1,94 @@
 @extends('layouts.app')
 
 @section('title', 'Counterparty Charts')
+@section('canonical', url(route('charts.index')))
+@section('description', 'Get the price, market cap, and volume of Counterparty XCP, as well as, other charts specific to network usage.')
 
 @section('content')
 <div class="container mt-1">
-    <h1 class="text-center">Counterparty Charts</h1>
+    @include('layouts.ads')
+    <a href="{{ url(route('home')) }}" class="d-none d-sm-inline btn btn-outline-primary mt-1 float-right">Home</a>
+    <h1>Counterparty Charts</h1>
     <div class="row">
         <div class="col-md-6">
-            <h3 class="text-center mt-5">Transaction Data</h3>
+            <h3 class="text-center mt-4">Supply Data</h3>
+            <div class="row">
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.xcpSupply')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-xcp-supply.png') }}" alt="Counterparty XCP Supply Chart" />
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.xcpSupply')) }}">
+                                    XCP Supply
+                                </a>
+                            </h5>
+                            <p class="card-text">The total circulating supply of XCP goes down overtime due to its use as a gas.</p>
+                            <a href="{{ url(route('charts.xcpSupply')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.gasFees')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-gas-fees.png') }}" alt="Counterparty Gas Fees Chart" />
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.gasFees')) }}">
+                                    Gas Fees
+                                </a>
+                            </h5>
+                            <p class="card-text">Contract execution gas burned while registering assets and paying dividends.</p>
+                            <a href="{{ url(route('charts.gasFees')) }}" class="btn btn-primary">XCP</a>
+                            <a href="{{ url(route('charts.gasFees', ['currency' => 'USD'])) }}" class="btn btn-primary">USD</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h3 class="text-center mt-4">Burn Data</h3>
+            <div class="row">
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.btcBurned')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-bitcoin-burned.png') }}" alt="Bitcoin Burned Chart" />
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.btcBurned')) }}">
+                                    BTC Burned
+                                </a>
+                            </h5>
+                            <p class="card-text">Around 2,125 BTC were burned in order to "mine" the native currency called XCP.</p>
+                            <a href="{{ url(route('charts.btcBurned')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.areaRange.burnRate')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-burn-rate.png') }}" alt="Counterparty Burn Rate Chart" />
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.areaRange.burnRate')) }}">
+                                    Avg. Burn Rate
+                                </a>
+                            </h5>
+                            <p class="card-text">Up to 1 BTC could be burned in exchange for 1000 to 1500 XCP during the burn in 2014.</p>
+                            <a href="{{ url(route('charts.areaRange.burnRate')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h3 class="text-center mt-4">Transaction Data</h3>
             <div class="row">
                 <div class="col-6 mt-4">
                     <div class="card text-center">
@@ -44,7 +125,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <h3 class="text-center mt-5">Message Data</h3>
+            <h3 class="text-center mt-4">Message Data</h3>
             <div class="row">
                 <div class="col-6 mt-4">
                     <div class="card text-center">
@@ -83,7 +164,7 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <h3 class="text-center mt-5">Fee Data</h3>
+            <h3 class="text-center mt-4">Fee Data</h3>
             <div class="row">
                 <div class="col-6 mt-4">
                     <div class="card text-center">
@@ -122,7 +203,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <h3 class="text-center mt-5">Fee Rate Data</h3>
+            <h3 class="text-center mt-4">Fee Rate Data</h3>
             <div class="row">
                 <div class="col-6 mt-4">
                     <div class="card text-center">
@@ -151,7 +232,7 @@
                                     Fee Rates Paid
                                 </a>
                             </h5>
-                            <p class="card-text">A closer look at the fee rates paid by Counterparty users over the last 7 days.</p>
+                            <p class="card-text">A closer look at the fee rates paid by Counterparty users over the last 24 hours.</p>
                             <a href="{{ url(route('charts.feeRates')) }}" class="btn btn-primary">View Chart</a>
                         </div>
                     </div>
@@ -161,7 +242,7 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <h3 class="text-center mt-5">Size Data</h3>
+            <h3 class="text-center mt-4">Size Data</h3>
             <div class="row">
                 <div class="col-6 mt-4">
                     <div class="card text-center">
@@ -198,7 +279,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <h3 class="text-center mt-5">Block Data</h3>
+            <h3 class="text-center mt-4">Block Data</h3>
             <div class="row">
                 <div class="col-6 mt-4">
                     <div class="card text-center">
@@ -237,7 +318,7 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <h3 class="text-center mt-5">Asset Data</h3>
+            <h3 class="text-center mt-4">Asset Data</h3>
             <div class="row">
                 <div class="col-6 mt-4">
                     <div class="card text-center">
@@ -307,7 +388,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <h3 class="text-center mt-5">Address Data</h3>
+            <h3 class="text-center mt-4">Address Data</h3>
             <div class="row">
                 <div class="col-6 mt-4">
                     <div class="card text-center">
@@ -378,7 +459,7 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <h3 class="text-center mt-5">Send Data</h3>
+            <h3 class="text-center mt-4">Send Data</h3>
             <div class="row">
                 <div class="col-6 mt-4">
                     <div class="card text-center">
@@ -396,10 +477,26 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-6 mt-4">
+                    <div class="card text-center">
+                        <a href="{{ url(route('charts.mostSends')) }}">
+                            <img class="card-img-top" src="{{ asset('/images/counterparty-most-sends.png') }}" alt="Most Sends Chart" />
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">
+                                <a href="{{ url(route('charts.mostSends')) }}">
+                                    Most Sends
+                                </a>
+                            </h5>
+                            <p class="card-text">A look at the Top 20 most sent Counterparty assets of all time. Guess what? It's not XCP!</p>
+                            <a href="{{ url(route('charts.mostSends')) }}" class="btn btn-primary">View Chart</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-6">
-            <h3 class="text-center mt-5">Order Data</h3>
+            <h3 class="text-center mt-4">Order Data</h3>
             <div class="row">
                 <div class="col-6 mt-4">
                     <div class="card text-center">
@@ -435,6 +532,9 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="alert alert-warning mt-5 mb-0">
+        <b>Notice:</b> The thumbnails shown on this page are <b>not</b> automatically generated. Please, click through to the actual charts and do not rely on the thumbnails alone, as they won't reflect the most recent data. When this message no longer appears on this page, the issue will have been addressed. Thank you!
     </div>
     @include('layouts.cta')
 </div>

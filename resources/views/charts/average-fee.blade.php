@@ -1,12 +1,13 @@
 @extends('layouts.app')
 
 @section('title', 'Average Transaction Fee')
-@section('canonical',  url(route('charts.averageFee')))
+@section('canonical', url(route('charts.averageFee')))
+@section('description', 'Chart of the average transaction fee paid by a Counterparty user. Availablel in USD and BTC.')
 
 @section('content')
 <div class="container mt-1">
     @include('charts.partials.page-title', [
-        'title' => 'Average Fee',
+        'title' => 'Average Tx Fee',
         'small' => $group_by === 'date' ? 'Per Day' : 'Per ' . $group_by,
     ])
     <chart

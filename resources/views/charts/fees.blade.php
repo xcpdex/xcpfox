@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Total Transaction Fees')
-@section('canonical',  url(route('charts.fees')))
+@section('canonical', url(route('charts.fees')))
+@section('description', 'Chart of the total transaction fees paid by all Counterparty users across the network. Available in USD and BTC.')
 
 @section('content')
 <div class="container mt-1">

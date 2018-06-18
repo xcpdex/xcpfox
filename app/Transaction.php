@@ -144,7 +144,9 @@ class Transaction extends Model
      */
     public function relatedModel()
     {
-        return $this->hasOne(getModelNameFromType($this->type), 'tx_hash', 'tx_hash');
+        $relation = getModelNameFromType($this->type);
+
+        return $this->hasOne($relation, 'tx_hash', 'tx_hash');
     }
 
     /**

@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Average Order Expiration')
-@section('canonical',  url(route('charts.areaRange.orderExpiration')))
+@section('canonical', url(route('charts.areaRange.orderExpiration')))
+@section('description', 'The average order duration selected by traders when placing dex orders.')
 
 @section('content')
 <div class="container mt-1">
@@ -10,7 +11,7 @@
         'small' => $group_by === 'date' ? 'Per Day' : 'Per ' . $group_by,
     ])
     <chart-area-range
-        source="{{ url(route('api.charts.areaRange.orderExpiration')) }}"
+        source="{{ url(route('api.charts.areaRange.orderExpiration', ['group_by' => $group_by])) }}"
         title="Average Order Expiration"
         yaxis="Blocks"
         group_by="{{ $group_by }}"

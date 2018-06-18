@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Counterparty Transactions Chart')
-@section('canonical',  url(route('charts.transactions')))
+@section('title', $group_by === 'date' ? 'Counterparty Transactions Per Day' : 'Counterparty Transactions Per ' . ucfirst($group_by))
+@section('canonical', url(route('charts.transactions')))
+@section('description', 'Chart showing the number of confirmed bitcoin transactions using Counterparty.')
 
 @section('content')
 <div class="container mt-1">

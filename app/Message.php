@@ -52,7 +52,7 @@ class Message extends Model
      */
     public function getUrlAttribute()
     {
-        return url(route('messages.show', ['message_index' => $this->message_index]));
+        return url(route('messages.show', ['message' => $this->message_index]));
     }
 
     /**

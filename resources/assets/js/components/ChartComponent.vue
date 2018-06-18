@@ -73,6 +73,9 @@
                 maxWidth: 500
               },
               chartOptions: {
+                chart: {
+                  height: 300,
+                },
                 xAxis: {
                   labels: {
                     formatter: function () {

@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Active Counterparty Addresses')
-@section('canonical',  url(route('charts.activeAddresses')))
+@section('title', $group_by === 'date' ? 'Active Addresses Per Day' : 'Active Addresses Per ' . ucfirst($group_by))
+@section('canonical', url(route('charts.activeAddresses')))
+@section('description', 'Active bitcoin addresses based on whether they had any Counterparty balance changes during period.')
 
 @section('content')
 <div class="container mt-1">
@@ -11,7 +12,7 @@
     ])
     <chart
         source="{{ url(route('api.charts.activeAddresses', ['group_by' => $group_by])) }}"
-        title="Counterparty Active Addresses"
+        title="Active Counterparty Addresses"
         yaxis="Addresses"
         group_by="{{ $group_by }}"
         type="{{ $chart_type }}"

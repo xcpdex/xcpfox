@@ -15,13 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/json', function () {
-    $counterparty = new \JsonRPC\Client(env('CP_API'));
-    $counterparty->authentication(env('CP_USER'), env('CP_PASS'));
-
-    return $counterparty->execute('get_supply', ['asset' => 'XCP']);
-});
-
 Route::get('/home', [
     'as' => 'home',
     'uses' => 'HomeController@index',
@@ -30,6 +23,21 @@ Route::get('/home', [
 Route::get('/search', [
     'as' => 'search.index',
     'uses' => 'SearchController@index',
+]);
+
+Route::get('/address/{address}', [
+    'as' => 'addresses.show',
+    'uses' => 'AddressesController@show',
+]);
+
+Route::get('/assets/{type?}', [
+    'as' => 'assets.index',
+    'uses' => 'AssetsController@index',
+]);
+
+Route::get('/asset/{asset}', [
+    'as' => 'assets.show',
+    'uses' => 'AssetsController@show',
 ]);
 
 Route::get('/blocks', [
@@ -47,19 +55,19 @@ Route::get('/messages', [
     'uses' => 'MessagesController@index',
 ]);
 
-Route::get('/message/{message_index}', [
+Route::get('/message/{message}', [
     'as' => 'messages.show',
     'uses' => 'MessagesController@show',
 ]);
 
-Route::get('/transactions', [
-    'as' => 'transactions.index',
-    'uses' => 'TransactionsController@index',
+Route::get('/unconfirmed-transactions', [
+    'as' => 'mempool.index',
+    'uses' => 'MempoolController@index',
 ]);
 
-Route::get('/transactions/{type}', [
-    'as' => 'transactions.typeIndex',
-    'uses' => 'TransactionsController@typeIndex',
+Route::get('/transactions/{type?}', [
+    'as' => 'transactions.index',
+    'uses' => 'TransactionsController@index',
 ]);
 
 Route::get('/tx/{transaction}', [
@@ -67,94 +75,10 @@ Route::get('/tx/{transaction}', [
     'uses' => 'TransactionsController@show',
 ]);
 
-Route::get('/addresses', [
-    'as' => 'addresses.index',
-    'uses' => 'AddressesController@index',
-]);
-
-Route::get('/address/{address}', [
-    'as' => 'addresses.show',
-    'uses' => 'AddressesController@show',
-]);
-
-Route::get('/charts/address-types', [
-    'as' => 'charts.pie.addresses',
-    'uses' => 'PiechartsController@showAddresses',
-]);
-
-Route::get('/charts/asset-types', [
-    'as' => 'charts.pie.assets',
-    'uses' => 'PiechartsController@showAssets',
-]);
-
-Route::get('/charts/block-presence', [
-    'as' => 'charts.pie.blocks',
-    'uses' => 'PiechartsController@showBlocks',
-]);
-
-Route::get('/charts/message-categories', [
-    'as' => 'charts.pie.messages',
-    'uses' => 'PiechartsController@showMessages',
-]);
-
-Route::get('/charts/transaction-types', [
-    'as' => 'charts.pie.transactions',
-    'uses' => 'PiechartsController@showTransactions',
-]);
-
-Route::get('/assets', [
-    'as' => 'assets.index',
-    'uses' => 'AssetsController@index',
-]);
-
-Route::get('/assets/{type}', [
-    'as' => 'assets.typeIndex',
-    'uses' => 'AssetsController@typeIndex',
-]);
-
-Route::get('/asset/{asset}', [
-    'as' => 'assets.show',
-    'uses' => 'AssetsController@show',
-]);
-
 Route::get('/leaderboard', [
     'as' => 'leaderboard.index',
     'uses' => 'LeaderboardController@index',
 ]);
-
-Route::get('/docs', [
-    'as' => 'docs',
-    'uses' => 'PagesController@getDocs',
-]);
-
-Route::get('/docs/node-setup', [
-    'as' => 'node',
-    'uses' => 'PagesController@getNodeSetup',
-]);
-
-Route::get('/faq', [
-    'as' => 'faq',
-    'uses' => 'PagesController@getFaq',
-]);
-
-Route::get('/terms', [
-    'as' => 'terms',
-    'uses' => 'PagesController@getTerms',
-]);
-
-Route::get('/privacy', [
-    'as' => 'privacy',
-    'uses' => 'PagesController@getPrivacy',
-]);
-
-Route::get('/disclaimer', [
-    'as' => 'disclaimer',
-    'uses' => 'PagesController@getDisclaimer',
-]);
-
-Route::get('/chart', function () {
-    return view('chart');
-});
 
 Route::get('/charts', [
     'as' => 'charts.index',
@@ -191,6 +115,31 @@ Route::get('/charts/block-share', [
     'uses' => 'ChartsController@showBlockShare',
 ]);
 
+Route::get('/charts/btc-burned', [
+    'as' => 'charts.btcBurned',
+    'uses' => 'ChartsController@showBtcBurned',
+]);
+
+Route::get('/charts/total-fees', [
+    'as' => 'charts.fees',
+    'uses' => 'ChartsController@showFees',
+]);
+
+Route::get('/charts/average-fee', [
+    'as' => 'charts.averageFee',
+    'uses' => 'ChartsController@showAverageFee',
+]);
+
+Route::get('/charts/fee-rates', [
+    'as' => 'charts.feeRates',
+    'uses' => 'ChartsController@showFeeRates',
+]);
+
+Route::get('/charts/gas-fees', [
+    'as' => 'charts.gasFees',
+    'uses' => 'ChartsController@showGasFees',
+]);
+
 Route::get('/charts/messages', [
     'as' => 'charts.messages',
     'uses' => 'ChartsController@showMessages',
@@ -211,6 +160,11 @@ Route::get('/charts/sends', [
     'uses' => 'ChartsController@showSends',
 ]);
 
+Route::get('/charts/most-sends', [
+    'as' => 'charts.mostSends',
+    'uses' => 'ChartsController@showMostSends',
+]);
+
 Route::get('/charts/transactions', [
     'as' => 'charts.transactions',
     'uses' => 'ChartsController@showTransactions',
@@ -221,19 +175,14 @@ Route::get('/charts/transaction-data', [
     'uses' => 'ChartsController@showTransactionSize',
 ]);
 
-Route::get('/charts/total-fees', [
-    'as' => 'charts.fees',
-    'uses' => 'ChartsController@showFees',
+Route::get('/charts/xcp-supply', [
+    'as' => 'charts.xcpSupply',
+    'uses' => 'ChartsController@showXcpSupply',
 ]);
 
-Route::get('/charts/average-fee', [
-    'as' => 'charts.averageFee',
-    'uses' => 'ChartsController@showAverageFee',
-]);
-
-Route::get('/charts/fee-rates', [
-    'as' => 'charts.feeRates',
-    'uses' => 'ChartsController@showFeeRates',
+Route::get('/charts/average-burn-rate', [
+    'as' => 'charts.areaRange.burnRate',
+    'uses' => 'AreaRangeChartsController@showBurnRate',
 ]);
 
 Route::get('/charts/average-fee-rate', [
@@ -251,6 +200,89 @@ Route::get('/charts/average-transaction-size', [
     'uses' => 'AreaRangeChartsController@showTransactionSize',
 ]);
 
-Auth::routes();
+Route::get('/charts/address-types', [
+    'as' => 'charts.pie.addresses',
+    'uses' => 'PiechartsController@showAddresses',
+]);
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/charts/asset-types', [
+    'as' => 'charts.pie.assets',
+    'uses' => 'PiechartsController@showAssets',
+]);
+
+Route::get('/charts/block-presence', [
+    'as' => 'charts.pie.blocks',
+    'uses' => 'PiechartsController@showBlocks',
+]);
+
+Route::get('/charts/message-categories', [
+    'as' => 'charts.pie.messages',
+    'uses' => 'PiechartsController@showMessages',
+]);
+
+Route::get('/charts/transaction-types', [
+    'as' => 'charts.pie.transactions',
+    'uses' => 'PiechartsController@showTransactions',
+]);
+
+Route::get('/about', [
+    'as' => 'about',
+    'uses' => 'PagesController@getAbout',
+]);
+
+Route::get('/contact', [
+    'as' => 'contact',
+    'uses' => 'PagesController@getContact',
+]);
+
+Route::get('/disclaimer', [
+    'as' => 'disclaimer',
+    'uses' => 'PagesController@getDisclaimer',
+]);
+
+Route::get('/docs', [
+    'as' => 'docs',
+    'uses' => 'PagesController@getDocs',
+]);
+
+Route::get('/docs/node-setup', [
+    'as' => 'node',
+    'uses' => 'PagesController@getNodeSetup',
+]);
+
+Route::get('/docs/protocol-specification', [
+    'as' => 'protocol',
+    'uses' => 'PagesController@getProtocolSpecification',
+]);
+
+Route::get('/faq', [
+    'as' => 'faq',
+    'uses' => 'PagesController@getFaq',
+]);
+
+Route::get('/privacy', [
+    'as' => 'privacy',
+    'uses' => 'PagesController@getPrivacy',
+]);
+
+Route::get('/terms', [
+    'as' => 'terms',
+    'uses' => 'PagesController@getTerms',
+]);
+
+Route::get('/sitemap.xml', [
+    'as' => 'sitemaps.index',
+    'uses' => 'SitemapsController@index',
+]);
+
+Route::get('/sitemap/routes.xml', [
+    'as' => 'sitemaps.routes',
+    'uses' => 'SitemapsController@routes',
+]);
+
+Route::get('/sitemap/{type}-{page}.xml', [
+    'as' => 'sitemaps.show',
+    'uses' => 'SitemapsController@show',
+]);
+
+Auth::routes();

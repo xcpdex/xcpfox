@@ -6,7 +6,7 @@
     </div>
     <div class="card-body">
         <template v-for="stat in stats">
-        <div v-if="stat.type !== 'rps' && stat.type !== 'rpsresolves'" class="row">
+        <div class="row">
             <div class="col-6 col-sm-8 col-lg-9 mb-2">
                 <b class="text-capitalize">{{ stat.type }}:</b>
             </div>
@@ -39,8 +39,8 @@
         var api = '/api/statistics'
         var self = this
         $.get(api, function(data) {
-          self.stats = data
-        });
+          self.stats = data.data
+        })
       }
     }
   }

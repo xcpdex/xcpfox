@@ -20,7 +20,7 @@ class ChartsController extends Controller
 
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_addresses_' . $group_by, 2880, function() use($group_by) {
+        return \Cache::remember('api_charts_addresses_' . $group_by, 1440, function() use($group_by) {
             switch($group_by)
             {
                 case 'date':
@@ -65,20 +65,23 @@ class ChartsController extends Controller
             switch($group_by)
             {
                 case 'date':
-                    $results = \App\Balance::selectRaw('DATE(confirmed_at) as date, COUNT(DISTINCT address) as count')
+                    $results = \App\Balance::where('asset', '!=', 'BTC')
+                        ->selectRaw('DATE(confirmed_at) as date, COUNT(DISTINCT address) as count')
                         ->groupBy('date')
                         ->orderBy('date')
                         ->get();
                     break;
                 case 'month':
-                    $results = \App\Balance::selectRaw('YEAR(confirmed_at) as year, MONTH(confirmed_at) as month, COUNT(DISTINCT address) as count')
+                    $results = \App\Balance::where('asset', '!=', 'BTC')
+                        ->selectRaw('YEAR(confirmed_at) as year, MONTH(confirmed_at) as month, COUNT(DISTINCT address) as count')
                         ->groupBy('month', 'year')
                         ->orderBy('year')
                         ->orderBy('month')
                         ->get();
                     break;
                 case 'year':
-                    $results = \App\Balance::selectRaw('YEAR(confirmed_at) as year, COUNT(DISTINCT address) as count')
+                    $results = \App\Balance::where('asset', '!=', 'BTC')
+                        ->selectRaw('YEAR(confirmed_at) as year, COUNT(DISTINCT address) as count')
                         ->groupBy('year')
                         ->orderBy('year')
                         ->get();
@@ -149,7 +152,7 @@ class ChartsController extends Controller
 
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_assets_' . $group_by, 2880, function() use($group_by) {
+        return \Cache::remember('api_charts_assets_' . $group_by, 1440, function() use($group_by) {
             switch($group_by)
             {
                 case 'date':
@@ -196,20 +199,23 @@ class ChartsController extends Controller
             switch($group_by)
             {
                 case 'date':
-                    $results = \App\Balance::selectRaw('DATE(confirmed_at) as date, COUNT(DISTINCT asset) as count')
+                    $results = \App\Balance::where('asset', '!=', 'BTC')
+                        ->selectRaw('DATE(confirmed_at) as date, COUNT(DISTINCT asset) as count')
                         ->groupBy('date')
                         ->orderBy('date')
                         ->get();
                     break;
                 case 'month':
-                    $results = \App\Balance::selectRaw('YEAR(confirmed_at) as year, MONTH(confirmed_at) as month, COUNT(DISTINCT asset) as count')
+                    $results = \App\Balance::where('asset', '!=', 'BTC')
+                        ->selectRaw('YEAR(confirmed_at) as year, MONTH(confirmed_at) as month, COUNT(DISTINCT asset) as count')
                         ->groupBy('month', 'year')
                         ->orderBy('year')
                         ->orderBy('month')
                         ->get();
                     break;
                 case 'year':
-                    $results = \App\Balance::selectRaw('YEAR(confirmed_at) as year, COUNT(DISTINCT asset) as count')
+                    $results = \App\Balance::where('asset', '!=', 'BTC')
+                        ->selectRaw('YEAR(confirmed_at) as year, COUNT(DISTINCT asset) as count')
                         ->groupBy('year')
                         ->orderBy('year')
                         ->get();
@@ -227,7 +233,7 @@ class ChartsController extends Controller
      */
     public function showBlockShare(Request $request)
     {
-        return \Cache::remember('api_charts_block_percent', 2880, function() {
+        return \Cache::remember('api_charts_block_percent', 1440, function() {
             $blocks = \App\Block::whereNotNull('processed_at')
                 ->selectRaw('YEAR(confirmed_at) as year, MONTH(confirmed_at) as month, SUM(tx_count) as tx_count')
                 ->groupBy('month', 'year')
@@ -255,6 +261,23 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function showBtcBurned(Request $request)
+    {
+        return \Cache::remember('api_charts_btc_burned', 1440, function() {
+            $results = \App\Burn::selectRaw('DATE(confirmed_at) as date, SUM(burned) as quantity')
+                ->groupBy('date')
+                ->orderBy('date')
+                ->get();
+
+            return \App\Http\Resources\QuantityResource::collection($results);
+        });
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function showFees(Request $request)
     {
         $request->validate([
@@ -265,7 +288,7 @@ class ChartsController extends Controller
         $currency = $request->input('currency', 'BTC');
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_fees_' . $currency . '_' . $group_by, 2880, function() use($currency, $group_by) {
+        return \Cache::remember('api_charts_fees_' . $currency . '_' . $group_by, 1440, function() use($currency, $group_by) {
             $fee = $currency === 'BTC' ? 'fee' : 'fee_usd';
             switch($group_by)
             {
@@ -312,7 +335,7 @@ class ChartsController extends Controller
         $currency = $request->input('currency', 'BTC');
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_average_fee_' . $currency . '_' . $group_by, 2880, function() use($currency, $group_by) {
+        return \Cache::remember('api_charts_average_fee_' . $currency . '_' . $group_by, 1440, function() use($currency, $group_by) {
             $fee = $currency === 'BTC' ? 'fee' : 'fee_usd';
             switch($group_by)
             {
@@ -351,15 +374,63 @@ class ChartsController extends Controller
      */
     public function showFeeRates(Request $request)
     {
-        return \Cache::remember('api_charts_fee_rates', 2880, function() {
+        return \Cache::remember('api_charts_fee_rates', 1440, function() {
             $results = \App\Transaction::whereNotNull('processed_at')
-                ->where('confirmed_at', '>', \Carbon\Carbon::now()->subDays(7))
+                ->where('confirmed_at', '>', \Carbon\Carbon::now()->subDays(1))
                 ->selectRaw('COUNT(*) as count, ROUND(fee / size) as category')
                 ->groupBy('category')
                 ->orderBy('category', 'asc')
                 ->get();
 
             return \App\Http\Resources\CategoryResource::collection($results);
+        });
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showGasFees(Request $request)
+    {
+        $request->validate([
+            'currency' => 'sometimes|in:XCP,USD',
+            'group_by' => 'sometimes|in:date,month,year',
+        ]);
+
+        $currency = $request->input('currency', 'XCP');
+        $group_by = $request->input('group_by', 'date');
+
+        return \Cache::remember('api_charts_gas_fees_' . $currency . '_' . $group_by, 1440, function() use($currency, $group_by) {
+            $quantity = $currency === 'XCP' ? 'quantity' : 'quantity_usd';
+
+            switch($group_by)
+            {
+                case 'date':
+                    $results = \App\Debit::where('action', 'like', '% fee')
+                        ->selectRaw('DATE(confirmed_at) as date, SUM(' . $quantity . ') as quantity')
+                        ->groupBy('date')
+                        ->orderBy('date')
+                        ->get();
+                    break;
+                case 'month':
+                    $results = \App\Debit::where('action', 'like', '% fee')
+                        ->selectRaw('YEAR(confirmed_at) as year, MONTH(confirmed_at) as month, SUM(' . $quantity . ') as quantity')
+                        ->groupBy('month', 'year')
+                        ->orderBy('year')
+                        ->orderBy('month')
+                        ->get();
+                    break;
+                case 'year':
+                    $results = \App\Debit::where('action', 'like', '% fee')
+                        ->selectRaw('YEAR(confirmed_at) as year, SUM(' . $quantity . ') as quantity')
+                        ->groupBy('year')
+                        ->orderBy('year')
+                        ->get();
+                    break;
+            }
+
+            return \App\Http\Resources\QuantityResource::collection($results);
         });
     }
 
@@ -376,7 +447,7 @@ class ChartsController extends Controller
 
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_messages_' . $group_by, 2880, function() use($group_by) {
+        return \Cache::remember('api_charts_messages_' . $group_by, 1440, function() use($group_by) {
             switch($group_by)
             {
                 case 'date':
@@ -460,7 +531,7 @@ class ChartsController extends Controller
         $currency = $request->input('currency', 'XCP');
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_registration_fee_' . $currency . '_' . $group_by, 2880, function() use($currency, $group_by) {
+        return \Cache::remember('api_charts_registration_fee_' . $currency . '_' . $group_by, 1440, function() use($currency, $group_by) {
             $quantity = $currency === 'XCP' ? 'quantity' : 'quantity_usd';
             switch($group_by)
             {
@@ -505,7 +576,7 @@ class ChartsController extends Controller
 
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_sends_' . $group_by, 2880, function() use($group_by) {
+        return \Cache::remember('api_charts_sends_' . $group_by, 1440, function() use($group_by) {
             switch($group_by)
             {
                 case 'date':
@@ -538,6 +609,24 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function showMostSends(Request $request)
+    {
+        return \Cache::remember('api_charts_most_sends', 1440, function() {
+            $results = \App\Send::selectRaw('COUNT(*) as count, asset as category')
+                ->groupBy('category')
+                ->orderBy('count', 'desc')
+                ->take(20)
+                ->get();
+
+            return \App\Http\Resources\CategoryResource::collection($results);
+        });
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function showTransactions(Request $request)
     {
         $request->validate([
@@ -546,7 +635,7 @@ class ChartsController extends Controller
 
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_transactions_' . $group_by, 2880, function() use($group_by) {
+        return \Cache::remember('api_charts_transactions_' . $group_by, 1440, function() use($group_by) {
             switch($group_by)
             {
                 case 'date':
@@ -587,7 +676,7 @@ class ChartsController extends Controller
 
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_transaction_size_' . $group_by, 2880, function() use($group_by) {
+        return \Cache::remember('api_charts_transaction_size_' . $group_by, 1440, function() use($group_by) {
             switch($group_by)
             {
                 case 'date':

@@ -1,9 +1,12 @@
 @extends('layouts.app')
 
 @section('title', 'Counterparty (XCP) Block Explorer')
+@section('canonical', url(route('home')))
+@section('description', 'View detailed information and charts on Counterparty transactions and Bitcoin blocks containing them.')
 
 @section('content')
 <div class="container mt-1">
+    @include('layouts.ads')
     <div class="row">
         <div class="col-md-6 col-lg-8 d-none d-md-inline">
             <h1>XCP FOX <small class="lead">Block Explorer</small></h1>
@@ -24,15 +27,11 @@
     </div>
     <div class="row">
         <div class="col-lg-8 mt-4 mb-2">
-            <chart
-                source="{{ url(route('api.charts.transactions', ['group_by' => 'month'])) }}"
-                title="Counterparty Transactions"
-                yaxis="Transactions"
-                group_by="month"
-                type="line"
-                cumulative="true"
+            <chart-market
+                source="https://coincap.io/history/XCP"
+                title="XCP Charts"
             >
-            </chart>
+            </chart-market>
             <p class="text-center text-muted mt-2">Welcome to XCP FOX, a Counterparty block explorer.</p>
             <p class="text-center card-text mt-4">
                 <a href="https://t.me/xcpfox" class="btn btn-lg btn-outline-success d-inline d-md-none">

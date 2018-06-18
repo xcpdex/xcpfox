@@ -15,7 +15,7 @@ class Asset extends Model
      * @var array
      */
     protected $fillable = [
-        'asset_name', 'asset_longname', 'type', 'issuer', 'owner', 'description', 'issuance', 'issuance_normalized', 'divisible', 'locked', 'block_index', 'message_index', 'confirmed_at',
+        'asset_name', 'asset_longname', 'type', 'issuer', 'owner', 'description', 'issuance', 'issuance_normalized', 'divisible', 'locked', 'block_index', 'tx_index', 'confirmed_at',
     ];
 
     /**
@@ -98,6 +98,26 @@ class Asset extends Model
     }
 
     /**
+     * Credits
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function credits()
+    {
+        return $this->hasMany(Credit::class, 'asset', 'asset_name');
+    }
+
+    /**
+     * Debits
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function debits()
+    {
+        return $this->hasMany(Debit::class, 'asset', 'asset_name');
+    }
+
+    /**
      * Dividends
      * 
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -128,88 +148,30 @@ class Asset extends Model
     }
 
     /**
-     * Update or Create Asset
+     * First Or Create Asset
      *
-     * @param  arr  $message
-     * @param  arr  $bindings
+     * @param  \App\Issuance  $issuance
      * @return \App\Asset
      */
-    public static function updateOrCreateAsset($message, $bindings)
+    public static function firstOrCreateAsset(\App\Issuance  $issuance)
     {
-        if($bindings['status'] === 'valid')
-        {
-            \Cache::tags(['issuance_flush'])->flush();
-
-            if($asset = static::whereAssetName($bindings['asset'])->first())
-            {
-                return $asset->updateAsset($message, $bindings);
-            }
-            else
-            {
-                return static::createAsset($message, $bindings);
-            }
-        }
-    }
-
-    /**
-     * Create Asset
-     *
-     * @param  arr  $message
-     * @param  arr  $bindings
-     * @return \App\Asset
-     */
-    public static function createAsset($message, $bindings)
-    {
-        $type = getAssetType($bindings);
+        $type = getAssetType($issuance);
 
         return static::firstOrCreate([
-            'asset_name' => $bindings['asset'],
+            'asset_name' => $issuance->asset,
         ],[
             'type' => $type,
-            'owner' => $bindings['source'],
-            'issuer' => $bindings['issuer'],
-            'asset_longname' => $bindings['asset_longname'],
-            'description' => $bindings['description'],
-            'issuance' => $bindings['quantity'],
-            'issuance_normalized' => $bindings['divisible'] ? fromSatoshi($bindings['quantity']) : $bindings['quantity'],
-            'divisible' => $bindings['divisible'],
-            'locked' => $bindings['locked'],
-            'block_index' => $bindings['block_index'],
-            'message_index' => $message['message_index'],
-            'confirmed_at' => $bindings['confirmed_at'],
-        ]);
-    }
-
-    /**
-     * Update Asset
-     *
-     * @param  arr  $message
-     * @param  arr  $bindings
-     * @return \App\Asset
-     */
-    public function updateAsset($message, $bindings)
-    {
-        \Cache::tags([$this->asset_name, $this->asset_longname])->flush();
-
-        if(isset($bindings['quantity']))
-        {
-            $issuance = $this->issuance + $bindings['quantity'];
-            $issuance_normalized = $this->divisible ? fromSatoshi($issuance) : $issuance;
-
-            if($issuance > 9223372036854775807)
-            {
-                $issuance = 9223372036854775807;
-                $issuance_normalized = fromSatoshi(9223372036854775807);
-            }
-        }
-
-        return $this->update([
-            'owner' => $bindings['issuer'],
-            'description' => $bindings['description'],
-            'issuance' => isset($issuance) ? $issuance : $this->issuance,
-            'issuance_normalized' => isset($issuance_normalized) ? $issuance_normalized : $this->issuance_normalized,
-            'locked' => ! $this->locked && $bindings['locked'] ? 1 : $this->locked,
-            'confirmed_at' => $bindings['confirmed_at'],
+            'owner' => $issuance->source,
+            'issuer' => $issuance->issuer,
+            'asset_longname' => $issuance->asset_longname,
+            'description' => $issuance->description,
+            'issuance' => $issuance->quantity,
+            'issuance_normalized' => $issuance->divisible ? fromSatoshi($issuance->quantity) : $issuance->quantity,
+            'divisible' => $issuance->divisible,
+            'locked' => $issuance->locked,
+            'block_index' => $issuance->block_index,
+            'tx_index' => $issuance->tx_index,
+            'confirmed_at' => $issuance->confirmed_at,
         ]);
     }
 }

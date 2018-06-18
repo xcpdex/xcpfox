@@ -7,27 +7,17 @@ use Illuminate\Http\Request;
 class AssetsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Asset Index
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $type=null)
     {
-        return view('assets.index', compact('request'));
+        return view('assets.index', compact('request', 'type'));
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function typeIndex(Request $request, $type)
-    {
-        return view('assets.type-index', compact('request', 'type'));
-    }
-
-    /**
-     * Display a listing of the resource.
+     * Show an Asset
      *
      * @return \Illuminate\Http\Response
      */
@@ -48,40 +38,38 @@ class AssetsController extends Controller
                     ->withCount('currentBalances', 'sends')
                     ->firstOrFail();
             });
-
-            return redirect($asset->url);
         }
 
-        $related_assets = \Cache::remember('assests_show_' . $asset->asset_name . '_related_assets', 1440, function () use ($asset) {
-            $holders = $asset->currentBalances()
-                ->distinct('address')
-                ->select('address')
-                ->get();
+        $burned_supply = \Cache::remember('assests_show_' . $asset->asset_name . '_burned_supply', 1440, function () use ($asset) {
+            $quantity = $asset->currentBalances()
+                ->whereHas('addressModel', function($address) {
+                    $address->where('burn', '=', 1);
+                })->sum('quantity');
 
-            $addresses = [];
-
-            foreach($holders as $holder)
+            if($asset->asset_name === 'XCP')
             {
-                $addresses[] = $holder->address;
+                $quantity = $quantity + \App\Debit::where('action', 'like', '% fee')->sum('quantity');
             }
 
-            return \App\Balance::current()
-                ->where('asset', '!=', $asset->asset_name)
-                ->whereIn('address', $addresses)
-                ->selectRaw('COUNT(*) as count, asset')
-                ->groupBy('asset')
-                ->orderBy('count', 'desc')
-                ->take(10)
-                ->get();
+            return $asset->divisible ? fromSatoshi($quantity) : sprintf("%.8f", $quantity);
         });
 
-        $top_holders = \Cache::remember('assets_show_' . $asset->asset_name . '_top_holders', 1440, function () use ($asset) {
-            return $asset->currentBalances()
-                ->orderBy('quantity', 'desc')
-                ->take(10)
-                ->get();
+        $sends_total = \Cache::remember('assests_show_' . $asset->asset_name . '_sends_total', 1440, function () use ($asset) {
+            $quantity = $asset->sends()->sum('quantity');
+
+            return $asset->divisible ? fromSatoshi($quantity) : sprintf("%.8f", $quantity);
         });
 
-        return view('assets.show', compact('asset', 'related_assets', 'top_holders'));
+        $trades_count = \Cache::remember('assests_show_' . $asset->asset_name . '_trades_count', 1440, function () use ($asset) {
+            return $asset->credits()->where('action', '=', 'order match')->count();
+        });
+
+        $trades_total = \Cache::remember('assests_show_' . $asset->asset_name . '_trades_total', 1440, function () use ($asset) {
+            $quantity = $asset->credits()->where('action', '=', 'order match')->sum('quantity');
+
+            return $asset->divisible ? fromSatoshi($quantity) : sprintf("%.8f", $quantity);
+        });
+
+        return view('assets.show', compact('asset', 'burned_supply', 'sends_total', 'trades_count', 'trades_total'));
     }
 }

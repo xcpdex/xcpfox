@@ -7,13 +7,35 @@ use Illuminate\Http\Request;
 class ChartsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Chart Index
      *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
         return view('charts.index');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showFeeRates(Request $request)
+    {
+        // Not Standard
+        $current = \App\Transaction::whereNotNull('processed_at')
+            ->where('confirmed_at', '>', \Carbon\Carbon::now()->subDays(1))
+            ->selectRaw('AVG(fee / size) as average, MIN(fee / size) as minimum, MAX(fee / size) as maximum')
+            ->first();
+
+        $subset = \App\Transaction::whereNotNull('processed_at')
+            ->where('confirmed_at', '>', \Carbon\Carbon::now()->subDays(1))
+            ->whereRaw('(fee / size) > ' . $current->minimum * 1.1 . ' and (fee / size) < ' . $current->average * 0.9 . '')
+            ->selectRaw('AVG(fee / size) as average, MIN(fee / size) as minimum, MAX(fee / size) as maximum')
+            ->first();
+
+        return view("charts.fee-rates", compact('current', 'subset'));
     }
 
     /**
@@ -81,6 +103,16 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function showBtcBurned(Request $request)
+    {
+        return $this->getControllerTemplate($request, 'btc-burned');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function showFees(Request $request)
     {
         return $this->getControllerTemplate($request, 'fees');
@@ -91,9 +123,9 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showFeeRates(Request $request)
+    public function showAverageFee(Request $request)
     {
-        return $this->getControllerTemplate($request, 'fee-rates');
+        return $this->getControllerTemplate($request, 'average-fee');
     }
 
     /**
@@ -101,9 +133,11 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showAverageFee(Request $request)
+    public function showGasFees(Request $request)
     {
-        return $this->getControllerTemplate($request, 'average-fee');
+        $override = $request->input('currency', 'XCP');
+
+        return $this->getControllerTemplate($request, 'gas-fees', $override);
     }
 
     /**
@@ -153,6 +187,16 @@ class ChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function showMostSends(Request $request)
+    {
+        return $this->getControllerTemplate($request, 'most-sends');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function showTransactions(Request $request)
     {
         return $this->getControllerTemplate($request, 'transactions');
@@ -166,6 +210,16 @@ class ChartsController extends Controller
     public function showTransactionSize(Request $request)
     {
         return $this->getControllerTemplate($request, 'transaction-size');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showXcpSupply(Request $request)
+    {
+        return $this->getControllerTemplate($request, 'xcp-supply');
     }
 
     /**

@@ -1,0 +1,1 @@
+<div class="sponsor text-center mb-4"><b>Sponsor:</b> &#x1f33d; <a href="https://bitcorns.com/" target="_blank">Bitcorn Crops</a> - Become a humble bitcorn farmer and keep your crops *moist*.</div>

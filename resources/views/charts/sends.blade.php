@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Asset Sends Chart')
-@section('canonical',  url(route('charts.sends')))
+@section('canonical', url(route('charts.sends')))
+@section('description', 'Total number of asset sends made, shown per day, per month, and per year.')
 
 @section('content')
 <div class="container mt-1">

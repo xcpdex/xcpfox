@@ -54,7 +54,17 @@ class Balance extends Model
     }
 
     /**
-     * Asset Data
+     * Address Model
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function addressModel()
+    {
+        return $this->belongsTo(Address::class, 'address', 'address');
+    }
+
+    /**
+     * Asset Model
      * 
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

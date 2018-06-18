@@ -15,7 +15,7 @@ class SearchResource extends Resource
     public function toArray($request)
     {
         return [
-            'type' => str_replace('https://xcpfox.com/', '', $this->url),
+            'type' => $this->type,
             'result' => $this->extra ? $this->extra : $this->result,
             'url' => $this->extra ? $this->url . '/' . $this->extra : $this->url . '/' . $this->result,
             'time_ago' => $this->confirmed_at->diffForHumans(),

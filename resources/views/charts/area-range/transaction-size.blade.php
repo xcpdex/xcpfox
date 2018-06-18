@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Average Transaction Size')
-@section('canonical',  url(route('charts.areaRange.transactionSize')))
+@section('canonical', url(route('charts.areaRange.transactionSize')))
+@section('description', 'Chart of the average size, in bytes, of a Counterparty transaction. Includes the range of transaction sizes too.')
 
 @section('content')
 <div class="container mt-1">
@@ -10,7 +11,7 @@
         'small' => $group_by === 'date' ? 'Per Day' : 'Per ' . $group_by,
     ])
     <chart-area-range
-        source="{{ url(route('api.charts.areaRange.transactionSize')) }}"
+        source="{{ url(route('api.charts.areaRange.transactionSize', ['group_by' => $group_by])) }}"
         title="Average Transaction Size"
         yaxis="Bytes"
         group_by="{{ $group_by }}"

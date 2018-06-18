@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 class MessagesController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Message Index
      *
      * @return \Illuminate\Http\Response
      */
@@ -18,9 +18,11 @@ class MessagesController extends Controller
             'per_page' => 'sometimes|integer|in:10,25,50,100',
         ]);
 
-        return \Cache::tags(['block_flush'])->rememberForever('api_messages_index_' . $request->input('page', 1) . '_' . $request->input('per_page', 10), function () use ($request) {
-            $messages = \App\Message::with('transaction')
-                ->whereNotNull('confirmed_at')
+        $key = getKeyFromRequest('api_messages_index', $request);
+
+        return \Cache::tags(['block_flush'])->rememberForever($key, function () use ($request) {
+            $messages = \App\Message::whereNotNull('confirmed_at')
+                ->with('transaction')
                 ->orderBy('message_index', 'desc')
                 ->paginate($request->input('per_page', 10));
 

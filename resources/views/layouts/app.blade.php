@@ -3,19 +3,22 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+@if($_GET)
+    <meta name="robots" content="noindex, follow">
+@endif
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <!-- Page Meta -->
-    <title>@yield('title') &ndash; {{ config('app.name', 'Laravel') }}</title>
     <meta name="description" content="@yield('description')">
-    <link rel="canonical" href="@yield('canonical')">
-
-    <!-- Styles -->
+    <title>@yield('title')</title>
+    <link href="@yield('canonical')" rel="canonical">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-3402018973108947",
+              enable_page_level_ads: true
+         });
+    </script>
 @yield('header')
 </head>
 <body>
@@ -30,12 +33,6 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item d-none d-lg-inline">
-                            <a href="{{ url(route('home')) }}" class="nav-link">
-                                <i class="fa fa-home"></i>
-                                Home
-                            </a>
-                        </li>
                         <li class="nav-item">
                             <a href="{{ url(route('assets.index')) }}" class="nav-link">
                                 <i class="fa fa-list-ul"></i>
@@ -54,13 +51,20 @@
                                 Charts
                             </a>
                         </li>
+                        <li class="nav-item d-inline d-lg-none">
+                            <a href="{{ url(route('search.index')) }}" class="nav-link">
+                                <i class="fa fa-search"></i>
+                                Search
+                            </a>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-plus"></i> More
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="{{ url(route('transactions.index')) }}">Transactions</a>
-                                <a class="dropdown-item" href="{{ url(route('leaderboard.index')) }}">Leaderboard</a>
+                                <a class="dropdown-item" href="{{ url(route('mempool.index')) }}">Unconfirmed TXs</a>
+                                <a class="dropdown-item" href="{{ url(route('messages.index')) }}">DB Messages</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="{{ url(route('faq')) }}">What is XCP?</a>
                                 @if (Auth::check())
@@ -74,12 +78,6 @@
                                 </form>
                                 @endif
                             </div>
-                        </li>
-                        <li class="nav-item d-inline d-lg-none">
-                            <a href="{{ url(route('search.index')) }}" class="nav-link">
-                                <i class="fa fa-search"></i>
-                                Search
-                            </a>
                         </li>
                     </ul>
                     <form method="GET" action="{{ url(route('search.index')) }}" class="form-inline d-none d-lg-inline">
@@ -97,8 +95,8 @@
                 <div class="col-6 col-md">
                     <h5>Community</h5>
                     <ul class="list-unstyled text-small">
-                        <li><a class="text-muted" href="https://github.com/CounterpartyXCP">GitHub</a></li>
-                        <li><a class="text-muted" href="#">Newsletter</a></li>
+                        <li><a class="text-muted" href="https://github.com/CounterpartyXCP" target="_blank">GitHub</a></li>
+                        <li><a class="text-muted" href="https://counterparty.io/news/" target="_blank">Newsletter</a></li>
                         <li><a class="text-muted" href="#">Events</a></li>
                     </ul>
                 </div>
@@ -107,7 +105,7 @@
                     <ul class="list-unstyled text-small">
                         <li><a class="text-muted" href="{{ url(route('docs')) }}">API Docs</a></li>
                         <li><a class="text-muted" href="{{ url(route('faq')) }}">FAQ</a></li>
-                        <li><a class="text-muted" href="#">Support</a></li>
+                        <li><a class="text-muted" href="{{ url(route('protocol')) }}">Protocol</a></li>
                     </ul>
                 </div>
                 <div class="col-6 col-md">
@@ -121,9 +119,9 @@
                 <div class="col-6 col-md">
                     <h5>About Us</h5>
                     <ul class="list-unstyled text-small">
-                        <li><a class="text-muted" href="#">Our Team</a></li>
-                        <li><a class="text-muted" href="#">Contact</a></li>
-                        <li><a href="https://t.me/xcpfox"><i class="fa fa-telegram"></i></a> <a class="text-muted" href="https://t.me/xcpfox">Telegram</a></li>
+                        <li><a class="text-muted" href="{{ url(route('about')) }}">Our Team</a></li>
+                        <li><a class="text-muted" href="{{ url(route('contact')) }}">Contact</a></li>
+                        <li><a href="https://t.me/xcpfox" target="_blank"><i class="fa fa-telegram"></i></a> <a class="text-muted" href="https://t.me/xcpfox" target="_blank">Telegram</a></li>
                     </ul>
                 </div>
                 <div class="col-12 col-md">
@@ -136,8 +134,16 @@
         </footer>
     </div>
 
-<!-- Scripts -->
-<script src="{{ asset('js/app.js') }}"></script>
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-112477384-8"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
+      gtag('config', 'UA-112477384-8');
+    </script>
 </body>
 </html>

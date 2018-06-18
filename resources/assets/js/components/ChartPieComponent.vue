@@ -16,8 +16,8 @@
     components: {
         VueHighcharts
     },
-    data(){
-      return{
+    data() {
+      return {
         Highcharts: Highcharts,
         options: {
           chart: {
@@ -25,7 +25,7 @@
             borderWidth: 1,
             borderRadius: 4,
             borderColor: 'rgba(0, 0, 0, 0.125)',
-            height: (9 / 16 * 100) + '%', // 16:9 ratio
+            height: (9 / 16 * 100) + '%' // 16:9 ratio
           },
           title: {
             text: this.title
@@ -39,6 +39,18 @@
           exporting: {
             width: 800
           },
+          responsive: {
+            rules: [{
+              condition: {
+                maxWidth: 500
+              },
+              chartOptions: {
+                chart: {
+                  height: 300
+                }
+              }
+            }]
+          },
           series: []
         }
       }
@@ -51,14 +63,14 @@
         var api = this.source
         var self = this
         $.get(api, function(data) {
-          let pieChart = self.$refs.pieChart;
-          pieChart.delegateMethod('showLoading', 'Loading...');
+          let pieChart = self.$refs.pieChart
+          pieChart.delegateMethod('showLoading', 'Loading...')
           setTimeout(() => {
               pieChart.addSeries({name: self.title, data: data.data})
               pieChart.hideLoading()
           }, 2000)
-        });
-      },
+        })
+      }
     }
-}
+  }
 </script>

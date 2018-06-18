@@ -13476,3 +13476,15 @@ a.text-dark:focus {
   white-space: nowrap;
 }
 
+.table th,
+.table td {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table th.thin-col,
+.table td.thin-col {
+  max-width: 85px;
+}
+

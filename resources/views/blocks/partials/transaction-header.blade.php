@@ -1,4 +1,4 @@
-<span class="badge badge-{{ $transaction->valid ? 'success' : 'danger' }}">
+<span class="badge {{ getBadgeColor(getTitleFromType($transaction->type)) }} text-white">
     {{ getTitleFromType($transaction->type) }}
 </span>
 <span class="ml-2">

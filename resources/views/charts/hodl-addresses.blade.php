@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Counterparty Hodl Addresses')
-@section('canonical',  url(route('charts.hodlAddresses')))
+@section('canonical', url(route('charts.hodlAddresses')))
+@section('description', 'Hodl addresses are addresses which have received tokens but never-ever spent them.')
 
 @section('content')
 <div class="container mt-1">

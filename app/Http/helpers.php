@@ -32,13 +32,13 @@ function getAddressType($address)
     return 'unknown';
 }
 
-function getAssetType($bindings)
+function getAssetType($issuance)
 {
-    if($bindings['asset_longname'])
+    if($issuance->asset_longname)
     {
         return 'subasset';
     }
-    elseif($bindings['asset'][0] === 'A')
+    elseif($issuance->asset[0] === 'A')
     {
         return 'numeric';
     }
@@ -59,6 +59,11 @@ function getBetType($type)
         case 3:
             return 'Not Equal';
     }
+}
+
+function getKeyFromRequest($keyword, $request)
+{
+    return $keyword . '_' . $request->input('page', 1) . '_' . $request->input('per_page', 10);
 }
 
 function getTitleFromType($type)
@@ -144,4 +149,41 @@ function getUpdateLookupKeys($message, $bindings)
         'model_key' => $model_key,
         'bindings_key' => $bindings_key,
     ];
+}
+
+function remove_keys($item)
+{
+    return strlen($item) > 1;
+}
+
+function getBadgeColor($type)
+{
+    switch($type) {
+        case 'Send':
+            return 'badge-primary';
+            break;
+        case 'Order':
+            return 'badge-success';
+            break;
+        case 'Issuance':
+            return 'badge-warning';
+            break;
+        case 'Cancel':
+            return 'badge-danger';
+            break;
+        case 'Broadcast':
+            return 'badge-dark';
+            break;
+        case 'Bet':
+            return 'badge-dark';
+            break;
+        case 'Burn':
+            return 'badge-danger';
+            break;
+        case 'Dividend':
+            return 'badge-success';
+            break;
+        default:
+            return 'badge-secondary';
+    }
 }
