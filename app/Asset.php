@@ -15,7 +15,16 @@ class Asset extends Model
      * @var array
      */
     protected $fillable = [
-        'asset_name', 'asset_longname', 'type', 'issuer', 'owner', 'description', 'issuance', 'issuance_normalized', 'divisible', 'locked', 'block_index', 'tx_index', 'confirmed_at',
+        'asset_name', 'asset_longname', 'type', 'issuer', 'owner', 'description', 'issuance', 'issuance_normalized', 'divisible', 'locked', 'block_index', 'tx_index', 'meta', 'confirmed_at',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'meta' => 'array',
     ];
 
     /**

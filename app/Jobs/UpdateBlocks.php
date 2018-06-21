@@ -38,34 +38,41 @@ class UpdateBlocks implements ShouldQueue
      */
     public function handle()
     {
-        // Get Blocks
-        $blocks = $this->getBlocks($this->first_block, $this->last_block);
-
-        foreach($blocks as $block_data)
+        try
         {
-            // Create Block
-            $block = \App\Block::firstOrCreateBlock($block_data);
+            // Get Blocks
+            $blocks = $this->getBlocks($this->first_block, $this->last_block);
 
-            // Update Block
-            if(! $this->syncing && ! $block->processed_at)
+            foreach($blocks as $block_data)
             {
-                \App\Jobs\UpdateBlock::dispatch($block);
+                // Create Block
+                $block = \App\Block::firstOrCreateBlock($block_data);
+
+                // Update Block
+                if(! $this->syncing && ! $block->processed_at)
+                {
+                    \App\Jobs\UpdateBlock::dispatch($block);
+                }
+
+                // Add Messages
+                $this->processMessages($block_data['_messages'], $block_data['block_time']);
+
+                if(! $this->syncing)
+                {
+                    // New Balances
+                    \App\Jobs\UpdateBalances::dispatch($block);
+                }
             }
 
-            // Add Messages
-            $this->processMessages($block_data['_messages'], $block_data['block_time']);
-
-            if(! $this->syncing)
+            if($this->syncing)
             {
-                // New Balances
-                \App\Jobs\UpdateBalances::dispatch($block);
+                // Keep Going
+                exec('php /var/www/xcpfox.com/artisan update:blocks');
             }
         }
-
-        if($this->syncing)
+        catch(\Exception $e)
         {
-            // Keep Going
-            exec('php /var/www/xcpfox.com/artisan update:blocks');
+            // API 404s Frequently
         }
     }
 

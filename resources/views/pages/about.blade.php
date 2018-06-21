@@ -18,7 +18,7 @@
         <div class="col-md-3 offset-md-3">
             <div class="card mt-4">
                 <div class="card-body">
-                    <img src="{{ asset('/images/dan-anderson.jpg') }}" class="card-img rounded-circle" />
+                    <img src="{{ asset('/images/dan-anderson.jpg') }}" class="card-img rounded-circle" style="max-width: 215px;" />
                     <h5 class="mt-3 font-weight-bold">Dan Anderson</h5>
                     <p class="card-text text-muted mb-2"><em>Project Lead</em></p>
                     <p class="card-text">Counterparty developer and asset holder with a background in data analytics.</p>
@@ -29,7 +29,7 @@
         <div class="col-md-3">
             <div class="card mt-4">
                 <div class="card-body">
-                    <img src="{{ asset('/images/dante-deangelis.jpg') }}" class="card-img rounded-circle" />
+                    <img src="{{ asset('/images/dante-deangelis.jpg') }}" class="card-img rounded-circle" style="max-width: 215px;" />
                     <h5 class="mt-3 font-weight-bold">Dante DeAngelis</h5>
                     <p class="card-text text-muted mb-2"><em>Advisor</em></p>
                     <p class="card-text">Counterparty contributor and asset holder with a background in IT publishing.</p>

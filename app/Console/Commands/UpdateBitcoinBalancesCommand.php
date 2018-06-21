@@ -11,7 +11,7 @@ class UpdateBitcoinBalancesCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'update:bitcoin';
+    protected $signature = 'update:bitcoin {skip : Offset} {take : Limit}';
 
     /**
      * The console command description.
@@ -37,6 +37,6 @@ class UpdateBitcoinBalancesCommand extends Command
      */
     public function handle()
     {
-        \App\Jobs\UpdateBitcoinBalances::dispatch();
+        \App\Jobs\UpdateBitcoinBalances::dispatch($this->argument('skip'), $this->argument('take'));
     }
 }

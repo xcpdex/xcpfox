@@ -8,6 +8,7 @@
 @section('content')
 <div class="container mt-1">
     @include('layouts.ads')
+    <a href="{{ url(route('mempool.index')) }}" class="d-none d-sm-inline btn btn-outline-primary mt-1 float-right">&laquo; Back</a>
     <h1>
         Transaction
         <small class="lead">

@@ -13,227 +13,50 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/search', [
-    'as' => 'api.search.index',
-    'uses' => 'Api\SearchController@index',
-]);
-
-Route::get('/statistics', [
-    'as' => 'api.statistics.index',
-    'uses' => 'Api\StatisticsController@index',
-]);
-
-Route::get('/assets/{type?}', [
-    'as' => 'api.assets.index',
-    'uses' => 'Api\AssetsController@index',
-]);
-
-Route::get('/blocks', [
-    'as' => 'api.blocks.index',
-    'uses' => 'Api\BlocksController@index',
-]);
-
-Route::get('/messages', [
-    'as' => 'api.messages.index',
-    'uses' => 'Api\MessagesController@index',
-]);
-
-Route::get('/mempool', [
-    'as' => 'api.mempool.index',
-    'uses' => 'Api\MempoolController@index',
-]);
-
-Route::get('/transactions/{type?}', [
-    'as' => 'api.transactions.index',
-    'uses' => 'Api\TransactionsController@index',
-]);
-
-Route::get('/charts/addresses', [
-    'as' => 'api.charts.addresses',
-    'uses' => 'Api\ChartsController@showAddresses',
-]);
-
-Route::get('/charts/active-addresses', [
-    'as' => 'api.charts.activeAddresses',
-    'uses' => 'Api\ChartsController@showActiveAddresses',
-]);
-
-Route::get('/charts/hodl-addresses', [
-    'as' => 'api.charts.hodlAddresses',
-    'uses' => 'Api\ChartsController@showHodlAddresses',
-]);
-
-Route::get('/charts/assets', [
-    'as' => 'api.charts.assets',
-    'uses' => 'Api\ChartsController@showAssets',
-]);
-
-Route::get('/charts/assets/{asset_name}/related-assets', [
-    'as' => 'api.charts.assets.relatedAssets',
-    'uses' => 'Api\AssetChartsController@relatedAssets',
-]);
-
-Route::get('/charts/assets/{asset_name}/active-addresses', [
-    'as' => 'api.charts.assets.activeAddresses',
-    'uses' => 'Api\AssetChartsController@activeAddresses',
-]);
-
-Route::get('/charts/assets/{asset_name}/most-active-addresses', [
-    'as' => 'api.charts.assets.mostActiveAddresses',
-    'uses' => 'Api\AssetChartsController@mostActiveAddresses',
-]);
-
-Route::get('/charts/{asset_name}/top-senders', [
-    'as' => 'api.charts.assets.topSenders',
-    'uses' => 'Api\AssetChartsController@topSenders',
-]);
-
-Route::get('/charts/{asset_name}/top-senders-quantity', [
-    'as' => 'api.charts.assets.topSendersQuantity',
-    'uses' => 'Api\AssetChartsController@topSendersQuantity',
-]);
-
-Route::get('/charts/{asset_name}/unique-sends', [
-    'as' => 'api.charts.assets.uniqueSends',
-    'uses' => 'Api\AssetChartsController@uniqueSends',
-]);
-
-Route::get('/charts/{asset_name}/tokens-sent', [
-    'as' => 'api.charts.assets.tokensSent',
-    'uses' => 'Api\AssetChartsController@tokensSent',
-]);
-
-Route::get('/charts/{asset_name}/top-traders', [
-    'as' => 'api.charts.assets.topTraders',
-    'uses' => 'Api\AssetChartsController@topTraders',
-]);
-
-Route::get('/charts/{asset_name}/top-traders-quantity', [
-    'as' => 'api.charts.assets.topTradersQuantity',
-    'uses' => 'Api\AssetChartsController@topTradersQuantity',
-]);
-
-Route::get('/charts/{asset_name}/unique-trades', [
-    'as' => 'api.charts.assets.uniqueTrades',
-    'uses' => 'Api\AssetChartsController@uniqueTrades',
-]);
-
-Route::get('/charts/{asset_name}/tokens-traded', [
-    'as' => 'api.charts.assets.tokensTraded',
-    'uses' => 'Api\AssetChartsController@tokensTraded',
-]);
-
-Route::get('/charts/active-assets', [
-    'as' => 'api.charts.activeAssets',
-    'uses' => 'Api\ChartsController@showActiveAssets',
-]);
-
-Route::get('/charts/block-share', [
-    'as' => 'api.charts.blockShare',
-    'uses' => 'Api\ChartsController@showBlockShare',
-]);
-
-Route::get('/charts/btc-burned', [
-    'as' => 'api.charts.btcBurned',
-    'uses' => 'Api\ChartsController@showBtcBurned',
-]);
-
-Route::get('/charts/fees', [
-    'as' => 'api.charts.fees',
-    'uses' => 'Api\ChartsController@showFees',
-]);
-
-Route::get('/charts/average-fee', [
-    'as' => 'api.charts.averageFee',
-    'uses' => 'Api\ChartsController@showAverageFee',
-]);
-
-Route::get('/charts/fee-rates', [
-    'as' => 'api.charts.feeRates',
-    'uses' => 'Api\ChartsController@showFeeRates',
-]);
-
-Route::get('/charts/gas-fees', [
-    'as' => 'api.charts.gasFees',
-    'uses' => 'Api\ChartsController@showGasFees',
-]);
-
-Route::get('/charts/registration-fee', [
-    'as' => 'api.charts.registrationFee',
-    'uses' => 'Api\ChartsController@showRegistrationFee',
-]);
-
-Route::get('/charts/messages', [
-    'as' => 'api.charts.messages',
-    'uses' => 'Api\ChartsController@showMessages',
-]);
-
-Route::get('/charts/orders', [
-    'as' => 'api.charts.orders',
-    'uses' => 'Api\ChartsController@showOrders',
-]);
-
-Route::get('/charts/sends', [
-    'as' => 'api.charts.sends',
-    'uses' => 'Api\ChartsController@showSends',
-]);
-
-Route::get('/charts/most-sends', [
-    'as' => 'api.charts.mostSends',
-    'uses' => 'Api\ChartsController@showMostSends',
-]);
-
-Route::get('/charts/transactions', [
-    'as' => 'api.charts.transactions',
-    'uses' => 'Api\ChartsController@showTransactions',
-]);
-
-Route::get('/charts/transaction-data', [
-    'as' => 'api.charts.transactionSize',
-    'uses' => 'Api\ChartsController@showTransactionSize',
-]);
-
-Route::get('/charts/average-burn-rate', [
-    'as' => 'api.charts.areaRange.burnRate',
-    'uses' => 'Api\AreaRangeChartsController@showBurnRate',
-]);
-
-Route::get('/charts/average-fee-rate', [
-    'as' => 'api.charts.areaRange.feeRate',
-    'uses' => 'Api\AreaRangeChartsController@showFeeRate',
-]);
-
-Route::get('/charts/average-order-expiration', [
-    'as' => 'api.charts.areaRange.orderExpiration',
-    'uses' => 'Api\AreaRangeChartsController@showOrderExpiration',
-]);
-
-Route::get('/charts/average-transaction-size', [
-    'as' => 'api.charts.areaRange.transactionSize',
-    'uses' => 'Api\AreaRangeChartsController@showTransactionSize',
-]);
-
-Route::get('/charts/address-types', [
-    'as' => 'api.charts.pie.addresses',
-    'uses' => 'Api\PiechartsController@showAddresses',
-]);
-
-Route::get('/charts/asset-types', [
-    'as' => 'api.charts.pie.assets',
-    'uses' => 'Api\PiechartsController@showAssets',
-]);
-
-Route::get('/charts/block-presence', [
-    'as' => 'api.charts.pie.blocks',
-    'uses' => 'Api\PiechartsController@showBlocks',
-]);
-
-Route::get('/charts/message-categories', [
-    'as' => 'api.charts.pie.messages',
-    'uses' => 'Api\PiechartsController@showMessages',
-]);
-
-Route::get('/charts/transaction-types', [
-    'as' => 'api.charts.pie.transactions',
-    'uses' => 'Api\PiechartsController@showTransactions',
-]);
+Route::get('/search', 'Api\SearchController@index')->name('api.search.index');
+Route::get('/statistics', 'Api\StatisticsController@index')->name('api.statistics.index');
+Route::get('/balances/{address}', 'Api\BalancesController@show')->name('api.balances.show');
+Route::get('/assets/{type?}', 'Api\AssetsController@index')->name('api.assets.index');
+Route::get('/blocks', 'Api\BlocksController@index')->name('api.blocks.index');
+Route::get('/messages', 'Api\MessagesController@index')->name('api.messages.index');
+Route::get('/unconfirmed-transactions', 'Api\MempoolController@index')->name('api.mempool.index');
+Route::get('/transactions/{type?}', 'Api\TransactionsController@index')->name('api.transactions.index');
+Route::get('/charts/addresses', 'Api\ChartsController@showAddresses')->name('api.charts.addresses');
+Route::get('/charts/active-addresses', 'Api\ChartsController@showActiveAddresses')->name('api.charts.activeAddresses');
+Route::get('/charts/hodl-addresses', 'Api\ChartsController@showHodlAddresses')->name('api.charts.hodlAddresses');
+Route::get('/charts/assets', 'Api\ChartsController@showAssets')->name('api.charts.assets');
+Route::get('/charts/assets/{asset_name}/highest-balances', 'Api\AssetChartsController@showHighestBalances')->name('api.charts.assets.highestBalances');
+Route::get('/charts/assets/{asset_name}/related-assets', 'Api\AssetChartsController@showRelatedAssets')->name('api.charts.assets.relatedAssets');
+Route::get('/charts/assets/{asset_name}/active-addresses', 'Api\AssetChartsController@showActiveAddresses')->name('api.charts.assets.activeAddresses');
+Route::get('/charts/assets/{asset_name}/most-active-addresses', 'Api\AssetChartsController@showMostActiveAddresses')->name('api.charts.assets.mostActiveAddresses');
+Route::get('/charts/assets/{asset_name}/top-senders', 'Api\AssetChartsController@showTopSenders')->name('api.charts.assets.topSenders');
+Route::get('/charts/assets/{asset_name}/top-senders-quantity', 'Api\AssetChartsController@showTopSendersQuantity')->name('api.charts.assets.topSendersQuantity');
+Route::get('/charts/assets/{asset_name}/unique-sends', 'Api\AssetChartsController@showUniqueSends')->name('api.charts.assets.uniqueSends');
+Route::get('/charts/assets/{asset_name}/tokens-sent', 'Api\AssetChartsController@showTokensSent')->name('api.charts.assets.tokensSent');
+Route::get('/charts/assets/{asset_name}/top-traders', 'Api\AssetChartsController@showTopTraders')->name('api.charts.assets.topTraders');
+Route::get('/charts/assets/{asset_name}/top-traders-quantity', 'Api\AssetChartsController@showTopTradersQuantity')->name('api.charts.assets.topTradersQuantity');
+Route::get('/charts/assets/{asset_name}/unique-trades', 'Api\AssetChartsController@showUniqueTrades')->name('api.charts.assets.uniqueTrades');
+Route::get('/charts/assets/{asset_name}/tokens-traded', 'Api\AssetChartsController@showTokensTraded')->name('api.charts.assets.tokensTraded');
+Route::get('/charts/active-assets', 'Api\ChartsController@showActiveAssets')->name('api.charts.activeAssets');
+Route::get('/charts/block-share', 'Api\ChartsController@showBlockShare')->name('api.charts.blockShare');
+Route::get('/charts/btc-burned', 'Api\ChartsController@showBtcBurned')->name('api.charts.btcBurned');
+Route::get('/charts/fees', 'Api\ChartsController@showFees')->name('api.charts.fees');
+Route::get('/charts/average-fee', 'Api\ChartsController@showAverageFee')->name('api.charts.averageFee');
+Route::get('/charts/fee-rates', 'Api\ChartsController@showFeeRates')->name('api.charts.feeRates');
+Route::get('/charts/gas-fees', 'Api\ChartsController@showGasFees')->name('api.charts.gasFees');
+Route::get('/charts/registration-fee', 'Api\ChartsController@showRegistrationFee')->name('api.charts.registrationFee');
+Route::get('/charts/messages', 'Api\ChartsController@showMessages')->name('api.charts.messages');
+Route::get('/charts/orders', 'Api\ChartsController@showOrders')->name('api.charts.orders');
+Route::get('/charts/sends', 'Api\ChartsController@showSends')->name('api.charts.sends');
+Route::get('/charts/most-sends', 'Api\ChartsController@showMostSends')->name('api.charts.mostSends');
+Route::get('/charts/transactions', 'Api\ChartsController@showTransactions')->name('api.charts.transactions');
+Route::get('/charts/transaction-data', 'Api\ChartsController@showTransactionSize')->name('api.charts.transactionSize');
+Route::get('/charts/average-burn-rate', 'Api\AreaRangeChartsController@showBurnRate')->name('api.charts.areaRange.burnRate');
+Route::get('/charts/average-fee-rate', 'Api\AreaRangeChartsController@showFeeRate')->name('api.charts.areaRange.feeRate');
+Route::get('/charts/average-order-expiration', 'Api\AreaRangeChartsController@showOrderExpiration')->name('api.charts.areaRange.orderExpiration');
+Route::get('/charts/average-transaction-size', 'Api\AreaRangeChartsController@showTransactionSize')->name('api.charts.areaRange.transactionSize');
+Route::get('/charts/address-types', 'Api\PiechartsController@showAddresses')->name('api.charts.pie.addresses');
+Route::get('/charts/asset-types', 'Api\PiechartsController@showAssets')->name('api.charts.pie.assets');
+Route::get('/charts/block-presence', 'Api\PiechartsController@showBlocks')->name('api.charts.pie.blocks');
+Route::get('/charts/message-categories', 'Api\PiechartsController@showMessages')->name('api.charts.pie.messages');
+Route::get('/charts/transaction-types', 'Api\PiechartsController@showTransactions')->name('api.charts.pie.transaction');

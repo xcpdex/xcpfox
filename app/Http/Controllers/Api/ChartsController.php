@@ -20,7 +20,7 @@ class ChartsController extends Controller
 
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_addresses_' . $group_by, 1440, function() use($group_by) {
+        return \Cache::remember('api_charts_addresses_' . $group_by, 4320, function() use($group_by) {
             switch($group_by)
             {
                 case 'date':
@@ -61,7 +61,7 @@ class ChartsController extends Controller
 
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_addresses_active_' . $group_by, 1440, function() use($group_by) {
+        return \Cache::remember('api_charts_addresses_active_' . $group_by, 4320, function() use($group_by) {
             switch($group_by)
             {
                 case 'date':
@@ -105,7 +105,7 @@ class ChartsController extends Controller
 
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_addresses_hodl_' . $group_by, 1440, function() use($group_by) {
+        return \Cache::remember('api_charts_addresses_hodl_' . $group_by, 4320, function() use($group_by) {
             switch($group_by)
             {
                 case 'date':
@@ -152,7 +152,7 @@ class ChartsController extends Controller
 
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_assets_' . $group_by, 1440, function() use($group_by) {
+        return \Cache::remember('api_charts_assets_' . $group_by, 4320, function() use($group_by) {
             switch($group_by)
             {
                 case 'date':
@@ -195,7 +195,7 @@ class ChartsController extends Controller
 
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_assets_active_' . $group_by, 1440, function() use($group_by) {
+        return \Cache::remember('api_charts_assets_active_' . $group_by, 4320, function() use($group_by) {
             switch($group_by)
             {
                 case 'date':
@@ -233,7 +233,7 @@ class ChartsController extends Controller
      */
     public function showBlockShare(Request $request)
     {
-        return \Cache::remember('api_charts_block_percent', 1440, function() {
+        return \Cache::remember('api_charts_block_percent', 4320, function() {
             $blocks = \App\Block::whereNotNull('processed_at')
                 ->selectRaw('YEAR(confirmed_at) as year, MONTH(confirmed_at) as month, SUM(tx_count) as tx_count')
                 ->groupBy('month', 'year')
@@ -263,7 +263,7 @@ class ChartsController extends Controller
      */
     public function showBtcBurned(Request $request)
     {
-        return \Cache::remember('api_charts_btc_burned', 1440, function() {
+        return \Cache::remember('api_charts_btc_burned', 4320, function() {
             $results = \App\Burn::selectRaw('DATE(confirmed_at) as date, SUM(burned) as quantity')
                 ->groupBy('date')
                 ->orderBy('date')
@@ -288,7 +288,7 @@ class ChartsController extends Controller
         $currency = $request->input('currency', 'BTC');
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_fees_' . $currency . '_' . $group_by, 1440, function() use($currency, $group_by) {
+        return \Cache::remember('api_charts_fees_' . $currency . '_' . $group_by, 4320, function() use($currency, $group_by) {
             $fee = $currency === 'BTC' ? 'fee' : 'fee_usd';
             switch($group_by)
             {
@@ -335,7 +335,7 @@ class ChartsController extends Controller
         $currency = $request->input('currency', 'BTC');
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_average_fee_' . $currency . '_' . $group_by, 1440, function() use($currency, $group_by) {
+        return \Cache::remember('api_charts_average_fee_' . $currency . '_' . $group_by, 4320, function() use($currency, $group_by) {
             $fee = $currency === 'BTC' ? 'fee' : 'fee_usd';
             switch($group_by)
             {
@@ -374,7 +374,7 @@ class ChartsController extends Controller
      */
     public function showFeeRates(Request $request)
     {
-        return \Cache::remember('api_charts_fee_rates', 1440, function() {
+        return \Cache::remember('api_charts_fee_rates', 4320, function() {
             $results = \App\Transaction::whereNotNull('processed_at')
                 ->where('confirmed_at', '>', \Carbon\Carbon::now()->subDays(1))
                 ->selectRaw('COUNT(*) as count, ROUND(fee / size) as category')
@@ -401,7 +401,7 @@ class ChartsController extends Controller
         $currency = $request->input('currency', 'XCP');
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_gas_fees_' . $currency . '_' . $group_by, 1440, function() use($currency, $group_by) {
+        return \Cache::remember('api_charts_gas_fees_' . $currency . '_' . $group_by, 4320, function() use($currency, $group_by) {
             $quantity = $currency === 'XCP' ? 'quantity' : 'quantity_usd';
 
             switch($group_by)
@@ -447,7 +447,7 @@ class ChartsController extends Controller
 
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_messages_' . $group_by, 1440, function() use($group_by) {
+        return \Cache::remember('api_charts_messages_' . $group_by, 4320, function() use($group_by) {
             switch($group_by)
             {
                 case 'date':
@@ -488,7 +488,7 @@ class ChartsController extends Controller
 
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_orders_' . $group_by, 1440, function() use($group_by) {
+        return \Cache::remember('api_charts_orders_' . $group_by, 4320, function() use($group_by) {
             switch($group_by)
             {
                 case 'date':
@@ -531,7 +531,7 @@ class ChartsController extends Controller
         $currency = $request->input('currency', 'XCP');
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_registration_fee_' . $currency . '_' . $group_by, 1440, function() use($currency, $group_by) {
+        return \Cache::remember('api_charts_registration_fee_' . $currency . '_' . $group_by, 4320, function() use($currency, $group_by) {
             $quantity = $currency === 'XCP' ? 'quantity' : 'quantity_usd';
             switch($group_by)
             {
@@ -576,7 +576,7 @@ class ChartsController extends Controller
 
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_sends_' . $group_by, 1440, function() use($group_by) {
+        return \Cache::remember('api_charts_sends_' . $group_by, 4320, function() use($group_by) {
             switch($group_by)
             {
                 case 'date':
@@ -611,7 +611,7 @@ class ChartsController extends Controller
      */
     public function showMostSends(Request $request)
     {
-        return \Cache::remember('api_charts_most_sends', 1440, function() {
+        return \Cache::remember('api_charts_most_sends', 4320, function() {
             $results = \App\Send::selectRaw('COUNT(*) as count, asset as category')
                 ->groupBy('category')
                 ->orderBy('count', 'desc')
@@ -635,7 +635,7 @@ class ChartsController extends Controller
 
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_transactions_' . $group_by, 1440, function() use($group_by) {
+        return \Cache::remember('api_charts_transactions_' . $group_by, 4320, function() use($group_by) {
             switch($group_by)
             {
                 case 'date':
@@ -676,7 +676,7 @@ class ChartsController extends Controller
 
         $group_by = $request->input('group_by', 'date');
 
-        return \Cache::remember('api_charts_transaction_size_' . $group_by, 1440, function() use($group_by) {
+        return \Cache::remember('api_charts_transaction_size_' . $group_by, 4320, function() use($group_by) {
             switch($group_by)
             {
                 case 'date':

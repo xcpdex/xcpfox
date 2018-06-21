@@ -32,6 +32,7 @@ Vue.component('chart-supply', require('./components/ChartSupplyComponent.vue'));
 Vue.component('market-history', require('./components/MarketHistoryComponent.vue'));
 Vue.component('list-addresses', require('./components/ListAddressesComponent.vue'));
 Vue.component('list-assets', require('./components/ListAssetsComponent.vue'));
+Vue.component('balances', require('./components/BalancesComponent.vue'));
 
 Vue.use(require('vue-moment'));
 

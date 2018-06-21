@@ -14,7 +14,7 @@ class StatisticsController extends Controller
      */
     public function index(Request $request)
     {
-        return \Cache::remember('api_stats_index', 1440, function () {
+        return \Cache::remember('api_stats_index', 4320, function () {
             $results = \App\Transaction::where('valid', '=', 1)
                 ->where('type', '!=', 'rps')
                 ->where('type', '!=', 'rpsresolves')

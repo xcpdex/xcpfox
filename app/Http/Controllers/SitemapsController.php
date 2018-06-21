@@ -11,7 +11,7 @@ class SitemapsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, $per_page=50000)
+    public function index(Request $request, $per_page=10000)
     {
         $address_pages = ceil(\App\Address::count() / $per_page);
 
@@ -49,9 +49,9 @@ class SitemapsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $type, $page, $per_page=50000)
+    public function show(Request $request, $type, $page, $per_page=10000)
     {
-        $results = \Cache::remember('sitemap_' . $type . '_' .  $page, 1440, function() use($type, $page, $per_page) {
+        $results = \Cache::remember('sitemap_' . $type . '_' .  $page . '_' .  $per_page, 1440, function() use($type, $page, $per_page) {
             $skip = ($page - 1) * $per_page;
             $model = getModelNameFromType($type);
 

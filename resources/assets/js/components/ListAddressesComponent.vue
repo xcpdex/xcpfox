@@ -17,7 +17,7 @@
         </div>
     </div>
     <p class="card-text text-center text-muted mt-4">
-        More Content Link Here
+        Send feeback to info@xcpfox.com
     </p>
 </div>
 </template>

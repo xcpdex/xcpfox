@@ -25,8 +25,8 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-8 mt-4 mb-2">
+    <div class="row mb-1">
+        <div class="col-lg-8 mt-4 mb-3">
             <chart-market
                 source="https://coincap.io/history/XCP"
                 title="XCP Charts"

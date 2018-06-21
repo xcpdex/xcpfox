@@ -58,6 +58,8 @@ class UpdateBalance implements ShouldQueue
             // Expire Prior Balances
             $this->expireBalances($block_index);
         }
+
+        \Cache::tags([$this->address . '_balances'])->flush();
     }
 
     /**

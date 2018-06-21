@@ -34,9 +34,16 @@ class UpdateBlock implements ShouldQueue
      */
     public function handle()
     {
-        $data = $this->getBlock();
+        try
+        {
+            $data = $this->getBlock();
 
-        $this->block->updateBlock($data);
+            $this->block->updateBlock($data);
+        }
+        catch(\Exception $e)
+        {
+            // API 404s Frequently
+        }
     }
 
     /**

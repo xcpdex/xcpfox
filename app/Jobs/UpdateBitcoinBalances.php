@@ -12,6 +12,20 @@ class UpdateBitcoinBalances implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $skip;
+    protected $take;
+
+    /**
+     * Create a new job instance.
+     *
+     * @return void
+     */
+    public function __construct($skip, $take)
+    {
+        $this->skip = $skip;
+        $this->take = $take;
+    }
+
     /**
      * Execute the job.
      *
@@ -19,7 +33,11 @@ class UpdateBitcoinBalances implements ShouldQueue
      */
     public function handle()
     {
-        \App\Address::where('type', '!=', 'multisig')->chunk(1000, function($targets)
+        \App\Address::where('type', '!=', 'multisig')
+            ->skip($this->skip)
+            ->take($this->take)
+            ->orderBy('confirmed_at', 'asc')
+            ->chunk(1000, function($targets)
         {
             $addresses = $targets->pluck('address')->toArray();
 

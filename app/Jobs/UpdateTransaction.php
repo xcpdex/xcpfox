@@ -34,16 +34,23 @@ class UpdateTransaction implements ShouldQueue
      */
     public function handle()
     {
-        if(! $this->transaction->processed_at)
+        try
         {
-            $raw = $this->getRawTransaction();
-
-            $data = $this->getTxInfo($raw);
-
-            if($raw && $data)
+            if(! $this->transaction->processed_at)
             {
-                $this->transaction->updateTransaction($raw, $data);
+                $raw = $this->getRawTransaction();
+
+                $data = $this->getTxInfo($raw);
+
+                if($raw && $data)
+                {
+                    $this->transaction->updateTransaction($raw, $data);
+                }
             }
+        }
+        catch(\Exception $e)
+        {
+            // API 404s Frequently
         }
     }
 

@@ -11,7 +11,7 @@ class PagesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getAbout(Request $request)
+    public function showAbout(Request $request)
     {
         return view('pages.about');
     }
@@ -21,7 +21,7 @@ class PagesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getContact(Request $request)
+    public function showContact(Request $request)
     {
         return view('pages.contact');
     }
@@ -31,7 +31,7 @@ class PagesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getDisclaimer(Request $request)
+    public function showDisclaimer(Request $request)
     {
         return view('pages.disclaimer');
     }
@@ -41,7 +41,7 @@ class PagesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getPrivacy(Request $request)
+    public function showPrivacy(Request $request)
     {
         return view('pages.privacy');
     }
@@ -51,7 +51,7 @@ class PagesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getTerms(Request $request)
+    public function showTerms(Request $request)
     {
         return view('pages.terms');
     }
@@ -61,7 +61,7 @@ class PagesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getDocs(Request $request)
+    public function showDocs(Request $request)
     {
         $content = \Cache::remember('docs', 1440, function () {
             $content = file_get_contents('https://raw.githubusercontent.com/CounterpartyXCP/Documentation/master/Developers/API.md', 'r');
@@ -83,7 +83,7 @@ class PagesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getFaq(Request $request)
+    public function showFaq(Request $request)
     {
         $content = \Cache::remember('faq', 1440, function () {
             $content_one = file_get_contents('https://raw.githubusercontent.com/CounterpartyXCP/Documentation/master/Basics/FAQ-XCP.md', 'r');
@@ -114,7 +114,7 @@ class PagesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getNodeSetup(Request $request)
+    public function showNodeSetup(Request $request)
     {
         $content = \Cache::remember('nodes', 1440, function () {
             $content = file_get_contents('https://raw.githubusercontent.com/CounterpartyXCP/Documentation/master/Installation/federated_node.md', 'r');
@@ -132,7 +132,7 @@ class PagesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getProtocolSpecification(Request $request)
+    public function showProtocolSpecification(Request $request)
     {
         $content = \Cache::remember('protocol', 1440, function () {
             $content = file_get_contents('https://raw.githubusercontent.com/CounterpartyXCP/Documentation/master/Developers/protocol_specification.md', 'r');

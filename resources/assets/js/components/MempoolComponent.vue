@@ -55,7 +55,7 @@
     },
     methods: {
       $_mempool_update() {
-        var api = '/api/mempool?page=' + this.page + '&per_page=' + this.per_page
+        var api = '/api/unconfirmed-transactions?page=' + this.page + '&per_page=' + this.per_page
         var self = this
         $.get(api, function(data) {
           self.transactions = data

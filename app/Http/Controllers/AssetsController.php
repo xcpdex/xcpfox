@@ -38,6 +38,8 @@ class AssetsController extends Controller
                     ->withCount('currentBalances', 'sends')
                     ->firstOrFail();
             });
+
+            return redirect($asset->url);
         }
 
         $burned_supply = \Cache::remember('assests_show_' . $asset->asset_name . '_burned_supply', 1440, function () use ($asset) {
@@ -52,6 +54,14 @@ class AssetsController extends Controller
             }
 
             return $asset->divisible ? fromSatoshi($quantity) : sprintf("%.8f", $quantity);
+        });
+
+        $active_addresses_count = \Cache::remember('assests_show_' . $asset->asset_name . '_arctive_addresses', 1440, function () use ($asset) {
+            return \App\Balance::where('asset', '=', $asset->asset_name)
+                ->where('confirmed_at', '>', \Carbon\Carbon::now()->subDays(30))
+                ->selectRaw('COUNT(DISTINCT address) as count')
+                ->first()
+                ->count;
         });
 
         $sends_total = \Cache::remember('assests_show_' . $asset->asset_name . '_sends_total', 1440, function () use ($asset) {
@@ -70,6 +80,6 @@ class AssetsController extends Controller
             return $asset->divisible ? fromSatoshi($quantity) : sprintf("%.8f", $quantity);
         });
 
-        return view('assets.show', compact('asset', 'burned_supply', 'sends_total', 'trades_count', 'trades_total'));
+        return view('assets.show', compact('asset', 'burned_supply', 'active_addresses_count', 'sends_total', 'trades_count', 'trades_total'));
     }
 }

@@ -8,17 +8,11 @@
 @endif
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="google-site-verification" content="6z9Gifb_dIKKqQ3LNOyQbvxLaMEOszfZ9dXa9b0gr0k">
     <meta name="description" content="@yield('description')">
     <title>@yield('title')</title>
     <link href="@yield('canonical')" rel="canonical">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({
-              google_ad_client: "ca-pub-3402018973108947",
-              enable_page_level_ads: true
-         });
-    </script>
 @yield('header')
 </head>
 <body>
@@ -97,7 +91,7 @@
                     <ul class="list-unstyled text-small">
                         <li><a class="text-muted" href="https://github.com/CounterpartyXCP" target="_blank">GitHub</a></li>
                         <li><a class="text-muted" href="https://counterparty.io/news/" target="_blank">Newsletter</a></li>
-                        <li><a class="text-muted" href="#">Events</a></li>
+                        <li><a class="text-muted" href="https://www.meetup.com/Counterparty/" target="_blank">Events</a></li>
                     </ul>
                 </div>
                 <div class="col-6 col-md">
@@ -136,13 +130,11 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-112477384-8"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'UA-112477384-8');
     </script>
 </body>

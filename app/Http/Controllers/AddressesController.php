@@ -15,6 +15,10 @@ class AddressesController extends Controller
     {
         $address = \App\Address::whereRaw("BINARY `address`= ?", [$address])->firstOrFail();
 
-        return view('addresses.show', compact('address'));
+        $btc_amount = $address->currentBalances()
+            ->where('asset', '=', 'BTC')
+            ->first();
+
+        return view('addresses.show', compact('address', 'btc_amount'));
     }
 }

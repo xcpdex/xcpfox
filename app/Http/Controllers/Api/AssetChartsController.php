@@ -8,11 +8,53 @@ use App\Http\Controllers\Controller;
 class AssetChartsController extends Controller
 {
     /**
+     * Highest Balances
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showHighestBalances(Request $request, $asset_name)
+    {
+        try
+        {
+            $asset = \Cache::tags([$asset_name])->rememberForever('assets_simple_' . $asset_name, function () use ($asset_name) {
+                return \App\Asset::where('asset_longname', '=', $asset_name)->firstOrFail();
+            });
+        }
+        catch(\Exception $e)
+        {
+            $asset = \Cache::tags([$asset_name])->rememberForever('assets_simple_' . $asset_name, function () use ($asset_name) {
+                return \App\Asset::where('asset_name', '=', $asset_name)->firstOrFail();
+            });
+        }
+
+        return \Cache::remember('api_asset_charts_highest_balance_' . $asset->asset_name . '_' . $request->input('take', 10), 4320, function () use ($asset, $request) {
+            if($asset->divisible)
+            {
+                $results = $asset->currentBalances()
+                    ->selectRaw('(quantity / 100000000) as count, address')
+                    ->orderBy('count', 'desc')
+                    ->take($request->input('take', 10))
+                    ->get();
+            }
+            else
+            {
+                $results = $asset->currentBalances()
+                    ->selectRaw('quantity as count, address')
+                    ->orderBy('count', 'desc')
+                    ->take($request->input('take', 10))
+                    ->get();
+            }
+
+            return \App\Http\Resources\ListAddressResource::collection($results);
+        });
+    }
+
+    /**
      * Related Assets
      *
      * @return \Illuminate\Http\Response
      */
-    public function relatedAssets(Request $request, $asset_name)
+    public function showRelatedAssets(Request $request, $asset_name)
     {
         try
         {
@@ -68,7 +110,7 @@ class AssetChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function activeAddresses(Request $request, $asset_name)
+    public function showActiveAddresses(Request $request, $asset_name)
     {
         $request->validate([
             'group_by' => 'sometimes|in:date,month,year'
@@ -89,7 +131,7 @@ class AssetChartsController extends Controller
             });
         }
 
-        return \Cache::remember('api_asset_charts_active_addresses_' . $asset_name . '_' . $group_by, 1440, function() use($asset, $group_by) {
+        return \Cache::remember('api_asset_charts_active_addresses_' . $asset_name . '_' . $group_by, 4320, function() use($asset, $group_by) {
             if($asset->asset_name === 'BTC')
             {
                 switch($group_by)
@@ -156,7 +198,7 @@ class AssetChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function mostActiveAddresses(Request $request, $asset_name)
+    public function showMostActiveAddresses(Request $request, $asset_name)
     {
         $request->validate([
             'group_by' => 'sometimes|in:date,month,year'
@@ -177,7 +219,7 @@ class AssetChartsController extends Controller
             });
         }
 
-        return \Cache::remember('api_asset_charts_most_active_addresses_' . $asset_name . '_' . $group_by, 1440, function() use($asset, $group_by) {
+        return \Cache::remember('api_asset_charts_most_active_addresses_' . $asset_name . '_' . $group_by, 4320, function() use($asset, $group_by) {
             if($asset->asset_name === 'BTC')
             {
                 $results = \App\Balance::where('asset', '!=', 'BTC')
@@ -206,7 +248,7 @@ class AssetChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function topSenders(Request $request, $asset_name)
+    public function showTopSenders(Request $request, $asset_name)
     {
         $request->validate([
             'group_by' => 'sometimes|in:date,month,year'
@@ -227,7 +269,7 @@ class AssetChartsController extends Controller
             });
         }
 
-        return \Cache::remember('api_asset_charts_top_senders_' . $asset_name, 1440, function() use($asset, $group_by) {
+        return \Cache::remember('api_asset_charts_top_senders_' . $asset_name, 4320, function() use($asset, $group_by) {
             $results = $asset->sends()
                 ->selectRaw('COUNT(tx_index) as count, source as address')
                 ->groupBy('address')
@@ -244,7 +286,7 @@ class AssetChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function topSendersQuantity(Request $request, $asset_name)
+    public function showTopSendersQuantity(Request $request, $asset_name)
     {
         $request->validate([
             'group_by' => 'sometimes|in:date,month,year'
@@ -265,7 +307,7 @@ class AssetChartsController extends Controller
             });
         }
 
-        return \Cache::remember('api_asset_charts_top_senders_quantity_' . $asset_name, 1440, function() use($asset, $group_by) {
+        return \Cache::remember('api_asset_charts_top_senders_quantity_' . $asset_name, 4320, function() use($asset, $group_by) {
             if($asset->divisible)
             {
                 $results = $asset->sends()
@@ -294,7 +336,7 @@ class AssetChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function uniqueSends(Request $request, $asset_name)
+    public function showUniqueSends(Request $request, $asset_name)
     {
         $request->validate([
             'group_by' => 'sometimes|in:date,month,year'
@@ -315,7 +357,7 @@ class AssetChartsController extends Controller
             });
         }
 
-        return \Cache::remember('api_asset_charts_unique_sends_' . $asset_name . '_' . $group_by, 1440, function() use($asset, $group_by) {
+        return \Cache::remember('api_asset_charts_unique_sends_' . $asset_name . '_' . $group_by, 4320, function() use($asset, $group_by) {
             switch($group_by)
             {
                 case 'date':
@@ -351,7 +393,7 @@ class AssetChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function tokensSent(Request $request, $asset_name)
+    public function showTokensSent(Request $request, $asset_name)
     {
         $request->validate([
             'group_by' => 'sometimes|in:date,month,year'
@@ -372,7 +414,7 @@ class AssetChartsController extends Controller
             });
         }
 
-        return \Cache::remember('api_asset_charts_tokens_sent_' . $asset_name . '_' . $group_by, 1440, function() use($asset, $group_by) {
+        return \Cache::remember('api_asset_charts_tokens_sent_' . $asset_name . '_' . $group_by, 4320, function() use($asset, $group_by) {
             if($asset->divisible)
             {
                 if($asset->asset_name === 'BTC')
@@ -468,7 +510,7 @@ class AssetChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function topTraders(Request $request, $asset_name)
+    public function showTopTraders(Request $request, $asset_name)
     {
         $request->validate([
             'group_by' => 'sometimes|in:date,month,year'
@@ -489,7 +531,7 @@ class AssetChartsController extends Controller
             });
         }
 
-        return \Cache::remember('api_asset_charts_top_traders_' . $asset_name, 1440, function() use($asset, $group_by) {
+        return \Cache::remember('api_asset_charts_top_traders_' . $asset_name, 4320, function() use($asset, $group_by) {
             $results = $asset->credits()
                 ->where('action', '=', 'order match')
                 ->selectRaw('COUNT(id) as count, address')
@@ -507,7 +549,7 @@ class AssetChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function topTradersQuantity(Request $request, $asset_name)
+    public function showTopTradersQuantity(Request $request, $asset_name)
     {
         $request->validate([
             'group_by' => 'sometimes|in:date,month,year'
@@ -528,7 +570,7 @@ class AssetChartsController extends Controller
             });
         }
 
-        return \Cache::remember('api_asset_charts_top_traders_quantity_' . $asset_name, 1440, function() use($asset, $group_by) {
+        return \Cache::remember('api_asset_charts_top_traders_quantity_' . $asset_name, 4320, function() use($asset, $group_by) {
             if($asset->divisible)
             {
                 $results = $asset->credits()
@@ -559,7 +601,7 @@ class AssetChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function uniqueTrades(Request $request, $asset_name)
+    public function showUniqueTrades(Request $request, $asset_name)
     {
         $request->validate([
             'group_by' => 'sometimes|in:date,month,year'
@@ -580,7 +622,7 @@ class AssetChartsController extends Controller
             });
         }
 
-        return \Cache::remember('api_asset_charts_unique_trades_' . $asset_name . '_' . $group_by, 1440, function() use($asset, $group_by) {
+        return \Cache::remember('api_asset_charts_unique_trades_' . $asset_name . '_' . $group_by, 4320, function() use($asset, $group_by) {
             switch($group_by)
             {
                 case 'date':
@@ -619,7 +661,7 @@ class AssetChartsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function tokensTraded(Request $request, $asset_name)
+    public function showTokensTraded(Request $request, $asset_name)
     {
         $request->validate([
             'group_by' => 'sometimes|in:date,month,year'
@@ -640,7 +682,7 @@ class AssetChartsController extends Controller
             });
         }
 
-        return \Cache::remember('api_asset_charts_tokens_traded_' . $asset_name . '_' . $group_by, 1440, function() use($asset, $group_by) {
+        return \Cache::remember('api_asset_charts_tokens_traded_' . $asset_name . '_' . $group_by, 4320, function() use($asset, $group_by) {
             if($asset->divisible)
             {
                 if($asset->asset_name === 'BTC')

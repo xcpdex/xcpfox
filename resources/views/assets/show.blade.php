@@ -2,6 +2,7 @@
 
 @section('title', $asset->display_name === 'BTC' ? 'BTC Holder Information' : $asset->display_name . ' Asset Information')
 @section('canonical', url(route('assets.show', ['asset' => $asset->display_name])))
+@section('description', '')
 
 @section('content')
 <div class="container mt-1">
@@ -9,7 +10,7 @@
     @include('assets.partials.page-title')
     @include('assets.partials.market-history')
     <div class="row">
-        <div class="col-md-8">
+        <div class="{{ $asset->current_balances_count > 0 ? 'col-md-8' : 'col-md-12' }}">
             <div class="card mt-4">
                 <div class="card-header font-weight-bold">
                     Asset Information
@@ -27,6 +28,7 @@
                 </div>
             </div>
         </div>
+        @if($asset->current_balances_count > 0)
         <div class="col-md-4">
             <div class="card mt-4">
                 <div class="card-header font-weight-bold">
@@ -40,14 +42,15 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
-    @if($asset->current_balances_count > 0)
+    @if($asset->asset_name !== 'BTC' && $asset->current_balances_count > 0)
     <div class="card mt-4">
         <div class="card-header font-weight-bold">
-            Holders <small class="ml-1">{{ number_format($asset->current_balances_count) }} Total</small>
+            Holders <small class="ml-1">{{ number_format($asset->current_balances_count) }} <span class="text-muted ml-1">(Current)</span></small>
         </div>
         <div class="card-body">
-            @include('assets.partials.active-addresses')
+            @include('assets.partials.holder-addresses')
         </div>
     </div>
     @endif
@@ -60,14 +63,6 @@
             @include('assets.partials.unique-sends')
         </div>
     </div>
-    <div class="card mt-4">
-        <div class="card-header font-weight-bold">
-            Sent <small class="ml-1">{{ number_format($sends_total) }} {{ $asset->display_name }}</small>
-        </div>
-        <div class="card-body">
-            @include('assets.partials.tokens-sent')
-        </div>
-    </div>
     @endif
     @if($trades_count > 0)
     <div class="card mt-4">
@@ -76,14 +71,6 @@
         </div>
         <div class="card-body">
             @include('assets.partials.unique-trades')
-        </div>
-    </div>
-    <div class="card mt-4">
-        <div class="card-header font-weight-bold">
-            Traded <small class="ml-1">{{ number_format($trades_total) }} {{ $asset->display_name }}</small>
-        </div>
-        <div class="card-body">
-            @include('assets.partials.tokens-traded')
         </div>
     </div>
     @endif

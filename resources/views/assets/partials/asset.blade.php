@@ -13,6 +13,11 @@
     <div class="col-md-3 font-weight-bold font-weight-bold">Owner:</div>
     <div class="col-md-9"><a href="{{ url(route('addresses.show', ['address' => $asset->owner])) }}">{{ $asset->owner }}</a></div>
 </div>
+@else
+<div class="row mb-2">
+    <div class="col-md-3 font-weight-bold font-weight-bold">Owner:</div>
+    <div class="col-md-9">N/A</div>
+</div>
 @endif
 @if($asset->issuer !== $asset->owner)
 <div class="row mb-2">
