@@ -4,21 +4,21 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class UpdatePriceHistoriesCommand extends Command
+class UpdateAssetHistoriesCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'update:price';
+    protected $signature = 'update:histories';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Update Price Histories';
+    protected $description = 'Update Asset Histories';
 
     /**
      * Create a new command instance.
@@ -37,11 +37,11 @@ class UpdatePriceHistoriesCommand extends Command
      */
     public function handle()
     {
-        $tickers = ['BTC', 'XCP', 'PEPECASH', 'FLDC', 'BCY', 'DTB'];
+        $tickers = ['BTC', 'XCP', 'PEPECASH', 'FLDC', 'BCY', 'DTB', 'TRIG'];
 
         foreach($tickers as $ticker)
         {
-            \App\Jobs\UpdatePriceHistories::dispatch($ticker);
+            \App\Jobs\UpdateAssetHistories::dispatch($ticker);
         }
     }
 }

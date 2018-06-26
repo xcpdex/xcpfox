@@ -12,7 +12,16 @@ class Destruction extends Model
      * @var array
      */
     protected $fillable = [
-        'asset', 'block_index', 'quantity', 'source', 'status', 'tag', 'tx_hash', 'tx_index', 'quality_score', 'confirmed_at',
+        'block_index',
+        'tx_index',
+        'tx_hash',
+        'status',
+        'tag',
+        'source',
+        'asset',
+        'quantity',
+        'quality_score',
+        'confirmed_at',
     ];
 
     /**

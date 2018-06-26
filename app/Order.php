@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $primaryKey = 'tx_index';
     public $incrementing = false;
+    protected $primaryKey = 'tx_index';
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +15,29 @@ class Order extends Model
      * @var array
      */
     protected $fillable = [
-        'block_index', 'expiration', 'expire_index', 'fee_provided', 'fee_provided_remaining', 'fee_required', 'fee_required_remaining', 'get_asset', 'get_quantity', 'get_quantity_usd', 'get_remaining', 'get_remaining_usd', 'give_asset', 'give_quantity', 'give_quantity_usd', 'give_remaining', 'give_remaining_usd', 'source', 'status', 'tx_hash', 'tx_index', 'confirmed_at',
+        'block_index',
+        'expire_index',
+        'tx_index',
+        'tx_hash',
+        'status',
+        'source',
+        'expiration',
+        'give_asset',
+        'give_quantity',
+        'give_quantity_usd',
+        'give_remaining',
+        'give_remaining_usd',
+        'get_asset',
+        'get_quantity',
+        'get_quantity_usd',
+        'get_remaining',
+        'get_remaining_usd',
+        'fee_provided',
+        'fee_provided_remaining',
+        'fee_required',
+        'fee_required_remaining',
+        'quality_score',
+        'confirmed_at',
     ];
 
     /**
@@ -33,8 +55,14 @@ class Order extends Model
      * @var array
      */
     protected $appends = [
-        'get_quantity_normalized', 'get_quantity_usd_normalized', 'get_remaining_normalized', 'get_remaining_usd_normalized',
-        'give_quantity_normalized', 'give_quantity_usd_normalized', 'give_remaining_normalized', 'give_remaining_usd_normalized',
+        'get_quantity_normalized',
+        'get_quantity_usd_normalized',
+        'get_remaining_normalized',
+        'get_remaining_usd_normalized',
+        'give_quantity_normalized',
+        'give_quantity_usd_normalized',
+        'give_remaining_normalized',
+        'give_remaining_usd_normalized',
     ];
 
     /**

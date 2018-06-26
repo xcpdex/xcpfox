@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Rpsresolve extends Model
 {
-    protected $primaryKey = 'tx_index';
     public $incrementing = false;
+    protected $primaryKey = 'tx_index';
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +15,15 @@ class Rpsresolve extends Model
      * @var array
      */
     protected $fillable = [
-        'block_index', 'move', 'random', 'rps_match_id', 'source', 'status', 'tx_hash', 'tx_index', 'confirmed_at',
+        'block_index',
+        'tx_index',
+        'tx_hash',
+        'status',
+        'source',
+        'move',
+        'random',
+        'rps_match_id',
+        'confirmed_at',
     ];
 
     /**

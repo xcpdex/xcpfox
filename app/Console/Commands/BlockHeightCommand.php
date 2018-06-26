@@ -42,11 +42,17 @@ class BlockHeightCommand extends Command
      */
     public function handle()
     {
-        if($this->isNewBlockHeight())
+        try
         {
-            $this->call('update:blocks');
-            $this->call('update:blocks:next');
-            $this->call('update:supply');
+            if($this->isNewBlockHeight())
+            {
+                $this->call('update:blocks');
+                $this->call('update:blocks:next');
+            }
+        }
+        catch(\Exception $e)
+        {
+            // API 404s Frequently
         }
     }
 

@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cancel extends Model
 {
-    protected $primaryKey = 'tx_index';
     public $incrementing = false;
+    protected $primaryKey = 'tx_index';
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +15,13 @@ class Cancel extends Model
      * @var array
      */
     protected $fillable = [
-        'block_index', 'offer_hash', 'source', 'status', 'tx_hash', 'tx_index', 'confirmed_at',
+        'block_index',
+        'tx_index',
+        'tx_hash',
+        'status',
+        'source',
+        'offer_hash',
+        'confirmed_at',
     ];
 
     /**

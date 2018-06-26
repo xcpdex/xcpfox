@@ -12,7 +12,15 @@ class Debit extends Model
      * @var array
      */
     protected $fillable = [
-        'action', 'address', 'asset', 'block_index', 'event', 'quantity', 'quantity_usd', 'quality_score', 'confirmed_at',
+        'block_index',
+        'event',
+        'action',
+        'address',
+        'asset',
+        'quantity',
+        'quantity_usd',
+        'quality_score',
+        'confirmed_at',
     ];
 
     /**
@@ -23,6 +31,46 @@ class Debit extends Model
     protected $dates = [
         'confirmed_at',
     ];
+
+    /**
+     * The attributes that are appended.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'quantity_normalized',
+        'quantity_usd_normalized',
+    ];
+
+    /**
+     * Quantity Normalized
+     *
+     * @return string
+     */
+    public function getQuantityNormalizedAttribute()
+    {
+        return $this->assetModel ? $this->assetModel->divisible ? fromSatoshi($this->quantity) : sprintf("%.8f", $this->quantity) : $this->quantity;
+    }
+
+    /**
+     * Quantity USD Normalized
+     *
+     * @return string
+     */
+    public function getQuantityUsdNormalizedAttribute()
+    {
+        return $this->assetModel ? $this->assetModel->divisible ? fromSatoshi($this->quantity_usd) : $this->quantity_usd : $this->quantity_usd;
+    }
+
+    /**
+     * Asset Model
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function assetModel()
+    {
+        return $this->belongsTo(Asset::class, 'asset', 'asset_name');
+    }
 
     /**
      * Transaction

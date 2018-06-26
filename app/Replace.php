@@ -12,7 +12,10 @@ class Replace extends Model
      * @var array
      */
     protected $fillable = [
-        'address', 'options', 'block_index', 'confirmed_at',
+        'block_index',
+        'address',
+        'options',
+        'confirmed_at',
     ];
 
     /**

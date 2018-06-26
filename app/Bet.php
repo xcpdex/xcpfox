@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Bet extends Model
 {
-    protected $primaryKey = 'tx_index';
     public $incrementing = false;
+    protected $primaryKey = 'tx_index';
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +15,29 @@ class Bet extends Model
      * @var array
      */
     protected $fillable = [
-        'bet_type', 'block_index', 'counterwager_quantity', 'counterwager_quantity_usd', 'counterwager_remaining', 'counterwager_remaining_usd', 'deadline', 'expiration', 'expire_index', 'fee_fraction_int', 'feed_address', 'leverage', 'source', 'status', 'target_value', 'tx_hash', 'tx_index', 'wager_quantity', 'wager_quantity_usd', 'wager_remaining', 'wager_remaining_usd', 'quality_score', 'confirmed_at',
+        'block_index',
+        'tx_index',
+        'tx_hash',
+        'bet_type',
+        'status',
+        'source',
+        'feed_address',
+        'target_value',
+        'wager_quantity',
+        'wager_quantity_usd',
+        'wager_remaining',
+        'wager_remaining_usd',
+        'counterwager_quantity',
+        'counterwager_quantity_usd',
+        'counterwager_remaining',
+        'counterwager_remaining_usd',
+        'leverage',
+        'deadline',
+        'expiration',
+        'expire_index',
+        'fee_fraction_int',
+        'quality_score',
+        'confirmed_at',
     ];
 
     /**
@@ -33,8 +55,15 @@ class Bet extends Model
      * @var array
      */
     protected $appends = [
-        'display_type', 'wager_quantity_normalized', 'wager_quantity_usd_normalized', 'wager_remaining_normalized', 'wager_remaining_usd_normalized',
-        'counterwager_quantity_normalized', 'counterwager_quantity_usd_normalized', 'counterwager_remaining_normalized', 'counterwager_remaining_usd_normalized',
+        'display_type',
+        'wager_quantity_normalized',
+        'wager_quantity_usd_normalized',
+        'wager_remaining_normalized',
+        'wager_remaining_usd_normalized',
+        'counterwager_quantity_normalized',
+        'counterwager_quantity_usd_normalized',
+        'counterwager_remaining_normalized',
+        'counterwager_remaining_usd_normalized',
     ];
 
     /**

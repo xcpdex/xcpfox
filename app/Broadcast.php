@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Broadcast extends Model
 {
-    protected $primaryKey = 'tx_index';
     public $incrementing = false;
+    protected $primaryKey = 'tx_index';
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +15,17 @@ class Broadcast extends Model
      * @var array
      */
     protected $fillable = [
-        'block_index', 'fee_fraction_int', 'locked', 'source', 'status', 'text', 'timestamp', 'tx_hash', 'tx_index', 'value', 'confirmed_at',
+        'block_index',
+        'tx_index',
+        'tx_hash',
+        'status',
+        'source',
+        'text',
+        'value',
+        'locked',
+        'fee_fraction_int',
+        'timestamp',
+        'confirmed_at',
     ];
 
     /**

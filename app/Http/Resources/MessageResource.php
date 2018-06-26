@@ -24,7 +24,7 @@ class MessageResource extends Resource
             'block_time_ago' => $this->confirmed_at->diffForHumans(),
             'tx_hash' => $this->transaction ? $this->transaction->tx_hash : null,
             'transaction_url' => $this->transaction ? $this->transaction->url : null,
-            'block_url' => $this->block_url,
+            'block_url' => $this->block->url,
             'url' => $this->url,
         ];
     }

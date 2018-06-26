@@ -6,8 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Issuance extends Model
 {
-    protected $primaryKey = 'tx_index';
     public $incrementing = false;
+    protected $primaryKey = 'tx_index';
+
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+        'created' => \App\Events\IssuanceWasCreated::class,
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +24,27 @@ class Issuance extends Model
      * @var array
      */
     protected $fillable = [
-        'asset', 'asset_longname', 'block_index', 'call_date', 'call_price', 'callable', 'description', 'divisible', 'fee_paid', 'fee_paid_usd', 'issuer', 'locked', 'quantity', 'quantity_normalized', 'source', 'status', 'transfer', 'tx_hash', 'tx_index', 'quality_score', 'confirmed_at',
+        'block_index',
+        'tx_index',
+        'tx_hash',
+        'status',
+        'source',
+        'issuer',
+        'asset',
+        'asset_longname',
+        'description',
+        'quantity',
+        'quantity_normalized',
+        'callable',
+        'call_date',
+        'call_price',
+        'divisible',
+        'locked',
+        'transfer',
+        'fee_paid',
+        'fee_paid_usd',
+        'quality_score',
+        'confirmed_at',
     ];
 
     /**
@@ -33,7 +62,8 @@ class Issuance extends Model
      * @var array
      */
     protected $appends = [
-        'display_name', 'fee_paid_normalized',
+        'display_name',
+        'fee_paid_normalized',
     ];
 
     /**

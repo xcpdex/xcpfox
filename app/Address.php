@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Address extends Model
 {
-    protected $primaryKey = 'address';
     public $incrementing = false;
+    protected $primaryKey = 'address';
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +15,12 @@ class Address extends Model
      * @var array
      */
     protected $fillable = [
-        'address', 'type', 'options', 'block_index', 'burn', 'confirmed_at',
+        'block_index',
+        'address',
+        'type',
+        'options',
+        'burn',
+        'confirmed_at',
     ];
 
     /**
@@ -83,7 +88,7 @@ class Address extends Model
      */
     public function currentBalances()
     {
-        return $this->hasMany(Balance::class, 'address')->whereCurrent('1');
+        return $this->hasMany(Balance::class, 'address')->current();
     }
 
     /**
@@ -177,56 +182,65 @@ class Address extends Model
     }
 
     /**
-     * First or Create Address
+     * Create Addresses
      *
      * @param  arr  $message
      * @param  arr  $bindings
      * @return \App\Address
      */
-    public static function firstOrCreateAddress($message, $bindings)
+    public static function createAddresses($message, $bindings)
     {
-        // Known Column Names
-        $address_columns = ['source', 'address', 'issuer', 'destination', 'tx0_address', 'tx1_address'];
+        // Needles
+        $address_columns = [
+            'source',
+            'issuer',
+            'address',
+            'destination',
+            'tx0_address',
+            'tx1_address'
+        ];
 
-        // Needle in Haystack
+        // Haystack
         foreach($address_columns as $address)
         {
-            // Found a Needle
+            // Needle in Haystack
             if(isset($bindings[$address]))
             {
-                $type = getAddressType($bindings[$address]);
-
                 // Create Address
-                $address = static::firstOrCreate([
-                    'address' => $bindings[$address],
-                ],[
-                    'type' => $type,
-                    'options' => 0,
-                    'block_index' => $bindings['block_index'],
-                    'confirmed_at' => $bindings['confirmed_at'],
-                ]);
+                $address = static::firstOrCreateAddress($bindings[$address], $bindings);
 
-                if($type === 'multisig')
+                // Split Multisig
+                if($address->type === 'multisig')
                 {
-                    $addresses =  array_values(array_filter(explode('_', $bindings[$address]), 'remove_keys'));
+                    $addresses = array_values(array_filter(explode('_', $bindings[$address]), 'remove_keys'));
 
+                    // Create Addresses
                     foreach($addresses as $address)
                     {
-                        $type = getAddressType($address);
-
-                        // Create Address
-                        $address = static::firstOrCreate([
-                            'address' => $address,
-                        ],[
-                            'type' => $type,
-                            'options' => 0,
-                            'block_index' => $bindings['block_index'],
-                            'confirmed_at' => $bindings['confirmed_at'],
-                        ]);
+                        static::firstOrCreateAddress($address, $bindings);
                     }
                 }
             }
         }
+    }
+
+    /**
+     * First or Create Address
+     *
+     * @param  arr  $address
+     * @param  arr  $bindings
+     * @return \App\Address
+     */
+    public static function firstOrCreateAddress($address, $bindings)
+    {
+        return static::firstOrCreate([
+            'address' => $address,
+        ],[
+            'type' => getAddressType($address),
+            'options' => 0,
+            'block_index' => $bindings['block_index'],
+            'confirmed_at' => $bindings['confirmed_at'],
+         ]);
     }
 
     /**
@@ -237,7 +251,7 @@ class Address extends Model
      */
     public static function updateAddressOptions($bindings)
     {
-        static::updateOrCreate([
+        return static::updateOrCreate([
             'address' => $bindings['address'],
         ],[
             'options' => $bindings['options'],

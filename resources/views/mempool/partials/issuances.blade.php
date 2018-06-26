@@ -1,6 +1,6 @@
 <div class="row mb-2">
     <div class="col-md-3 font-weight-bold">Asset Name:</div>
-    <div class="col-md-9"><a href="{{ url(route('assets.show', ['asset' => $tx_data->asset_longname ? $tx_data->asset_longname : $tx_data->asset])) }}">{{ $tx_data->asset_longname ? $tx_data->asset_longname : $tx_data->asset }}</a></div>
+    <div class="col-md-9">{{ $tx_data->asset_longname ? $tx_data->asset_longname : $tx_data->asset }}</div>
 </div>
 @if($tx_data->transfer)
 <div class="row mb-2">

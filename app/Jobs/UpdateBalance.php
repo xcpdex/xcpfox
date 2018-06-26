@@ -43,20 +43,17 @@ class UpdateBalance implements ShouldQueue
         // Crunch and Save Balances
         foreach($unique_blocks as $unique_block)
         {
-            // Rename for Clarity?
-            $block_index = $unique_block['block_index'];
-
-            // Get Block as a Model
-            $block = \App\Block::find($block_index);
+            // Expire Prior Balances
+            $this->expireBalances($unique_block['block_index']);
 
             // Get Balance Quantity
-            $quantity = $this->getQuantity($block_index);
+            $quantity = $this->getQuantity($unique_block['block_index']);
+
+            // Get Block as a Model
+            $block = \App\Block::find($unique_block['block_index']);
 
             // Save Current Balance
             $this->createBalance($quantity, $block);
-
-            // Expire Prior Balances
-            $this->expireBalances($block_index);
         }
 
         \Cache::tags([$this->address . '_balances'])->flush();

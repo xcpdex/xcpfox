@@ -71,11 +71,11 @@ class AssetChartsController extends Controller
 
         return \Cache::remember('api_asset_charts_related_assets_' . $asset->asset_name, 2880, function () use ($asset) {
 
+            $holders = $asset->currentBalances()->count();
+
             if($asset->asset_name === 'BTC')
             {
-                $holders = $asset->currentBalances()->count();
-
-                $results = \App\Balance::current()
+                $results = \App\Balance::current()->nonZero()
                     ->where('asset', '!=', $asset->asset_name)
                     ->selectRaw('COUNT(id) as count, (COUNT(id) / ' . $holders . ' * 100) as percent, asset')
                     ->groupBy('asset')
@@ -85,13 +85,11 @@ class AssetChartsController extends Controller
             } 
             else
             {
-                $holders = $asset->currentBalances()->count();
-
                 $addresses = \Cache::remember('assests_show_' . $asset->asset_name . '_holders', 2880, function () use ($asset) {
                     return $asset->currentBalances()->pluck('address');
                 });
 
-                $results = \App\Balance::current()
+                $results = \App\Balance::current()->nonZero()
                     ->where('asset', '!=', $asset->asset_name)
                     ->whereIn('address', $addresses)
                     ->selectRaw('COUNT(id) as count, (COUNT(id) / ' . $holders . ' * 100) as percent, asset')

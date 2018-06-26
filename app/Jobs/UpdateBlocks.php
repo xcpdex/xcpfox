@@ -237,7 +237,7 @@ class UpdateBlocks implements ShouldQueue
      */
     private function handleAddresses($message, $bindings)
     {
-        \App\Address::firstOrCreateAddress($message, $bindings);
+        \App\Address::createAddresses($message, $bindings);
 
         if($message['category'] === 'replace')
         {

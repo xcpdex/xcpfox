@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class BetMatchExpiration extends Model
 {
-    protected $primaryKey = 'bet_match_id';
     public $incrementing = false;
+    protected $primaryKey = 'bet_match_id';
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +15,11 @@ class BetMatchExpiration extends Model
      * @var array
      */
     protected $fillable = [
-         'bet_match_id', 'block_index', 'tx0_address', 'tx1_address', 'confirmed_at',
+         'block_index',
+         'bet_match_id',
+         'tx0_address',
+         'tx1_address',
+         'confirmed_at',
     ];
 
     /**

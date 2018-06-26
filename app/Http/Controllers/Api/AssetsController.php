@@ -24,13 +24,15 @@ class AssetsController extends Controller
             if($type)
             {
                 $assets = \App\Asset::where('type', '=', $type)
+                    ->with('ownerAddress')
                     ->withCount('currentBalances')
                     ->orderBy('tx_index', 'desc')
                     ->paginate($request->input('per_page', 10));
             }
             else
             {
-                $assets = \App\Asset::withCount('currentBalances')
+                $assets = \App\Asset::with('ownerAddress')
+                    ->withCount('currentBalances')
                     ->orderBy('tx_index', 'desc')
                     ->paginate($request->input('per_page', 10));
             }

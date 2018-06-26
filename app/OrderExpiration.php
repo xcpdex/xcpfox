@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderExpiration extends Model
 {
-    protected $primaryKey = 'order_index';
     public $incrementing = false;
+    protected $primaryKey = 'order_index';
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +15,11 @@ class OrderExpiration extends Model
      * @var array
      */
     protected $fillable = [
-         'order_index', 'block_index', 'order_hash', 'source', 'confirmed_at',
+         'block_index',
+         'order_index',
+         'order_hash',
+         'source',
+         'confirmed_at',
     ];
 
     /**

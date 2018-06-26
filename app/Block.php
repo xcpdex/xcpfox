@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Block extends Model
 {
-    protected $primaryKey = 'block_index';
     public $incrementing = false;
+    protected $primaryKey = 'block_index';
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +15,24 @@ class Block extends Model
      * @var array
      */
     protected $fillable = [
-         'block_index', 'block_hash', 'ledger_hash', 'txlist_hash', 'messages_hash', 'previous_block_hash', 'next_block_hash', 'merkle_root', 'chainwork', 'difficulty', 'timestamp', 'nonce', 'size', 'stripped_size', 'weight', 'tx_count', 'processed_at', 'confirmed_at',
+         'block_index',
+         'block_hash',
+         'ledger_hash',
+         'txlist_hash',
+         'messages_hash',
+         'previous_block_hash',
+         'next_block_hash',
+         'merkle_root',
+         'nonce',
+         'chainwork',
+         'difficulty',
+         'size',
+         'stripped_size',
+         'weight',
+         'tx_count',
+         'timestamp',
+         'confirmed_at',
+         'processed_at',
     ];
 
     /**
@@ -24,7 +41,8 @@ class Block extends Model
      * @var array
      */
     protected $dates = [
-        'processed_at', 'confirmed_at',
+        'confirmed_at',
+        'processed_at',
     ];
 
     /**

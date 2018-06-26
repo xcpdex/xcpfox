@@ -14,8 +14,12 @@ class RelatedResource extends Resource
      */
     public function toArray($request)
     {
+        $display_name = \Cache::rememberForever($this->asset . '_display_name', function () {
+            return \App\Asset::find($this->asset)->display_name;
+        });
+
         return [
-            $this->asset,
+            $display_name,
             (float) $this->percent,
             $this->count,
         ];

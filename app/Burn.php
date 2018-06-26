@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Burn extends Model
 {
-    protected $primaryKey = 'tx_index';
     public $incrementing = false;
+    protected $primaryKey = 'tx_index';
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +15,17 @@ class Burn extends Model
      * @var array
      */
     protected $fillable = [
-        'block_index', 'burned', 'burned_usd', 'earned', 'earned_usd', 'source', 'status', 'tx_hash', 'tx_index', 'quality_score', 'confirmed_at',
+        'block_index',
+        'tx_index',
+        'tx_hash',
+        'status',
+        'source',
+        'burned',
+        'burned_usd',
+        'earned',
+        'earned_usd',
+        'quality_score',
+        'confirmed_at',
     ];
 
     /**
@@ -33,7 +43,8 @@ class Burn extends Model
      * @var array
      */
     protected $appends = [
-        'burned_normalized', 'earned_normalized',
+        'burned_normalized',
+        'earned_normalized',
     ];
 
     /**

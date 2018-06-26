@@ -34,11 +34,20 @@ class UpdateSupply implements ShouldQueue
      */
     public function handle()
     {
-        $this->asset->update([
-            'issuance' => $this->getSupply(),
-            'issuance_normalized' => fromSatoshi($this->getSupply()),
-            'confirmed_at' => $this->asset->confirmed_at,
-        ]);
+        try
+        {
+            $issuance = $this->getSupply();
+
+            $this->asset->update([
+                'issuance' => $issuance,
+                'issuance_normalized' => fromSatoshi($issuance),
+                'confirmed_at' => $this->asset->confirmed_at,
+            ]);
+        }
+        catch(\Exception $e)
+        {
+            // API 404s Frequently
+        }
     }
 
     /**

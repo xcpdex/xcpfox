@@ -14,10 +14,10 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\BlockHeightCommand::class,
+        Commands\UpdateAssetHistoriesCommand::class,
         Commands\UpdateBitcoinBalancesCommand::class,
         Commands\UpdateBlocksCommand::class,
         Commands\UpdateMempoolCommand::class,
-        Commands\UpdatePriceHistoriesCommand::class,
     ];
 
     /**
@@ -29,20 +29,22 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('block:height')->everyMinute();
-        $schedule->command('update:mempool')->everyMinute();
+        $schedule->command('update:mempool')->everyFiveMinutes();
         $schedule->command('horizon:snapshot')->everyFiveMinutes();
-        $schedule->command('update:bitcoin 0 20000')->twiceDaily(1, 13);
-        $schedule->command('update:bitcoin 20000 20000')->twiceDaily(2, 14);
-        $schedule->command('update:bitcoin 40000 20000')->twiceDaily(3, 15);
-        $schedule->command('update:bitcoin 60000 20000')->twiceDaily(4, 16);
-        $schedule->command('update:bitcoin 80000 20000')->twiceDaily(5, 17);
-        $schedule->command('update:bitcoin 100000 20000')->twiceDaily(6, 18);
-        $schedule->command('update:bitcoin 120000 20000')->twiceDaily(7, 19);
-        $schedule->command('update:bitcoin 140000 20000')->twiceDaily(8, 20);
-        $schedule->command('update:bitcoin 160000 20000')->twiceDaily(9, 21);
-        $schedule->command('update:bitcoin 180000 20000')->twiceDaily(10, 22);
-        $schedule->command('update:bitcoin 200000 20000')->twiceDaily(11, 23);
-        $schedule->command('update:price')->daily();
+        $schedule->command('update:histories')->hourly();
+        $schedule->command('update:supply')->hourly();
+        $schedule->command('report:mempool')->hourly();
+        $schedule->command('report:prices')->twiceDaily(12, 22);
+        $schedule->command('update:bitcoin 0 20000')->dailyAt('00:30');
+        $schedule->command('update:bitcoin 20000 20000')->dailyAt('01:00');
+        $schedule->command('update:bitcoin 40000 20000')->dailyAt('01:30');
+        $schedule->command('update:bitcoin 60000 20000')->dailyAt('02:00');
+        $schedule->command('update:bitcoin 80000 20000')->dailyAt('02:30');
+        $schedule->command('update:bitcoin 100000 20000')->dailyAt('03:00');
+        $schedule->command('update:bitcoin 120000 20000')->dailyAt('03:30');
+        $schedule->command('update:bitcoin 140000 20000')->dailyAt('04:00');
+        $schedule->command('update:bitcoin 160000 20000')->dailyAt('04:30');
+        $schedule->command('update:bitcoin 180000 20000')->dailyAt('05:00');
     }
 
     /**

@@ -29,10 +29,10 @@ class TransactionsController extends Controller
         }
         catch(\Exception $e)
         {
-            \App\Jobs\UpdateMempool::dispatchNow();
-
             try
             {
+                \App\Jobs\UpdateMempool::dispatchNow();
+
                 $mempool = \App\Mempool::where('command', '=', 'insert')->whereTxHash($transaction)->firstOrFail();
 
                 $tx_data = json_decode($mempool->bindings);

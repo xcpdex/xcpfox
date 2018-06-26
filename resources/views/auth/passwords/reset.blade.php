@@ -1,8 +1,12 @@
 @extends('layouts.app')
 
+@section('title', 'Reset Password')
+@section('canonical', url(route('password.request')))
+@section('description', 'Reset Password XCP FOX.')
+
 @section('content')
 <div class="container">
-    <div class="row justify-content-center">
+    <div class="row justify-content-center my-5">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Reset Password') }}</div>

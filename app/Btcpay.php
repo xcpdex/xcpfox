@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Btcpay extends Model
 {
-    protected $primaryKey = 'tx_index';
     public $incrementing = false;
+    protected $primaryKey = 'tx_index';
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +15,17 @@ class Btcpay extends Model
      * @var array
      */
     protected $fillable = [
-        'block_index', 'btc_amount', 'btc_amount_usd', 'destination', 'order_match_id', 'source', 'status', 'tx_hash', 'tx_index', 'quality_score', 'confirmed_at',
+        'block_index',
+        'tx_index',
+        'tx_hash',
+        'order_match_id',
+        'status',
+        'source',
+        'destination',
+        'btc_amount',
+        'btc_amount_usd',
+        'quality_score',
+        'confirmed_at',
     ];
 
     /**
@@ -33,7 +43,8 @@ class Btcpay extends Model
      * @var array
      */
     protected $appends = [
-        'btc_amount_normalized', 'btc_amount_usd_normalized',
+        'btc_amount_normalized',
+        'btc_amount_usd_normalized',
     ];
 
     /**

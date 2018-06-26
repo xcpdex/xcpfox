@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Mempool extends Model
 {
+    public $incrementing = false;
     protected $table = 'mempool';
     protected $primaryKey = 'tx_hash';
-    public $incrementing = false;
 
     /**
      * The attributes that are mass assignable.
@@ -16,7 +16,11 @@ class Mempool extends Model
      * @var array
      */
     protected $fillable = [
-         'tx_hash', 'command', 'category', 'bindings', 'timestamp',
+         'tx_hash',
+         'category',
+         'command',
+         'bindings',
+         'timestamp',
     ];
 
     /**

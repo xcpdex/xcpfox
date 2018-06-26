@@ -12,7 +12,9 @@ class Rollback extends Model
      * @var array
      */
     protected $fillable = [
-        'message_index', 'block_index', 'processed_at',
+        'block_index',
+        'message_index',
+        'processed_at',
     ];
 
     /**

@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class RpsMatchExpiration extends Model
 {
-    protected $primaryKey = 'rps_match_id';
     public $incrementing = false;
+    protected $primaryKey = 'rps_match_id';
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +15,11 @@ class RpsMatchExpiration extends Model
      * @var array
      */
     protected $fillable = [
-         'rps_match_id', 'block_index', 'tx0_address', 'tx1_address', 'confirmed_at',
+         'block_index',
+         'rps_match_id',
+         'tx0_address',
+         'tx1_address',
+         'confirmed_at',
     ];
 
     /**

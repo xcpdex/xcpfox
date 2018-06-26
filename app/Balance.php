@@ -12,7 +12,14 @@ class Balance extends Model
      * @var array
      */
     protected $fillable = [
-        'address', 'asset', 'quantity', 'quantity_usd', 'block_index', 'quality_score', 'current', 'confirmed_at',
+        'block_index',
+        'address',
+        'asset',
+        'quantity',
+        'quantity_usd',
+        'quality_score',
+        'current',
+        'confirmed_at',
     ];
 
     /**
@@ -30,7 +37,8 @@ class Balance extends Model
      * @var array
      */
     protected $appends = [
-        'quantity_normalized', 'quantity_usd_normalized',
+        'quantity_normalized',
+        'quantity_usd_normalized',
     ];
 
     /**
@@ -78,6 +86,14 @@ class Balance extends Model
      */
     public function scopeCurrent($query)
     {
-        return $query->where('current', '=', 1)->where('quantity', '>', 0);
+        return $query->where('current', '=', 1);
+    }
+
+    /**
+     * Non-Zero Balances
+     */
+    public function scopeNonZero($query)
+    {
+        return $query->where('quantity', '>', 0);
     }
 }

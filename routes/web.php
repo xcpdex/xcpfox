@@ -12,6 +12,7 @@
 */
 
 Route::get('/', 'HomeController@index')->name('home');
+Route::get('/export/credits', 'ExportController@credits');
 Route::get('/search', 'SearchController@index')->name('search.index');
 Route::get('/address/{address}', 'AddressesController@show')->name('addresses.show');
 Route::get('/address/{type?}', 'AddressesController@index')->name('addresses.index');

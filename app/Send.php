@@ -6,8 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Send extends Model
 {
-    protected $primaryKey = 'tx_index';
     public $incrementing = false;
+    protected $primaryKey = 'tx_index';
+
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+        'created' => \App\Events\SendWasCreated::class,
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +24,18 @@ class Send extends Model
      * @var array
      */
     protected $fillable = [
-        'asset', 'block_index', 'destination', 'quantity', 'quantity_usd', 'source', 'status', 'memo', 'tx_hash', 'tx_index', 'quality_score', 'confirmed_at',
+        'block_index',
+        'tx_index',
+        'tx_hash',
+        'status',
+        'source',
+        'destination',
+        'asset',
+        'quantity',
+        'quantity_usd',
+        'memo',
+        'quality_score',
+        'confirmed_at',
     ];
 
     /**
@@ -33,7 +53,8 @@ class Send extends Model
      * @var array
      */
     protected $appends = [
-        'quantity_normalized', 'quantity_usd_normalized',
+        'quantity_normalized',
+        'quantity_usd_normalized',
     ];
 
     /**
@@ -84,5 +105,15 @@ class Send extends Model
     public function assetModel()
     {
         return $this->belongsTo(Asset::class, 'asset', 'asset_name');
+    }
+
+    /**
+     * Transaction
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class, 'tx_hash', 'tx_hash');
     }
 }

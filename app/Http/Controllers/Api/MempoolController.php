@@ -19,6 +19,7 @@ class MempoolController extends Controller
         ]);
 
         $transactions = \App\Mempool::whereDoesntHave('transaction')
+            ->where('created_at', '>', \Carbon\Carbon::now()->subDays(1))
             ->orderBy('created_at', 'desc')
             ->paginate($request->input('per_page', 10));
 

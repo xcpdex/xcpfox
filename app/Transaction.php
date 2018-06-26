@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
-    protected $primaryKey = 'tx_index';
     public $incrementing = false;
+    protected $primaryKey = 'tx_index';
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +15,27 @@ class Transaction extends Model
      * @var array
      */
     protected $fillable = [
-         'tx_index', 'block_index', 'message_index', 'tx_hash', 'type', 'source', 'destination', 'quantity', 'quantity_usd', 'fee', 'fee_usd', 'size', 'vsize', 'inputs', 'outputs', 'raw', 'valid', 'quality_score', 'timestamp', 'confirmed_at', 'processed_at',
+         'block_index',
+         'message_index',
+         'tx_index',
+         'tx_hash',
+         'type',
+         'source',
+         'destination',
+         'quantity',
+         'quantity_usd',
+         'fee',
+         'fee_usd',
+         'size',
+         'vsize',
+         'inputs',
+         'outputs',
+         'raw',
+         'valid',
+         'quality_score',
+         'timestamp',
+         'confirmed_at',
+         'processed_at',
     ];
 
     /**
@@ -24,7 +44,8 @@ class Transaction extends Model
      * @var array
      */
     protected $dates = [
-        'confirmed_at', 'processed_at',
+        'confirmed_at',
+        'processed_at',
     ];
 
     /**
@@ -42,9 +63,15 @@ class Transaction extends Model
      * @var array
      */
     protected $appends = [
-        'url', 'block_url', 'message_url', 'source_url', 'destination_url',
-        'fee_normalized', 'fee_usd_normalized',
-        'quantity_normalized', 'quantity_usd_normalized',
+        'url',
+        'block_url',
+        'message_url',
+        'source_url',
+        'destination_url',
+        'fee_normalized',
+        'fee_usd_normalized',
+        'quantity_normalized',
+        'quantity_usd_normalized',
     ];
 
     /**

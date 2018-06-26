@@ -22,7 +22,7 @@ class MessagesController extends Controller
 
         return \Cache::tags(['block_flush'])->rememberForever($key, function () use ($request) {
             $messages = \App\Message::whereNotNull('confirmed_at')
-                ->with('transaction')
+                ->with('block', 'transaction')
                 ->orderBy('message_index', 'desc')
                 ->paginate($request->input('per_page', 10));
 

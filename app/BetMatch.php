@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class BetMatch extends Model
 {
-    protected $primaryKey = 'id';
     public $incrementing = false;
+    protected $primaryKey = 'id';
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +15,34 @@ class BetMatch extends Model
      * @var array
      */
     protected $fillable = [
-        'backward_quantity', 'backward_quantity_usd', 'block_index', 'deadline', 'fee_fraction_int', 'feed_address', 'forward_quantity', 'forward_quantity_usd', 'id', 'initial_value', 'leverage', 'match_expire_index', 'status', 'target_value', 'tx0_address', 'tx0_bet_type', 'tx0_block_index', 'tx0_expiration', 'tx0_hash', 'tx0_index', 'tx1_address', 'tx1_bet_type', 'tx1_block_index', 'tx1_expiration', 'tx1_hash', 'tx1_index', 'quality_score', 'confirmed_at',
+        'block_index',
+        'match_expire_index',
+        'tx0_block_index',
+        'tx0_index',
+        'tx0_hash',
+        'tx0_bet_type',
+        'tx0_address',
+        'tx0_expiration',
+        'tx1_block_index',
+        'tx1_index',
+        'tx1_hash',
+        'tx1_bet_type',
+        'tx1_address',
+        'tx1_expiration',
+        'id',
+        'status',
+        'feed_address',
+        'target_value',
+        'initial_value',
+        'backward_quantity',
+        'backward_quantity_usd',
+        'forward_quantity',
+        'forward_quantity_usd',
+        'leverage',
+        'deadline',
+        'fee_fraction_int',
+        'quality_score',
+        'confirmed_at',
     ];
 
     /**

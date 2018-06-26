@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
-    protected $primaryKey = 'message_index';
     public $incrementing = false;
+    protected $primaryKey = 'message_index';
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +15,13 @@ class Message extends Model
      * @var array
      */
     protected $fillable = [
-         'message_index', 'block_index', 'command', 'category', 'bindings', 'timestamp', 'confirmed_at',
+         'block_index',
+         'message_index',
+         'category',
+         'command',
+         'bindings',
+         'timestamp',
+         'confirmed_at',
     ];
 
     /**
@@ -42,7 +48,7 @@ class Message extends Model
      * @var array
      */
     protected $appends = [
-        'url', 'block_url',
+        'url',
     ];
 
     /**
@@ -53,16 +59,6 @@ class Message extends Model
     public function getUrlAttribute()
     {
         return url(route('messages.show', ['message' => $this->message_index]));
-    }
-
-    /**
-     * Block URL
-     *
-     * @return string
-     */
-    public function getBlockUrlAttribute()
-    {
-        return url(route('blocks.show', ['block_hash' => $this->block_index]));
     }
 
     /**

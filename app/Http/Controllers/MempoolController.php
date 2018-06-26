@@ -13,7 +13,13 @@ class MempoolController extends Controller
      */
     public function index(Request $request)
     {
-        \App\Jobs\UpdateMempool::dispatchNow();
+        try
+        {
+            \App\Jobs\UpdateMempool::dispatchNow();
+        }
+        catch(\Exception $e)
+        {
+        }
 
         return view('mempool.index', compact('request'));
     }

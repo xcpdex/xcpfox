@@ -13,8 +13,17 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\Event' => [
-            'App\Listeners\EventListener',
+        'App\Events\AssetWasCreated' => [
+            'App\Listeners\ReportAssetCreation',
+        ],
+        'App\Events\IssuanceWasCreated' => [
+            'App\Listeners\NormalizeIssuanceQuantity',
+            'App\Listeners\AssetCreateFromIssuance',
+            'App\Listeners\AssetUpdateFromIssuance',
+            'App\Listeners\FlushIssuanceAndAssetCache',
+        ],
+        'App\Events\SendWasCreated' => [
+            'App\Listeners\ReportLargeDeposits',
         ],
     ];
 

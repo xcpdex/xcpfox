@@ -6,8 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Asset extends Model
 {
-    protected $primaryKey = 'asset_name';
     public $incrementing = false;
+    protected $primaryKey = 'asset_name';
+
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+        'created' => \App\Events\AssetWasCreated::class,
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +24,20 @@ class Asset extends Model
      * @var array
      */
     protected $fillable = [
-        'asset_name', 'asset_longname', 'type', 'issuer', 'owner', 'description', 'issuance', 'issuance_normalized', 'divisible', 'locked', 'block_index', 'tx_index', 'meta', 'confirmed_at',
+        'block_index',
+        'tx_index',
+        'type',
+        'asset_name',
+        'asset_longname',
+        'issuer',
+        'owner',
+        'description',
+        'issuance',
+        'issuance_normalized',
+        'divisible',
+        'locked',
+        'meta',
+        'confirmed_at',
     ];
 
     /**
@@ -42,39 +64,9 @@ class Asset extends Model
      * @var array
      */
     protected $appends = [
-        'url', 'block_url', 'owner_url',
         'display_name',
+        'url',
     ];
-
-    /**
-     * URL
-     *
-     * @return string
-     */
-    public function getUrlAttribute()
-    {
-        return url(route('assets.show', ['asset' => $this->display_name]));
-    }
-
-    /**
-     * Block URL
-     *
-     * @return string
-     */
-    public function getBlockUrlAttribute()
-    {
-        return url(route('blocks.show', ['block_hash' => $this->block_index]));
-    }
-
-    /**
-     * Owner URL
-     *
-     * @return string
-     */
-    public function getOwnerUrlAttribute()
-    {
-        return url(route('addresses.show', ['address' => $this->owner]));
-    }
 
     /**
      * Display Name
@@ -84,6 +76,16 @@ class Asset extends Model
     public function getDisplayNameAttribute()
     {
         return $this->asset_longname ? $this->asset_longname : $this->asset_name;
+    }
+
+    /**
+     * URL
+     *
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+        return url(route('assets.show', ['asset' => $this->display_name]));
     }
 
     /**
@@ -103,7 +105,7 @@ class Asset extends Model
      */
     public function currentBalances()
     {
-        return $this->hasMany(Balance::class, 'asset', 'asset_name')->current();
+        return $this->hasMany(Balance::class, 'asset', 'asset_name')->current()->nonZero();
     }
 
     /**
@@ -157,6 +159,36 @@ class Asset extends Model
     }
 
     /**
+     * Issuer Address
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function issuerAddress()
+    {
+        return $this->belongsTo(Address::class, 'issuer', 'address');
+    }
+
+    /**
+     * Owner Address
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function ownerAddress()
+    {
+        return $this->belongsTo(Address::class, 'owner', 'address');
+    }
+
+    /**
+     * Transaction
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class, 'tx_index', 'tx_index');
+    }
+
+    /**
      * First Or Create Asset
      *
      * @param  \App\Issuance  $issuance
@@ -164,6 +196,8 @@ class Asset extends Model
      */
     public static function firstOrCreateAsset(\App\Issuance  $issuance)
     {
+        \Cache::tags(['issuance_flush'])->flush();
+
         $type = getAssetType($issuance);
 
         return static::firstOrCreate([

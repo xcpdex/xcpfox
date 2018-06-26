@@ -59,4 +59,4 @@ Route::get('/charts/address-types', 'Api\PiechartsController@showAddresses')->na
 Route::get('/charts/asset-types', 'Api\PiechartsController@showAssets')->name('api.charts.pie.assets');
 Route::get('/charts/block-presence', 'Api\PiechartsController@showBlocks')->name('api.charts.pie.blocks');
 Route::get('/charts/message-categories', 'Api\PiechartsController@showMessages')->name('api.charts.pie.messages');
-Route::get('/charts/transaction-types', 'Api\PiechartsController@showTransactions')->name('api.charts.pie.transaction');
+Route::get('/charts/transaction-types', 'Api\PiechartsController@showTransactions')->name('api.charts.pie.transactions');

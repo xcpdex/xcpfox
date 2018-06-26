@@ -47,7 +47,7 @@
     @if($asset->asset_name !== 'BTC' && $asset->current_balances_count > 0)
     <div class="card mt-4">
         <div class="card-header font-weight-bold">
-            Holders <small class="ml-1">{{ number_format($asset->current_balances_count) }} <span class="text-muted ml-1">(Current)</span></small>
+            Holders <small class="ml-1">{{ number_format($asset->current_balances_count) }} Total <span class="text-muted ml-1">(Current)</span></small>
         </div>
         <div class="card-body">
             @include('assets.partials.holder-addresses')

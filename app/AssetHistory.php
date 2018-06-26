@@ -12,7 +12,12 @@ class AssetHistory extends Model
      * @var array
      */
     protected $fillable = [
-        'asset', 'type', 'value', 'quality_score', 'timestamp', 'confirmed_at'
+        'type',
+        'asset',
+        'value',
+        'quality_score',
+        'timestamp',
+        'confirmed_at'
     ];
 
     /**

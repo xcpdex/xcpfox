@@ -1,8 +1,12 @@
 @extends('layouts.app')
 
+@section('title', 'Login')
+@section('canonical', url(route('login')))
+@section('description', 'Login to XCP FOX.')
+
 @section('content')
 <div class="container mt-1">
-    <div class="row justify-content-center">
+    <div class="row justify-content-center my-5">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Login') }}</div>

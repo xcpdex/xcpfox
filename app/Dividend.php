@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Dividend extends Model
 {
-    protected $primaryKey = 'tx_index';
     public $incrementing = false;
+    protected $primaryKey = 'tx_index';
 
     /**
      * The attributes that are mass assignable.
@@ -15,7 +15,19 @@ class Dividend extends Model
      * @var array
      */
     protected $fillable = [
-        'asset', 'block_index', 'dividend_asset', 'fee_paid', 'fee_paid_usd', 'quantity_per_unit', 'quantity_per_unit_usd', 'source', 'status', 'tx_hash', 'tx_index', 'quality_score', 'confirmed_at',
+        'block_index',
+        'tx_index',
+        'tx_hash',
+        'status',
+        'source',
+        'asset',
+        'dividend_asset',
+        'quantity_per_unit',
+        'quantity_per_unit_usd',
+        'fee_paid',
+        'fee_paid_usd',
+        'quality_score',
+        'confirmed_at',
     ];
 
     /**
@@ -33,29 +45,11 @@ class Dividend extends Model
      * @var array
      */
     protected $appends = [
-        'quantity_per_unit_normalized', 'quantity_per_unit_usd_normalized',
-        'fee_paid_normalized', 'fee_paid_usd_normalized',
+        'fee_paid_normalized',
+        'fee_paid_usd_normalized',
+        'quantity_per_unit_normalized',
+        'quantity_per_unit_usd_normalized',
     ];
-
-    /**
-     * Quantity Per Unit Normalized
-     *
-     * @return string
-     */
-    public function getQuantityPerUnitNormalizedAttribute()
-    {
-        return $this->dividendAssetModel->divisible ? fromSatoshi($this->quantity_per_unit) : $this->quantity_per_unit;
-    }
-
-    /**
-     * Quantity Per Unit USD Normalized
-     *
-     * @return string
-     */
-    public function getQuantityPerUnitUsdNormalizedAttribute()
-    {
-        return $this->dividendAssetModel->divisible ? fromSatoshi($this->quantity_per_unit_usd) : $this->quantity_per_unit_usd;
-    }
 
     /**
      * Fee Paid Normalized
@@ -75,6 +69,26 @@ class Dividend extends Model
     public function getFeePaidUsdNormalizedAttribute()
     {
         return fromSatoshi($this->fee_paid_usd);
+    }
+
+    /**
+     * Quantity Per Unit Normalized
+     *
+     * @return string
+     */
+    public function getQuantityPerUnitNormalizedAttribute()
+    {
+        return $this->dividendAssetModel->divisible ? fromSatoshi($this->quantity_per_unit) : sprintf("%.8f",$this->quantity_per_unit);
+    }
+
+    /**
+     * Quantity Per Unit USD Normalized
+     *
+     * @return string
+     */
+    public function getQuantityPerUnitUsdNormalizedAttribute()
+    {
+        return $this->dividendAssetModel->divisible ? fromSatoshi($this->quantity_per_unit_usd) : $this->quantity_per_unit_usd;
     }
 
     /**
